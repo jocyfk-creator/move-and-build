@@ -253,7 +253,17 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
   .method-grid { grid-template-columns:1fr 1fr; }
 }
 
-/* SERIES CHECKBOXES */
+/* SUBDESCRIPCIÓN MÉTODOS */
+.md-extra { display:none; font-size:0.78rem; color:var(--muted); margin-top:6px; line-height:1.5; border-top:1px solid var(--border); padding-top:6px; font-style:italic; }
+.method-card.sel .md-extra { display:block; }
+
+/* MENSAJE HUMANO */
+.human-msg { background:var(--mint-pale); border-left:3px solid var(--mint); border-radius:0 8px 8px 0;
+  padding:8px 12px; font-size:0.8rem; color:var(--mint-deep); margin-top:8px; line-height:1.5; font-style:italic; }
+
+/* SERIES CALENTAMIENTO */
+.warmup-badge { font-size:0.65rem; background:#FFF3CD; color:#856404; border-radius:100px;
+  padding:2px 7px; margin-left:6px; font-weight:600; }
 .series-checks { display:flex; gap:5px; flex-wrap:wrap; margin-top:4px; }
 .serie-check { width:22px; height:22px; border-radius:50%; border:2px solid var(--border);
   background:var(--card); cursor:pointer; display:flex; align-items:center; justify-content:center;
@@ -316,6 +326,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
     <div class="modal-muscles" id="mPrimary"></div>
     <div class="modal-section">Músculos accesorios</div>
     <div class="modal-muscles" id="mSecondary"></div>
+    <div class="human-msg" id="mHuman"></div>
     <button class="modal-close" onclick="document.getElementById('modalOverlay').classList.remove('open')">Cerrar</button>
   </div>
 </div>
@@ -412,20 +423,20 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
     <div class="step-title">Métodos</div>
     <p class="step-sub">Opcional — si no eliges ninguno, el plan selecciona los más adecuados.</p>
     <div class="method-grid">
-      <div class="method-card" data-v="Tabata"><div class="mn">Tabata</div><div class="md">20s trabajo / 10s descanso, 8 rondas. Alta intensidad en poco tiempo.</div></div>
-      <div class="method-card" data-v="HIIT"><div class="mn">HIIT</div><div class="md">Intervalos de alta intensidad alternados con recuperación. Máximo gasto calórico.</div></div>
-      <div class="method-card" data-v="EMOM"><div class="mn">EMOM</div><div class="md">Cada minuto completas un número fijo de reps. Ritmo constante y medible.</div></div>
-      <div class="method-card" data-v="3/7"><div class="mn">Método 3/7</div><div class="md">Series de 3 a 7 reps con 15s de pausa entre ellas. Alta densidad de trabajo.</div></div>
-      <div class="method-card" data-v="AMRAP"><div class="mn">AMRAP</div><div class="md">Máximo de reps o rondas en un tiempo fijo. Mide y supera tu marca.</div></div>
-      <div class="method-card" data-v="GVT"><div class="mn">GVT</div><div class="md">10 series de 10 reps con el mismo ejercicio. Volumen alto para hipertrofia.</div></div>
-      <div class="method-card" data-v="5x5"><div class="mn">5×5</div><div class="md">5 series de 5 reps con cargas altas. Método clásico de fuerza y masa.</div></div>
-      <div class="method-card" data-v="Weider"><div class="mn">Weider</div><div class="md">Splits musculares por día. Cada sesión trabaja un grupo muscular en profundidad.</div></div>
-      <div class="method-card" data-v="PHA"><div class="mn">PHA</div><div class="md">Alterna ejercicios de tren superior e inferior. Mantiene el corazón activo.</div></div>
-      <div class="method-card" data-v="Dropset"><div class="mn">Dropset</div><div class="md">Al fallo, bajas el peso y continúas sin descanso. Máximo estímulo muscular.</div></div>
-      <div class="method-card" data-v="Superseries"><div class="mn">Superseries</div><div class="desc md">Dos ejercicios seguidos sin descanso. Ahorra tiempo y aumenta la intensidad.</div></div>
-      <div class="method-card" data-v="Piramidal"><div class="mn">Piramidal</div><div class="md">Sube o baja la carga progresivamente entre series. Adaptación progresiva.</div></div>
-      <div class="method-card" data-v="Heavy Duty"><div class="mn">Heavy Duty</div><div class="md">Pocas series pero al fallo muscular absoluto. Máxima intensidad, mínimo volumen.</div></div>
-      <div class="method-card" data-v="Cluster"><div class="mn">Cluster</div><div class="md">Micropausas dentro de la serie para mover más carga. Fuerza e hipertrofia.</div></div>
+      <div class="method-card" data-v="Tabata"><div class="mn">Tabata</div><div class="md">20s trabajo / 10s descanso, 8 rondas. Alta intensidad en poco tiempo.</div><div class="md-extra">Ideal si tienes poco tiempo y quieres quemar mucho. Exige buena técnica previa — no es para empezar desde cero. Tu sistema cardiovascular y muscular trabajan al límite.</div></div>
+      <div class="method-card" data-v="HIIT"><div class="mn">HIIT</div><div class="md">Intervalos de alta intensidad alternados con recuperación. Máximo gasto calórico.</div><div class="md-extra">Elígelo si buscas quemar grasa sin sacrificar músculo. La recuperación es parte del método — respétala. Escucha cómo responde tu cuerpo cada día.</div></div>
+      <div class="method-card" data-v="EMOM"><div class="mn">EMOM</div><div class="md">Cada minuto completas un número fijo de reps. Ritmo constante y medible.</div><div class="md-extra">Perfecto para medir tu progreso con precisión. Te obliga a mantener la técnica bajo presión de tiempo. Si un día no llegas al ritmo, es información valiosa sobre tu recuperación.</div></div>
+      <div class="method-card" data-v="3/7"><div class="mn">Método 3/7</div><div class="md">Series de 3 a 7 reps con 15s de pausa entre ellas. Alta densidad de trabajo.</div><div class="md-extra">Muy efectivo para hipertrofia con menos carga. Las micropausas permiten mantener la calidad del movimiento. Bueno para días en que tu energía no está al 100%.</div></div>
+      <div class="method-card" data-v="AMRAP"><div class="mn">AMRAP</div><div class="md">Máximo de reps o rondas en un tiempo fijo. Mide y supera tu marca.</div><div class="md-extra">Ideal para competir contigo mismo. Anota siempre tu resultado — la mejora progresiva es la clave. Para cuando te sientes fuerte y motivado.</div></div>
+      <div class="method-card" data-v="GVT"><div class="mn">GVT</div><div class="md">10 series de 10 reps con el mismo ejercicio. Volumen alto para hipertrofia.</div><div class="md-extra">Método exigente que requiere buena base. La carga debe ser moderada — no la que usas habitualmente. Respeta los descansos; el músculo crece en la recuperación.</div></div>
+      <div class="method-card" data-v="5x5"><div class="mn">5×5</div><div class="md">5 series de 5 reps con cargas altas. Método clásico de fuerza y masa.</div><div class="md-extra">Simple y muy efectivo. La técnica es innegociable — nunca sacrifiques forma por peso. Progresa despacio y de forma sostenida.</div></div>
+      <div class="method-card" data-v="Weider"><div class="mn">Weider</div><div class="md">Splits musculares por día. Cada sesión trabaja un grupo muscular en profundidad.</div><div class="md-extra">Permite recuperación entre grupos. Ideal si entrenas 4-5 días. La fatiga acumulada de la semana importa — ajusta la intensidad según cómo llegas a cada sesión.</div></div>
+      <div class="method-card" data-v="PHA"><div class="mn">PHA</div><div class="md">Alterna ejercicios de tren superior e inferior. Mantiene el corazón activo.</div><div class="md-extra">Eficiente y dinámico. Mientras descansa una zona, trabaja la otra. Buena opción si quieres combinar fuerza y acondicionamiento cardiovascular.</div></div>
+      <div class="method-card" data-v="Dropset"><div class="mn">Dropset</div><div class="md">Al fallo, bajas el peso y continúas sin descanso. Máximo estímulo muscular.</div><div class="md-extra">Técnica de intensidad alta — úsala con criterio, no en todos los ejercicios. El cuerpo necesita más recuperación después. Escucha las señales de fatiga real.</div></div>
+      <div class="method-card" data-v="Superseries"><div class="mn">Superseries</div><div class="md">Dos ejercicios seguidos sin descanso. Ahorra tiempo y aumenta la intensidad.</div><div class="md-extra">Muy versátil. Puedes combinar músculos antagonistas o zonas diferentes. Mantén la técnica en el segundo ejercicio aunque la fatiga apriete.</div></div>
+      <div class="method-card" data-v="Piramidal"><div class="mn">Piramidal</div><div class="md">Sube o baja la carga progresivamente entre series. Adaptación progresiva.</div><div class="md-extra">Ideal para días variables — el calentamiento progresivo está integrado en el método. Respeta el tope de tu cuerpo ese día concreto.</div></div>
+      <div class="method-card" data-v="Heavy Duty"><div class="mn">Heavy Duty</div><div class="md">Pocas series pero al fallo muscular absoluto. Máxima intensidad, mínimo volumen.</div><div class="md-extra">No es para todos los días ni para todos los niveles. Requiere conocer bien tu cuerpo. La recuperación es larga — planifica bien el descanso posterior.</div></div>
+      <div class="method-card" data-v="Cluster"><div class="mn">Cluster</div><div class="md">Micropausas dentro de la serie para mover más carga. Fuerza e hipertrofia.</div><div class="md-extra">Permite trabajar con más peso del habitual manteniendo la técnica. Ideal para superar estancamientos. Escucha la calidad de cada repetición.</div></div>
     </div>
     <div class="step-nav">
       <button class="btn-back" onclick="go(-1)">← Atrás</button>
@@ -520,6 +531,28 @@ function updateWeekUI() {
 function changeWeek(d) {
   currentWeek = Math.max(1, currentWeek + d);
   updateWeekUI();
+  // Resetear botones guardados al cambiar semana
+  document.querySelectorAll('.sens-save.saved').forEach(btn => {
+    btn.classList.remove('saved');
+    btn.textContent = 'Guardar';
+  });
+}
+
+// Timbre al terminar cronómetro
+function playBeep() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.frequency.value = 880;
+    osc.type = 'sine';
+    gain.gain.setValueAtTime(0.5, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.8);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.8);
+  } catch(e) {}
 }
 
 function startApp() {
@@ -605,7 +638,7 @@ DÍAS: ${S.dias||'3'}, SESIÓN: ${S.dur||'60 min'}, LUGAR: ${S.lugar||'gimnasio 
 ${BANCO}
 JSON exacto:
 {"resumen":"2 frases","progresion":[{"sem":"Semana 1","rir":"3-4","fase":"Aprendizaje","nota":"texto"},{"sem":"Semana 2","rir":"2-3","fase":"Acumulación","nota":"texto"},{"sem":"Semana 3","rir":"1-2","fase":"Intensificación","nota":"texto"},{"sem":"Semana 4","rir":"4-5","fase":"Descarga","nota":"texto"}],"dias":[{"titulo":"Día 1 — nombre","enfasis":"músculos","dur":"X min","ejercicios":[{"tipo":"Movilidad","nom":"nombre exacto","instruccion":"cómo ejecutarlo en 1-2 frases claras","musculos_principales":["músculo1","músculo2"],"musculos_accesorios":["músculo3"],"series":"1","reps":"10","rir":"—","descanso":"—"}]}]}
-Reglas: nombres EXACTOS del banco. 6-9 ejercicios/día. tipos: Movilidad/Fuerza/Potencia/Core/Cardio. rir "3→2" o "—". descanso "45''","60''","90''","—". instruccion máx 20 palabras. 2-3 musculos_principales, 1-2 accesorios.`;
+Reglas: nombres EXACTOS del banco. 6-9 ejercicios/día. tipos: Movilidad/Fuerza/Potencia/Core/Cardio. rir "3→2" o "—". descanso "45''","60''","90''","—". instruccion máx 20 palabras. 2-3 musculos_principales, 1-2 accesorios. En ejercicios de Fuerza principales, añade 1-2 series de calentamiento antes de las series de trabajo indicando series_calentamiento:"1-2 series ligeras al 50-60% para activar el patrón de movimiento".`;
 
   try {
     const res = await fetch('/api/claude', {
@@ -733,6 +766,20 @@ function showModal(data) {
   document.getElementById('mDesc').textContent = data.instruccion||'';
   document.getElementById('mPrimary').innerHTML = (data.principales||[]).map(m=>`<span class="muscle-tag">${m}</span>`).join('');
   document.getElementById('mSecondary').innerHTML = (data.accesorios||[]).map(m=>`<span class="muscle-tag secondary">${m}</span>`).join('');
+  
+  // Mensaje humano aleatorio sobre escuchar el cuerpo
+  const mensajes = [
+    'Antes de cargar, haz 1-2 series ligeras para despertar el patrón de movimiento. Tu cuerpo te dirá cómo está hoy.',
+    'La técnica es el primer peso. Empieza con menos carga de la que crees que necesitas.',
+    'Cada día es diferente. El peso de ayer puede no ser el de hoy — y eso está bien.',
+    'Respira antes de cada serie. El sistema nervioso también se entrena.',
+    'Si algo no se siente bien, no es el momento. Ajusta la carga o el ejercicio sin juicio.',
+    'La serie de calentamiento no es perder el tiempo — es preparar el tejido, la mente y el movimiento.',
+    'Nota cómo responde tu cuerpo hoy. Esa información vale más que cualquier número.',
+  ];
+  const msg = mensajes[Math.floor(Math.random() * mensajes.length)];
+  const mHuman = document.getElementById('mHuman');
+  if(mHuman) mHuman.textContent = msg;
   document.getElementById('modalOverlay').classList.add('open');
 }
 function closeModal(e) {
@@ -792,6 +839,7 @@ function startTimer(sid, secs) {
       tb.classList.remove('running');
       td.textContent = '¡Listo!';
       td.style.background = 'var(--mint)';
+      playBeep();
       setTimeout(() => {
         const mm = Math.floor(secs/60), ss = secs%60;
         td.textContent = `${mm}:${String(ss).padStart(2,'0')}`;

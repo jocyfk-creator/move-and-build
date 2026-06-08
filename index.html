@@ -636,15 +636,15 @@ OBJETIVOS: ${S.obj.join(', ')||'salud general'}
 MÉTODOS: ${S.met.length>0?S.met.join(', '):'los más adecuados'}
 DÍAS: ${S.dias||'3'}, SESIÓN: ${S.dur||'60 min'}, LUGAR: ${S.lugar||'gimnasio completo'}, PLAN: ${S.plan||'4 semanas'}
 ${BANCO}
-JSON exacto:
-{"resumen":"2 frases","progresion":[{"sem":"Semana 1","rir":"3-4","fase":"Aprendizaje","nota":"texto"},{"sem":"Semana 2","rir":"2-3","fase":"Acumulación","nota":"texto"},{"sem":"Semana 3","rir":"1-2","fase":"Intensificación","nota":"texto"},{"sem":"Semana 4","rir":"4-5","fase":"Descarga","nota":"texto"}],"dias":[{"titulo":"Día 1 — nombre","enfasis":"músculos","dur":"X min","ejercicios":[{"tipo":"Movilidad","nom":"nombre exacto","instruccion":"cómo ejecutarlo en 1-2 frases claras","musculos_principales":["músculo1","músculo2"],"musculos_accesorios":["músculo3"],"series":"1","reps":"10","rir":"—","descanso":"—"}]}]}
-Reglas: nombres EXACTOS del banco. 6-9 ejercicios/día. tipos: Movilidad/Fuerza/Potencia/Core/Cardio. rir "3→2" o "—". descanso "45''","60''","90''","—". instruccion máx 20 palabras. 2-3 musculos_principales, 1-2 accesorios. En ejercicios de Fuerza principales, añade 1-2 series de calentamiento antes de las series de trabajo indicando series_calentamiento:"1-2 series ligeras al 50-60% para activar el patrón de movimiento".`;
+Responde SOLO este JSON (sin texto extra):
+{"resumen":"string","progresion":[{"sem":"string","rir":"string","fase":"string","nota":"string"}],"dias":[{"titulo":"string","enfasis":"string","dur":"string","ejercicios":[{"tipo":"string","nom":"string","instruccion":"string","musculos_principales":["string"],"musculos_accesorios":["string"],"series":"string","reps":"string","rir":"string","descanso":"string","series_calentamiento":"string"}]}]}
+Reglas: nombres EXACTOS del banco. 6-8 ejercicios/día. tipos: Movilidad/Fuerza/Core/Cardio. rir "3→2" o "—". descanso "45''","60''","90''". instruccion máx 15 palabras. 2 musculos_principales, 1 accesorio. series_calentamiento solo en Fuerza: "1-2 series al 50-60%".`;
 
   try {
     const res = await fetch('/api/claude', {
       method:'POST',
       headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({model:'claude-sonnet-4-6',max_tokens:5000,messages:[{role:'user',content:prompt}]})
+      body: JSON.stringify({model:'claude-sonnet-4-6',max_tokens:6000,messages:[{role:'user',content:prompt}]})
     });
     clearInterval(loadTimer);
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message||`Error ${res.status}`); }

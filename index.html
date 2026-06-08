@@ -611,7 +611,7 @@ Reglas: nombres EXACTOS del banco. 6-9 ejercicios/día. tipos: Movilidad/Fuerza/
     const res = await fetch('/api/claude', {
       method:'POST',
       headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({model:'claude-sonnet-4-6',max_tokens:3000,messages:[{role:'user',content:prompt}]})
+      body: JSON.stringify({model:'claude-sonnet-4-6',max_tokens:5000,messages:[{role:'user',content:prompt}]})
     });
     clearInterval(loadTimer);
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message||`Error ${res.status}`); }

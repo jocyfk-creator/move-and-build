@@ -319,6 +319,41 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
   border-radius:8px; padding:8px 14px; font-size:0.78rem; color:var(--mint-deep);
   margin-bottom:1rem; display:flex; align-items:center; gap:8px; }
 .storage-notice::before { content:'💾'; }
+
+.ex-calentar {
+  font-size: 0.85rem;
+  color: var(--mint-dark);
+  background: var(--mint-pale);
+  padding: 6px 10px;
+  border-radius: 4px;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.ex-sustitucion-btn {
+  margin-top: 6px;
+}
+
+.btn-sustitucion {
+  background: var(--mint);
+  color: var(--ink);
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn-sustitucion:hover {
+  background: var(--mint-dark);
+  transform: scale(1.05);
+}
+
+.btn-sustitucion:active {
+  transform: scale(0.98);
+}
 </style>
 </head>
 <body>
@@ -689,7 +724,7 @@ MÉTODOS: ${S.met.length>0?S.met.join(', '):'los más adecuados'}
 DÍAS: ${S.dias||'3'}, SESIÓN: ${S.dur||'60 min'}, LUGAR: ${lugar}, PLAN: ${S.plan||'4 semanas'}
 ${BANCO}
 Responde SOLO este JSON (sin texto extra):
-{"resumen":"string","progresion":[{"sem":"string","rir":"string","fase":"string","nota":"string"}],"dias":[{"titulo":"string","enfasis":"string","dur":"string","ejercicios":[{"tipo":"string","nom":"string","instruccion":"string","musculos_principales":["string"],"musculos_accesorios":["string"],"series":"string","reps":"string","rir":"string","descanso":"string","series_calentamiento":"string","sustitucion":"string"}]}]}
+{"resumen":"string","progresion":[{"sem":"string","rir":"string","fase":"string","nota":"string"}],"dias":[{"titulo":"string","enfasis":"string","dur":"string","ejercicios":[{"tipo":"string","nom":"string","instruccion":"string","musculos_principales":["string"],"musculos_accesorios":["string"],"series":"string","reps":"string","rir":"string","descanso":"string",}]}]}
 Reglas IMPORTANTES:
 - nombres EXACTOS del banco
 - 7-8 ejercicios/día: OBLIGATORIO 2-3 de Movilidad al inicio, luego Fuerza/Core/Cardio
@@ -697,8 +732,6 @@ Reglas IMPORTANTES:
 - rir "3→2" o "—". descanso "45''","60''","90''"
 - instruccion máx 15 palabras
 - 2 musculos_principales, 1 accesorio
-- series_calentamiento solo en Fuerza: "1-2 series al 50-60%"
-- sustitucion: ejercicio alternativo del mismo plano si la máquina está ocupada (ej: "Si no hay máquina: Remo seal mancuernas")
 - VARIACIÓN SEMANAL: semanas 1-2 usan ejercicios base para aprender patrones. semanas 3-4 introducen al menos 2 ejercicios diferentes por día para nuevos estímulos
 - Si LUGAR es casa o sin equipamiento: usa PRINCIPALMENTE ejercicios de la sección CASA del banco, complementando con ejercicios de otras secciones que no requieran máquinas
 - LESIONES: adapta y excluye ejercicios que comprometan las zonas indicadas. Si hay lesión grave, simplifica y prioriza movilidad y core`;
@@ -707,7 +740,7 @@ Reglas IMPORTANTES:
     const res = await fetch('/api/claude', {
       method:'POST',
       headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({model:'claude-sonnet-4-6',max_tokens:8000,messages:[{role:'user',content:prompt}]})
+      body: JSON.stringify({model:'claude-sonnet-4-6',max_tokens:12000,messages:[{role:'user',content:prompt}]})
     });
     clearInterval(loadTimer);
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message||'Error '+res.status); }
@@ -783,7 +816,8 @@ function renderPlan(plan) {
         <td>
           <div class="ex-name" onclick='showModal(${exData})'>${ex.nom||''}</div>
           <div class="ex-muscles">${(ex.musculos_principales||[]).join(' · ')}</div>
-          ${ex.sustitucion ? '<div class="ex-sustitucion">↔ ' + ex.sustitucion + '</div>' : ''}
+          ${t==="Fuerza" ? '<div class="ex-calentar">📌 Calentamiento: 1-2 series al 50-60%</div>' : ''}
+          <div class="ex-sustitucion-btn"><button class="btn-sustitucion" onclick="alert(\'Sustitución: Selecciona un ejercicio alternativo del banco para esta posición\')">⚙ Alternativa</button></div>
         </td>
         <td>
           <span class="stat-pill">${ex.series||'—'}</span>

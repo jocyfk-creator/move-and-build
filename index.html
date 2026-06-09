@@ -715,6 +715,8 @@ Reglas IMPORTANTES:
     let raw = data.content?.map(b=>b.text||'').join('')||'';
     const bt = String.fromCharCode(96);
     raw = raw.replace(new RegExp(bt+bt+bt+'json|'+bt+bt+bt,'g'),'').trim();
+    if (!raw) throw new Error('Respuesta vacía del servidor');
+    if (!raw.startsWith('{')) throw new Error('Respuesta no es JSON: ' + raw.substring(0,100));
     currentPlan = JSON.parse(raw);
     renderPlan(currentPlan);
     go(1);

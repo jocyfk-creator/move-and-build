@@ -253,6 +253,27 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
   .method-grid { grid-template-columns:1fr 1fr; }
 }
 
+/* HIPOPRESIVOS */
+.hipo-section { background:var(--mint-pale); border:1px solid var(--mint); border-radius:16px; padding:1.5rem; margin:2rem 0; }
+.hipo-header { display:flex; gap:1rem; align-items:flex-start; margin-bottom:1rem; }
+.hipo-icon { font-size:2rem; }
+.hipo-title { font-weight:700; font-size:1.1rem; color:var(--mint-deep); }
+.hipo-sub { font-size:0.82rem; color:var(--muted); margin-top:2px; line-height:1.5; }
+.hipo-respiracion { background:white; border-radius:10px; padding:10px 14px; font-size:0.82rem; color:var(--ink); margin-bottom:1rem; border-left:3px solid var(--mint); }
+.hipo-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem; }
+@media(max-width:600px){ .hipo-grid { grid-template-columns:1fr; } }
+.hipo-card { background:white; border-radius:12px; padding:1rem; border:1px solid var(--border); }
+.hipo-card.carga { border-top:3px solid var(--mint-deep); }
+.hipo-card.descarga { border-top:3px solid var(--mint); }
+.hipo-tipo { font-size:0.68rem; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:4px; }
+.hipo-nom { font-weight:700; font-size:0.95rem; color:var(--ink); margin-bottom:6px; }
+.hipo-inst { font-size:0.8rem; color:var(--ink-soft); line-height:1.5; margin-bottom:6px; }
+.hipo-beneficio { font-size:0.75rem; color:var(--mint-deep); font-style:italic; }
+.hipo-nota { font-size:0.8rem; color:var(--muted); background:white; border-radius:10px; padding:10px 14px; }
+
+/* AVISO IMPRESIÓN */
+.print-notice { background:#FFF3CD; border:1px solid #FFC107; border-radius:10px; padding:10px 14px; font-size:0.82rem; color:#856404; margin-bottom:1rem; width:100%; }
+
 /* SUBDESCRIPCIÓN MÉTODOS */
 .md-extra { display:none; font-size:0.78rem; color:var(--muted); margin-top:6px; line-height:1.5; border-top:1px solid var(--border); padding-top:6px; font-style:italic; }
 .method-card.sel .md-extra { display:block; }
@@ -748,7 +769,56 @@ function renderPlan(plan) {
     h+=`</tbody></table></div></div></div>`;
   });
 
-  h+=`<div class="plan-actions">
+  h+=`<div class="hipo-section">
+    <div class="hipo-header">
+      <span class="hipo-icon">🌬</span>
+      <div>
+        <div class="hipo-title">Hipopresivos — Core profundo</div>
+        <div class="hipo-sub">Técnicas de baja presión para activar la faja abdominal y el suelo pélvico sin comprometer estructuras vulnerables. Complementa tu entrenamiento.</div>
+      </div>
+    </div>
+
+    <div class="hipo-respiracion">
+      <strong>Patrón respiratorio base:</strong> Inspira suave por la nariz → espira lenta por la boca → apnea espiratoria (vacío) 4-8 segundos → recupera con 2-3 respiraciones normales.
+    </div>
+
+    <div class="hipo-grid">
+      <div class="hipo-card carga">
+        <div class="hipo-tipo">Postura de carga · Plano vertical</div>
+        <div class="hipo-nom">Bipedestación activa</div>
+        <div class="hipo-inst">De pie, pies al ancho de caderas, rodillas ligeramente flexionadas. Crece desde los talones hasta la coronilla. Hombros alejados de las orejas, escápulas abiertas. Aplica el patrón respiratorio base manteniendo la postura. 3-4 repeticiones.</div>
+        <div class="hipo-beneficio">Activa transverso del abdomen y suelo pélvico. Mejora postura y elongación vertebral.</div>
+      </div>
+      <div class="hipo-card carga">
+        <div class="hipo-tipo">Postura de carga · Plano vertical con activación</div>
+        <div class="hipo-nom">Bipedestación con activación escapular</div>
+        <div class="hipo-inst">Misma base que la anterior. Añade rotación interna de hombros con codos flexionados a 90°. Mantén la apertura de escápulas y el crecimiento axial. Aplica el patrón respiratorio base. 3-4 repeticiones.</div>
+        <div class="hipo-beneficio">Mayor activación de cintura escapular y cadena anterior. Aumenta el desafío propioceptivo.</div>
+      </div>
+      <div class="hipo-card descarga">
+        <div class="hipo-tipo">Postura de descarga · Plano horizontal</div>
+        <div class="hipo-nom">Cuadrupedia sobre antebrazos</div>
+        <div class="hipo-inst">Rodillas al ancho de caderas, antebrazos apoyados, codos bajo hombros. Columna larga, mentón ligeramente retraído. Eje corporal ligeramente adelantado. Aplica el patrón respiratorio base. 3-4 repeticiones.</div>
+        <div class="hipo-beneficio">Reduce la carga gravitatoria. Facilita la conciencia del core profundo y elongación dorsal.</div>
+      </div>
+      <div class="hipo-card descarga">
+        <div class="hipo-tipo">Postura de descarga · Decúbito supino</div>
+        <div class="hipo-nom">Tumbado boca arriba</div>
+        <div class="hipo-inst">Decúbito supino, rodillas flexionadas, pies apoyados. Estiramiento axial, elongación cervical, escápulas abiertas. Brazos a los lados o sobre el abdomen. Aplica el patrón respiratorio base. 3-4 repeticiones.</div>
+        <div class="hipo-beneficio">Máxima descarga vertebral y pélvica. Ideal como cierre de sesión o recuperación activa.</div>
+      </div>
+    </div>
+
+    <div class="hipo-nota">
+      💡 Estos son los fundamentos básicos. Para el programa completo con progresión, evaluación postural y pranayamas integrados, contacta directamente con Jocy:<br><br>
+      <a href="https://wa.me/+34645355098?text=Hola%20Jocy%2C%20quiero%20saber%20m%C3%A1s%20sobre%20el%20programa%20completo%20de%20hipopresivos" style="color:var(--mint-deep);font-weight:600;">💬 WhatsApp</a> &nbsp;·&nbsp;
+      <a href="mailto:biomovetherapybyjocyfk@gmail.com" style="color:var(--mint-deep);font-weight:600;">✉️ Email</a> &nbsp;·&nbsp;
+      <a href="https://jocyfk.com" style="color:var(--mint-deep);font-weight:600;">🌐 jocyfk.com</a>
+    </div>
+  </div>
+
+  <div class="plan-actions">
+    <div class="print-notice">⚠️ <strong>Antes de generar un nuevo plan:</strong> imprime o guarda este plan en PDF. Al generar uno nuevo, el plan actual se reemplazará.</div>
     <button class="btn-outline" onclick="nuevoPlan()">← Nuevo plan</button>
     <button class="btn-green" onclick="window.print()">Imprimir / PDF</button>
   </div>`;

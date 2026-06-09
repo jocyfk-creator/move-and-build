@@ -641,16 +641,32 @@ function go(d) {
   if (cur === 5) document.getElementById('weekTracker').style.display = 'flex';
 }
 
-const BANCO = `EJERCICIOS (nombres exactos):
-PIERNA/GLÚTEO: Hip thrust con barra, Glute bridge con barra, Hip thrust unilateral, Sentadilla búlgara con mancuerna, Sentadilla búlgara goblet, Sentadilla libre barra alta, Sentadilla goblet, Sentadilla con rebote, Sentadilla+crusty lunge con disco, Rack Kettlebell squat, Sentadilla cossak con mancuerna, Prensa unilateral, Step up con mancuerna, Peso muerto rumano unilateral con mancuernas, Peso muerto rumano bilateral, Peso muerto sumo, Pull through en polea, Patada glúteo en polea, Patada glúteo lateral en polea, Patada glúteo diagonal en polea, Curl de femoral en máquina tumbada, Curl de femoral fitball, KB swings unilateral, Skiier swings con disco, Extensión de cadera en máquina, Abducción de cadera en máquina, Clamshell con liga, Hiperextensión, Gemelos en prensa, Box jumps, HIIT drop squats con disco, Ball wall lateral, Sentadilla a cajón, Sit to Stand, Wall sit, Split squat con mancuernas, Sentadilla española, Pistol squat asistido, Frog pump, Monster walk con liga, Caminata lateral con liga, Fire hydrant, Curl nórdico, Deslizamientos con toalla fitball, Copenhagen plank, Aducción en polea, Elevación de talones de pie, Elevación de talones sentado, Peso muerto convencional barra, Buenos días con barra.
-TORSO EMPUJE: Press banca con barra, Press banca inclinado mancuernas, Flexiones poliméricas, Cruce poleas ascendente, Flexiones en pared, Flexiones inclinadas, Fondos en paralelas, Push press con barra, Floor press con mancuernas, Landmine press, Press unilateral mancuerna, Press cerrado barra.
-TORSO TIRÓN: Jalón al pecho en polea, Jalón unilateral en polea, Remo Gironda unilateral en polea, Remo seal mancuernas, Remo barra 90°, Pullover en polea, Australian pull-ups, Face pull polea, Reverse pec-deck, Remo mancuerna unilateral, Chest supported row, TRX row, Dominadas, Chin ups, Pendlay row, Remo sentado máquina.
-HOMBRO: Press de hombro mancuernas, Elevaciones laterales mancuernas, Elevaciones laterales en polea, Elevaciones lat+frontal alternas, Deltoides posterior en máquina, Landmine thruster, Samurai pulls en polea, Ball pushes, Press Arnold, Elevación frontal mancuernas, Pájaros mancuernas, Rotación externa con banda, Cuban press, Wall slides, Serratus punch con banda, Y raise, T raise, W raise, Prone Y-T-W, Bear crawl.
-BÍCEPS/TRÍCEPS: Curl bíceps mancuernas, Skull crusher, Extensión tríceps en polea, Patada de tríceps, Press francés en máquina, Curl martillo, Curl inclinado mancuernas, Curl predicador, Curl concentración, Extensión overhead tríceps, Pressdown banda.
-CORE: Plancha frontal, Plancha inversa con toque rodilla, Press Pallof con liga, Rollouts con barra, Russian twist con disco, Pike en fitball, McGill crunch, Elevación piernas colgada, KB windmill, Dead bug, Hollow hold, Bird dog, Farmer carry, Suitcase carry, Front rack carry, Woodchopper en polea, Side plank, Plank shoulder tap, Renegade row con mancuernas, Copenhagen plank.
+const BANCO_GYM = `EJERCICIOS GIMNASIO:
+PIERNA/GLÚTEO: Hip thrust con barra, Glute bridge con barra, Hip thrust unilateral, Sentadilla búlgara con mancuerna, Sentadilla libre barra alta, Sentadilla goblet, Sentadilla con rebote, Sentadilla+crusty lunge con disco, Rack Kettlebell squat, Sentadilla cossak con mancuerna, Prensa unilateral, Step up con mancuerna, Peso muerto rumano unilateral con mancuernas, Peso muerto rumano bilateral, Peso muerto sumo, Pull through en polea, Patada glúteo en polea, Patada glúteo lateral en polea, Patada glúteo diagonal en polea, Curl de femoral en máquina tumbada, Curl de femoral fitball, KB swings unilateral, Skiier swings con disco, Extensión de cadera en máquina, Abducción de cadera en máquina, Clamshell con liga, Hiperextensión, Gemelos en prensa, Box jumps, Sentadilla española, Curl nórdico, Copenhagen plank, Aducción en polea, Elevación de talones de pie, Peso muerto convencional barra.
+TORSO EMPUJE: Press banca con barra, Press banca inclinado mancuernas, Flexiones poliméricas, Cruce poleas ascendente, Fondos en paralelas, Push press con barra, Landmine press, Press unilateral mancuerna.
+TORSO TIRÓN: Jalón al pecho en polea, Jalón unilateral en polea, Remo Gironda unilateral en polea, Remo seal mancuernas, Remo barra 90°, Pullover en polea, Australian pull-ups, Face pull polea, Reverse pec-deck, Remo mancuerna unilateral, Chest supported row, Dominadas, Pendlay row, Remo sentado máquina.
+HOMBRO: Press de hombro mancuernas, Elevaciones laterales mancuernas, Elevaciones laterales en polea, Elevaciones lat+frontal alternas, Deltoides posterior en máquina, Landmine thruster, Samurai pulls en polea, Press Arnold, Elevación frontal mancuernas, Pájaros mancuernas, Rotación externa con banda, Cuban press, Wall slides, Serratus punch con banda, Y raise, T raise, W raise.
+BÍCEPS/TRÍCEPS: Curl bíceps mancuernas, Skull crusher, Extensión tríceps en polea, Patada de tríceps, Press francés en máquina, Curl martillo, Curl inclinado mancuernas, Curl predicador, Extensión overhead tríceps, Pressdown banda.
+CORE: Plancha frontal, Press Pallof con liga, Rollouts con barra, Russian twist con disco, Pike en fitball, McGill crunch, Elevación piernas colgada, KB windmill, Dead bug, Hollow hold, Bird dog, Farmer carry, Suitcase carry, Woodchopper en polea, Side plank, Renegade row con mancuernas.
 MOVILIDAD: Cat-cow, Cossak squat, Flex tobillo-rodilla en lunge, Balanceo de pierna, Rotación humeral con peso, Prone snow angels, Runners lunge with reach, Leg rockback, Hip 90-90, Shoulder swim unilateral.
-HIIT: Side to side bounds, Burpee sin salto, Bench over jumps, Jumping jacks, Tuck jumps, Lunge drop, Pulse jump squats.
-CASA (sin equipamiento o con banda/mancuernas): Sentadilla con pausa, Zancada adelante, Zancada atrás, Walking lunges, Sentadilla a una pierna asistida, TKE con banda, Puente glúteo unilateral, Hip thrust en sofá, Donkey kicks, Patada glúteo con banda, Buenos días sin peso, Curl deslizante con toalla, Puente isométrico, Elevación talones unilateral, Caminar de puntillas, Superman, Swimmer, Reverse snow angel, Flexión diamante, Flexión declinada, Flexión con pausa, Aperturas con banda, Press suelo mancuernas, Press overhead banda, Elevación frontal banda, Lean away raise, Pull apart banda, Rotación externa 90°, Curl bíceps banda, Fondos entre sillas, Flexiones cerradas, Pressdown banda, Plancha larga, Bear hold, Pallof walkout, Toe touch, Reverse crunch, Shoulder taps, Y-T-W en suelo, Marcha unilateral mancuerna, Bottom-up hold KB.`;
+HIIT: Side to side bounds, Burpee sin salto, Box jumps, Jumping jacks, Tuck jumps, Lunge drop, Pulse jump squats.`;
+
+const BANCO_CASA = `EJERCICIOS CASA (peso corporal/banda/mancuernas):
+PIERNA/GLÚTEO: Sentadilla goblet, Sentadilla a cajón, Sit to Stand, Wall sit, Split squat con mancuernas, Step up con mancuerna, Sentadilla búlgara goblet, Walking lunges, Zancada adelante, Zancada atrás, Glute bridge con barra, Hip thrust unilateral, Frog pump, Puente glúteo unilateral, Donkey kicks, Fire hydrant, Patada glúteo con banda, Monster walk con liga, Caminata lateral con liga, Clamshell con liga, Curl nórdico, Deslizamientos con toalla fitball, Buenos días sin peso, Elevación de talones de pie, Elevación talones unilateral.
+TORSO EMPUJE: Flexiones poliméricas, Flexiones en pared, Flexiones inclinadas, Flexiones declinadas, Flexiones diamante, Flexiones con pausa, Floor press con mancuernas, Press unilateral mancuerna, Fondos entre sillas, Aperturas con banda.
+TORSO TIRÓN: Remo mancuerna unilateral, TRX row, Australian pull-ups, Dominadas, Face pull polea, Reverse snow angel, Superman, Swimmer, Renegade row con mancuernas.
+HOMBRO: Press de hombro mancuernas, Press Arnold, Elevaciones laterales mancuernas, Elevación frontal mancuernas, Pájaros mancuernas, Rotación externa con banda, Pull apart banda, Wall slides, Serratus punch con banda, Y raise, T raise, W raise, Y-T-W en suelo.
+BÍCEPS/TRÍCEPS: Curl bíceps mancuernas, Curl martillo, Curl inclinado mancuernas, Curl concentración, Extensión overhead tríceps, Pressdown banda, Flexiones cerradas.
+CORE: Plancha frontal, Plancha larga, Dead bug, Hollow hold, Bear hold, Bird dog, Side plank, Press Pallof con liga, Pallof walkout, Farmer carry, Suitcase carry, Russian twist con disco, Reverse crunch, Elevación piernas colgada, Toe touch, Shoulder taps, Marcha unilateral mancuerna.
+MOVILIDAD: Cat-cow, Hip 90-90, Runners lunge with reach, Leg rockback, Balanceo de pierna, Shoulder swim unilateral, Flex tobillo-rodilla en lunge.
+HIIT: Jumping jacks, Burpee sin salto, Tuck jumps, Lunge drop, Pulse jump squats, Side to side bounds.`;
+
+function getBanco(lugar) {
+  if (!lugar) return BANCO_GYM;
+  const l = lugar.toLowerCase();
+  if (l.includes('casa') || l.includes('hogar') || l.includes('sin equipamiento')) return BANCO_CASA;
+  return BANCO_GYM;
+}
 
 const loadMsgs = ['Analizando tu perfil...','Seleccionando ejercicios...','Calculando progresión RIR...','Estructurando las sesiones...','Ajustes finales...'];
 let loadIdx = 0, loadTimer;
@@ -664,11 +680,13 @@ async function generatePlan() {
     document.getElementById('loadingMsg').textContent = loadMsgs[loadIdx];
   }, 1800);
 
+  const lugar = S.lugar||'gimnasio completo';
+  const BANCO = getBanco(lugar);
   const prompt = `Eres entrenador personal experto. Responde SOLO JSON válido sin texto extra ni backticks.
 PERFIL: nombre=${document.getElementById('nombre').value||'usuario'}, edad=${document.getElementById('edad').value||'—'}, peso=${document.getElementById('peso').value||'—'}kg, altura=${document.getElementById('altura').value||'—'}cm, sexo=${document.getElementById('sexo').value||'—'}, nivel=${S.nivel||'intermedio'}, lesiones=${document.getElementById('lesiones').value||'ninguna'}, obs=${document.getElementById('obs').value||'ninguna'}
 OBJETIVOS: ${S.obj.join(', ')||'salud general'}
 MÉTODOS: ${S.met.length>0?S.met.join(', '):'los más adecuados'}
-DÍAS: ${S.dias||'3'}, SESIÓN: ${S.dur||'60 min'}, LUGAR: ${S.lugar||'gimnasio completo'}, PLAN: ${S.plan||'4 semanas'}
+DÍAS: ${S.dias||'3'}, SESIÓN: ${S.dur||'60 min'}, LUGAR: ${lugar}, PLAN: ${S.plan||'4 semanas'}
 ${BANCO}
 Responde SOLO este JSON (sin texto extra):
 {"resumen":"string","progresion":[{"sem":"string","rir":"string","fase":"string","nota":"string"}],"dias":[{"titulo":"string","enfasis":"string","dur":"string","ejercicios":[{"tipo":"string","nom":"string","instruccion":"string","musculos_principales":["string"],"musculos_accesorios":["string"],"series":"string","reps":"string","rir":"string","descanso":"string","series_calentamiento":"string","sustitucion":"string"}]}]}

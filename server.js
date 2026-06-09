@@ -16,6 +16,13 @@ const server = http.createServer((req, res) => {
         res.end(JSON.stringify({ error: 'API key no configurada' }));
         return;
       }
+      
+      // Parsear para ver max_tokens
+      try {
+        const parsed = JSON.parse(body);
+        console.log(`Petición: model=${parsed.model}, max_tokens=${parsed.max_tokens}`);
+      } catch(e) {}
+      
       const options = {
         hostname: 'api.anthropic.com',
         path: '/v1/messages',
@@ -31,6 +38,14 @@ const server = http.createServer((req, res) => {
         let data = '';
         apiRes.on('data', chunk => data += chunk);
         apiRes.on('end', () => {
+          console.log(`Respuesta Anthropic: status=${apiRes.statusCode}, bytes=${data.length}`);
+          // Log del stop_reason si existe
+          try {
+            const parsed = JSON.parse(data);
+            console.log(`stop_reason=${parsed.stop_reason}, usage=${JSON.stringify(parsed.usage)}`);
+          } catch(e) {
+            console.log(`Error parseando respuesta: ${data.substring(0,200)}`);
+          }
           res.writeHead(apiRes.statusCode, {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*'
@@ -39,6 +54,7 @@ const server = http.createServer((req, res) => {
         });
       });
       apiReq.on('error', (err) => {
+        console.error(`Error API: ${err.message}`);
         res.writeHead(500, {'Content-Type': 'application/json'});
         res.end(JSON.stringify({ error: err.message }));
       });
@@ -48,11 +64,7 @@ const server = http.createServer((req, res) => {
   } else if (req.method === 'GET') {
     const filePath = path.join(__dirname, 'index.html');
     fs.readFile(filePath, (err, data) => {
-      if (err) {
-        res.writeHead(404);
-        res.end('Not found');
-        return;
-      }
+      if (err) { res.writeHead(404); res.end('Not found'); return; }
       res.writeHead(200, {'Content-Type': 'text/html'});
       res.end(data);
     });

@@ -271,6 +271,14 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
 .hipo-beneficio { font-size:0.75rem; color:var(--mint-deep); font-style:italic; }
 .hipo-nota { font-size:0.8rem; color:var(--muted); background:white; border-radius:10px; padding:10px 14px; }
 
+/* CARDIO EXTRA */
+.cardio-section { background:#E8F7F5; border:1px solid #6EE7B7; border-radius:16px; padding:1.5rem; margin:2rem 0; }
+.cardio-header { display:flex; gap:1rem; align-items:flex-start; margin-bottom:1rem; }
+.cardio-icon { font-size:2rem; }
+.cardio-title { font-weight:700; font-size:1.1rem; color:var(--mint-deep); }
+.cardio-sub { font-size:0.82rem; color:var(--muted); margin-top:2px; line-height:1.5; }
+.cardio-content { background:white; border-radius:10px; padding:12px 14px; font-size:0.85rem; color:var(--ink); border-left:3px solid #6EE7B7; line-height:1.6; }
+
 /* AVISO IMPRESIÓN */
 .print-notice { background:#FFF3CD; border:1px solid #FFC107; border-radius:10px; padding:10px 14px; font-size:0.82rem; color:#856404; margin-bottom:1rem; width:100%; }
 
@@ -630,14 +638,14 @@ function go(d) {
 }
 
 const BANCO = `EJERCICIOS (nombres exactos):
-PIERNA/GLÚTEO: Hip thrust con barra, Glute bridge con barra, Hip thrust unilateral, Sentadilla búlgara con mancuerna, Sentadilla búlgara goblet, Sentadilla libre barra alta, Sentadilla goblet, Sentadilla con rebote, Sentadilla+crusty lunge con disco, Rack Kettlebell squat, Sentadilla cossak con mancuerna, Prensa unilateral, Step up con mancuerna, Peso muerto rumano unilateral con mancuernas, Peso muerto rumano bilateral, Peso muerto sumo, Pull through en polea, Patada glúteo en polea, Curl de femoral en máquina tumbada, Curl de femoral fitball, KB swings unilateral, Skiier swings con disco, Extensión de cadera en máquina, Abducción de cadera en máquina, Clamshell con liga, Hiperextensión, Gemelos en prensa, Box jumps, HIIT drop squats con disco, Ball wall lateral.
+PIERNA/GLÚTEO: Hip thrust con barra semanas 1-2, Hip thrust Smith o máquina semanas 3-4, Hip thrust unilateral semana 5+, Glute bridge con barra, Sentadilla búlgara con mancuerna, Sentadilla búlgara goblet, Sentadilla libre barra alta, Sentadilla goblet, Sentadilla con rebote, Sentadilla+crusty lunge con disco, Rack Kettlebell squat, Sentadilla cossak con mancuerna, Prensa unilateral, Step up con mancuerna, Peso muerto rumano unilateral con mancuernas, Peso muerto rumano bilateral, Peso muerto sumo, Pull through en polea, Patada glúteo en polea, Curl de femoral en máquina tumbada, Curl de femoral fitball, KB swings unilateral, Skiier swings con disco, Extensión de cadera en máquina, Abducción de cadera en máquina, Clamshell con liga, Hiperextensión, Gemelos en prensa, Box jumps, HIIT drop squats con disco, Ball wall lateral.
 TORSO EMPUJE: Press banca con barra, Press banca inclinado mancuernas, Flexiones poliméricas, Cruce poleas ascendente.
 TORSO TIRÓN: Jalón al pecho en polea, Jalón unilateral en polea, Remo Gironda unilateral en polea, Remo seal mancuernas, Remo barra 90°, Pullover en polea, Australian pull-ups, Face pull polea, Reverse pec-deck.
 HOMBRO: Press de hombro mancuernas, Elevaciones laterales mancuernas, Elevaciones laterales en polea, Elevaciones lat+frontal alternas, Deltoides posterior en máquina, Landmine thruster, Samurai pulls en polea, Ball pushes.
 BÍCEPS/TRÍCEPS: Curl bíceps mancuernas, Skull crusher, Extensión tríceps en polea, Patada de tríceps, Press francés en máquina.
-CORE: Plancha frontal, Plancha inversa con toque rodilla, Press Pallof con liga, Rollouts con barra, Russian twist con disco, Pike en fitball, McGill crunch, Elevación piernas colgada, KB windmill.
+CORE ROTADO: Día 1 Ball wall lateral + Samurai pulls en polea, Día 2 Elevación piernas colgada + Press Pallof con liga, Día 3 Kettlebell windmill + Crunch con resistencia, Día 4 Plancha frontal + Rollouts con barra, Día 5 Clamshell dinámico + Pallof anti-rotación banda, Día 6 Box-to-box anti-rotación + Piernas colgadas en L. EXTRAS CORE: Plancha inversa con toque rodilla, Pike en fitball, McGill crunch.
 MOVILIDAD: Cat-cow, Cossak squat, Flex tobillo-rodilla en lunge, Balanceo de pierna, Rotación humeral con peso, Prone snow angels, Runners lunge with reach, Leg rockback, Hip 90-90, Shoulder swim unilateral.
-HIIT: Side to side bounds, Burpee sin salto, Bench over jumps, Jumping jacks, Tuck jumps, Lunge drop, Pulse jump squats.`;
+CARDIO MODERADO: Caminar 15 min zona 2, Bicicleta estática 20 min moderado, Remadora 15-20 min ritmo conversacional, Elíptica 20 min inclinada, Marcha en banda inclinada, Caminar al aire libre 20-30 min.`;
 
 const loadMsgs = ['Analizando tu perfil...','Seleccionando ejercicios...','Calculando progresión RIR...','Estructurando las sesiones...','Ajustes finales...'];
 let loadIdx = 0, loadTimer;
@@ -651,15 +659,53 @@ async function generatePlan() {
     document.getElementById('loadingMsg').textContent = loadMsgs[loadIdx];
   }, 1800);
 
-  const prompt = `Eres entrenador personal experto. Responde SOLO JSON válido sin texto extra ni backticks.
+  const prompt = `Eres entrenador personal experto en programación y biomecánica. Responde SOLO JSON válido sin texto extra ni backticks.
 PERFIL: nombre=${document.getElementById('nombre').value||'usuario'}, edad=${document.getElementById('edad').value||'—'}, peso=${document.getElementById('peso').value||'—'}kg, altura=${document.getElementById('altura').value||'—'}cm, sexo=${document.getElementById('sexo').value||'—'}, nivel=${S.nivel||'intermedio'}, lesiones=${document.getElementById('lesiones').value||'ninguna'}, obs=${document.getElementById('obs').value||'ninguna'}
 OBJETIVOS: ${S.obj.join(', ')||'salud general'}
 MÉTODOS: ${S.met.length>0?S.met.join(', '):'los más adecuados'}
 DÍAS: ${S.dias||'3'}, SESIÓN: ${S.dur||'60 min'}, LUGAR: ${S.lugar||'gimnasio completo'}, PLAN: ${S.plan||'4 semanas'}
 ${BANCO}
-Responde SOLO este JSON (sin texto extra):
-{"resumen":"string","progresion":[{"sem":"string","rir":"string","fase":"string","nota":"string"}],"dias":[{"titulo":"string","enfasis":"string","dur":"string","ejercicios":[{"tipo":"string","nom":"string","instruccion":"string","musculos_principales":["string"],"musculos_accesorios":["string"],"series":"string","reps":"string","rir":"string","descanso":"string","series_calentamiento":"string"}]}]}
-Reglas: nombres EXACTOS del banco. 6-8 ejercicios/día. tipos: Movilidad/Fuerza/Core/Cardio. rir "3→2" o "—". descanso "45''","60''","90''". instruccion máx 15 palabras. 2 musculos_principales, 1 accesorio. series_calentamiento solo en Fuerza: "1-2 series al 50-60%".`;
+
+REGLAS CRÍTICAS DE PROGRAMACIÓN:
+1. HIP THRUST PROGRESIÓN (OBLIGATORIO):
+   - Semanas 1-2: "Hip thrust con barra semanas 1-2" (barra+banco, nivel accesible para todos)
+   - Semanas 3-4: "Hip thrust Smith o máquina semanas 3-4" (cambia estímulo, máquina más estable)
+   - Semana 5+: "Hip thrust unilateral semana 5+" (nuevo reto)
+   
+2. CORE ROTADO (OBLIGATORIO si hay >1 sesión/semana):
+   - NUNCA repitas el mismo ejercicio de core 2 veces en la misma semana
+   - Mantén pares: "Ball wall lateral + Samurai pulls" (sesión 1), luego "Elevación piernas colgada + Press Pallof" (sesión 2)
+   - Las parejas pueden repetirse semana a semana, pero los ejercicios NO se repiten en la MISMA semana
+   - Si el plan tiene 5-6 sesiones, usa distintos pares cada vez
+
+3. DESCRIPCIONES TÉCNICAS (máx 20 palabras, SER ESPECÍFICO):
+   - Hip thrust: "Espalda en banco, talones apoyados, cadera arriba, contrae glúteos 1s"
+   - Pallof: "De pie lateral a polea, resistencia en pecho, anti-rotación, 0 giro"
+   - Elevación piernas: "Colgado, piernas extendidas, sube a L, baja controlada sin swing"
+   - Samurai pulls: "De pie, polea a altura pecho, arrastra diagonal desde bajo hacia arriba"
+
+4. CARDIO EXTRA (al final del plan JSON):
+   - Agrega siempre: "cardio_extra": "Si tienes tiempo: 15-20 min zona 2 (caminar, bici, remadora). Mantén ritmo conversacional."
+   - NO es obligatorio, es complementario
+
+5. FORMATO JSON (sin cambios):
+   - resumen, progresion, dias (igual estructura)
+   - dias[].ejercicios[] incluye: nom, tipo, instruccion (detallado), musculos_principales, musculos_accesorios, series, reps, rir, descanso
+   - AGREGAR NUEVO CAMPO: "cardio_extra": "mensaje"
+
+Responde SOLO este JSON:
+{"resumen":"string","progresion":[{"sem":"string","rir":"string","fase":"string","nota":"string"}],"dias":[{"titulo":"string","enfasis":"string","dur":"string","ejercicios":[{"tipo":"string","nom":"string","instruccion":"string","musculos_principales":["string"],"musculos_accesorios":["string"],"series":"string","reps":"string","rir":"string","descanso":"string"}]}],"cardio_extra":"string"}
+
+Reglas generales: 
+- Nombres EXACTOS del banco. 
+- 6-8 ejercicios/día. 
+- tipos: Movilidad/Fuerza/Core/Cardio. 
+- instruccion específica y técnica (15-20 palabras MAX).
+- 2 musculos_principales, 1 accesorio. 
+- rir "3→2" o "—". 
+- descanso "45''","60''","90''". 
+- series_calentamiento omitido (simplifica JSON).
+- Resumen: 1 párrafo de por qué este plan específico para este perfil.`;
 
   try {
     const res = await fetch('/api/claude', {
@@ -816,6 +862,19 @@ function renderPlan(plan) {
       <a href="https://jocyfk.com" style="color:var(--mint-deep);font-weight:600;">🌐 jocyfk.com</a>
     </div>
   </div>
+
+  ${plan.cardio_extra ? `<div class="cardio-section">
+    <div class="cardio-header">
+      <span class="cardio-icon">🏃</span>
+      <div>
+        <div class="cardio-title">Cardio extra — Zona 2</div>
+        <div class="cardio-sub">Complemento opcional para recuperación activa y capacidad aeróbica</div>
+      </div>
+    </div>
+    <div class="cardio-content">
+      <p>${plan.cardio_extra}</p>
+    </div>
+  </div>` : ''}
 
   <div class="plan-actions">
     <div class="print-notice">⚠️ <strong>Antes de generar un nuevo plan:</strong> imprime o guarda este plan en PDF. Al generar uno nuevo, el plan actual se reemplazará.</div>

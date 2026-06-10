@@ -659,53 +659,23 @@ async function generatePlan() {
     document.getElementById('loadingMsg').textContent = loadMsgs[loadIdx];
   }, 1800);
 
-  const prompt = `Eres entrenador personal experto en programación y biomecánica. Responde SOLO JSON válido sin texto extra ni backticks.
-PERFIL: nombre=${document.getElementById('nombre').value||'usuario'}, edad=${document.getElementById('edad').value||'—'}, peso=${document.getElementById('peso').value||'—'}kg, altura=${document.getElementById('altura').value||'—'}cm, sexo=${document.getElementById('sexo').value||'—'}, nivel=${S.nivel||'intermedio'}, lesiones=${document.getElementById('lesiones').value||'ninguna'}, obs=${document.getElementById('obs').value||'ninguna'}
-OBJETIVOS: ${S.obj.join(', ')||'salud general'}
-MÉTODOS: ${S.met.length>0?S.met.join(', '):'los más adecuados'}
-DÍAS: ${S.dias||'3'}, SESIÓN: ${S.dur||'60 min'}, LUGAR: ${S.lugar||'gimnasio completo'}, PLAN: ${S.plan||'4 semanas'}
+  const prompt = `Eres entrenador personal. Responde SOLO JSON válido, sin backticks ni texto extra.
+PERFIL: ${document.getElementById('nombre').value||'usuario'}, edad=${document.getElementById('edad').value||'30'}, peso=${document.getElementById('peso').value||'70'}kg, nivel=${S.nivel||'intermedio'}, lesiones=${document.getElementById('lesiones').value||'ninguna'}
+OBJETIVOS: ${S.obj.join(', ')||'salud general'} | MÉTODOS: ${S.met.join(', ')||'los más adecuados'}
+DISPONIBILIDAD: ${S.dias||'3'} días/semana, ${S.dur||'60'} min/sesión, ${S.lugar||'gimnasio'}, plan ${S.plan||'4 semanas'}
+
 ${BANCO}
 
-REGLAS CRÍTICAS DE PROGRAMACIÓN:
-1. HIP THRUST PROGRESIÓN (OBLIGATORIO):
-   - Semanas 1-2: "Hip thrust con barra semanas 1-2" (barra+banco, nivel accesible para todos)
-   - Semanas 3-4: "Hip thrust Smith o máquina semanas 3-4" (cambia estímulo, máquina más estable)
-   - Semana 5+: "Hip thrust unilateral semana 5+" (nuevo reto)
-   
-2. CORE ROTADO (OBLIGATORIO si hay >1 sesión/semana):
-   - NUNCA repitas el mismo ejercicio de core 2 veces en la misma semana
-   - Mantén pares: "Ball wall lateral + Samurai pulls" (sesión 1), luego "Elevación piernas colgada + Press Pallof" (sesión 2)
-   - Las parejas pueden repetirse semana a semana, pero los ejercicios NO se repiten en la MISMA semana
-   - Si el plan tiene 5-6 sesiones, usa distintos pares cada vez
+INSTRUCCIONES CRÍTICAS:
+1. HIP THRUST: semanas 1-2 usa "Hip thrust con barra semanas 1-2", semanas 3-4 usa "Hip thrust Smith o máquina semanas 3-4", semana 5+ usa "Hip thrust unilateral semana 5+"
+2. CORE: nunca repitas mismo ejercicio 2 veces en la misma semana. Alterna: Ball wall lateral, Samurai pulls en polea, Elevación piernas colgada, Press Pallof con liga
+3. Instrucciones: máx 15 palabras, específicas y técnicas
+4. Incluye al final: "cardio_extra": "Si tienes tiempo: 15-20 min zona 2 (caminar, bici, remadora)"
 
-3. DESCRIPCIONES TÉCNICAS (máx 20 palabras, SER ESPECÍFICO):
-   - Hip thrust: "Espalda en banco, talones apoyados, cadera arriba, contrae glúteos 1s"
-   - Pallof: "De pie lateral a polea, resistencia en pecho, anti-rotación, 0 giro"
-   - Elevación piernas: "Colgado, piernas extendidas, sube a L, baja controlada sin swing"
-   - Samurai pulls: "De pie, polea a altura pecho, arrastra diagonal desde bajo hacia arriba"
-
-4. CARDIO EXTRA (al final del plan JSON):
-   - Agrega siempre: "cardio_extra": "Si tienes tiempo: 15-20 min zona 2 (caminar, bici, remadora). Mantén ritmo conversacional."
-   - NO es obligatorio, es complementario
-
-5. FORMATO JSON (sin cambios):
-   - resumen, progresion, dias (igual estructura)
-   - dias[].ejercicios[] incluye: nom, tipo, instruccion (detallado), musculos_principales, musculos_accesorios, series, reps, rir, descanso
-   - AGREGAR NUEVO CAMPO: "cardio_extra": "mensaje"
-
-Responde SOLO este JSON:
+JSON REQUERIDO:
 {"resumen":"string","progresion":[{"sem":"string","rir":"string","fase":"string","nota":"string"}],"dias":[{"titulo":"string","enfasis":"string","dur":"string","ejercicios":[{"tipo":"string","nom":"string","instruccion":"string","musculos_principales":["string"],"musculos_accesorios":["string"],"series":"string","reps":"string","rir":"string","descanso":"string"}]}],"cardio_extra":"string"}
 
-Reglas generales: 
-- Nombres EXACTOS del banco. 
-- 6-8 ejercicios/día. 
-- tipos: Movilidad/Fuerza/Core/Cardio. 
-- instruccion específica y técnica (15-20 palabras MAX).
-- 2 musculos_principales, 1 accesorio. 
-- rir "3→2" o "—". 
-- descanso "45''","60''","90''". 
-- series_calentamiento omitido (simplifica JSON).
-- Resumen: 1 párrafo de por qué este plan específico para este perfil.`;
+Reglas: nombres EXACTOS del banco, 6-8 ejercicios/día, tipos: Movilidad/Fuerza/Core/Cardio, 2 principales + 1 accesorio, rir "3→2" o "—", descanso en segundos.`;
 
   try {
     const res = await fetch('/api/claude', {

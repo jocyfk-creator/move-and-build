@@ -252,75 +252,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
   .prog-grid { grid-template-columns:1fr 1fr; }
   .method-grid { grid-template-columns:1fr 1fr; }
 }
-
-/* HIPOPRESIVOS */
-.hipo-section { background:var(--mint-pale); border:1px solid var(--mint); border-radius:16px; padding:1.5rem; margin:2rem 0; }
-.hipo-header { display:flex; gap:1rem; align-items:flex-start; margin-bottom:1rem; }
-.hipo-icon { font-size:2rem; }
-.hipo-title { font-weight:700; font-size:1.1rem; color:var(--mint-deep); }
-.hipo-sub { font-size:0.82rem; color:var(--muted); margin-top:2px; line-height:1.5; }
-.hipo-respiracion { background:white; border-radius:10px; padding:10px 14px; font-size:0.82rem; color:var(--ink); margin-bottom:1rem; border-left:3px solid var(--mint); }
-.hipo-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem; }
-@media(max-width:600px){ .hipo-grid { grid-template-columns:1fr; } }
-.hipo-card { background:white; border-radius:12px; padding:1rem; border:1px solid var(--border); }
-.hipo-card.carga { border-top:3px solid var(--mint-deep); }
-.hipo-card.descarga { border-top:3px solid var(--mint); }
-.hipo-tipo { font-size:0.68rem; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:4px; }
-.hipo-nom { font-weight:700; font-size:0.95rem; color:var(--ink); margin-bottom:6px; }
-.hipo-inst { font-size:0.8rem; color:var(--ink-soft); line-height:1.5; margin-bottom:6px; }
-.hipo-beneficio { font-size:0.75rem; color:var(--mint-deep); font-style:italic; }
-.hipo-nota { font-size:0.8rem; color:var(--muted); background:white; border-radius:10px; padding:10px 14px; }
-
-/* CARDIO EXTRA */
-.cardio-section { background:#E8F7F5; border:1px solid #6EE7B7; border-radius:16px; padding:1.5rem; margin:2rem 0; }
-.cardio-header { display:flex; gap:1rem; align-items:flex-start; margin-bottom:1rem; }
-.cardio-icon { font-size:2rem; }
-.cardio-title { font-weight:700; font-size:1.1rem; color:var(--mint-deep); }
-.cardio-sub { font-size:0.82rem; color:var(--muted); margin-top:2px; line-height:1.5; }
-.cardio-content { background:white; border-radius:10px; padding:12px 14px; font-size:0.85rem; color:var(--ink); border-left:3px solid #6EE7B7; line-height:1.6; }
-
-/* AVISO IMPRESIÓN */
-.print-notice { background:#FFF3CD; border:1px solid #FFC107; border-radius:10px; padding:10px 14px; font-size:0.82rem; color:#856404; margin-bottom:1rem; width:100%; }
-
-/* SUBDESCRIPCIÓN MÉTODOS */
-.md-extra { display:none; font-size:0.78rem; color:var(--muted); margin-top:6px; line-height:1.5; border-top:1px solid var(--border); padding-top:6px; font-style:italic; }
-.method-card.sel .md-extra { display:block; }
-
-/* MENSAJE HUMANO */
-.human-msg { background:var(--mint-pale); border-left:3px solid var(--mint); border-radius:0 8px 8px 0;
-  padding:8px 12px; font-size:0.8rem; color:var(--mint-deep); margin-top:8px; line-height:1.5; font-style:italic; }
-
-/* SERIES CALENTAMIENTO */
-.warmup-badge { font-size:0.65rem; background:#FFF3CD; color:#856404; border-radius:100px;
-  padding:2px 7px; margin-left:6px; font-weight:600; }
-.series-checks { display:flex; gap:5px; flex-wrap:wrap; margin-top:4px; }
-.serie-check { width:22px; height:22px; border-radius:50%; border:2px solid var(--border);
-  background:var(--card); cursor:pointer; display:flex; align-items:center; justify-content:center;
-  font-size:0.65rem; color:transparent; transition:all 0.15s; }
-.serie-check.done { background:var(--mint); border-color:var(--mint-dark); color:var(--ink); }
-.serie-check.done::after { content:'✓'; }
-.series-label { font-size:0.7rem; color:var(--muted); margin-top:2px; }
-
-/* BOTÓN GUARDAR PERSISTENTE */
-.sens-save.saved { background:var(--mint-pale); border-color:var(--mint); color:var(--mint-deep); }
-.sens-save.saved::before { content:'✓ '; }
-
-/* CRONÓMETRO */
-.timer-wrap { display:none; align-items:center; gap:8px; margin-top:6px; }
-.timer-wrap.visible { display:flex; }
-.timer-display { font-family:'DM Mono',monospace; font-size:1rem; color:var(--mint-deep);
-  background:var(--mint-pale); padding:3px 10px; border-radius:8px; min-width:52px; text-align:center; }
-.timer-btn { font-size:0.7rem; padding:3px 10px; border-radius:100px;
-  border:1px solid var(--border); background:var(--card); color:var(--muted);
-  cursor:pointer; transition:all 0.15s; }
-.timer-btn:hover { border-color:var(--mint); color:var(--mint-deep); }
-.timer-btn.running { background:var(--mint-pale); border-color:var(--mint); color:var(--mint-deep); }
-
-/* AVISO GUARDADO LOCAL */
-.storage-notice { background:var(--mint-pale); border:1px solid var(--mint);
-  border-radius:8px; padding:8px 14px; font-size:0.78rem; color:var(--mint-deep);
-  margin-bottom:1rem; display:flex; align-items:center; gap:8px; }
-.storage-notice::before { content:'💾'; }
 </style>
 </head>
 <body>
@@ -355,7 +286,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
     <div class="modal-muscles" id="mPrimary"></div>
     <div class="modal-section">Músculos accesorios</div>
     <div class="modal-muscles" id="mSecondary"></div>
-    <div class="human-msg" id="mHuman"></div>
     <button class="modal-close" onclick="document.getElementById('modalOverlay').classList.remove('open')">Cerrar</button>
   </div>
 </div>
@@ -452,20 +382,20 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
     <div class="step-title">Métodos</div>
     <p class="step-sub">Opcional — si no eliges ninguno, el plan selecciona los más adecuados.</p>
     <div class="method-grid">
-      <div class="method-card" data-v="Tabata"><div class="mn">Tabata</div><div class="md">20s trabajo / 10s descanso, 8 rondas. Alta intensidad en poco tiempo.</div><div class="md-extra">Ideal si tienes poco tiempo y quieres quemar mucho. Exige buena técnica previa — no es para empezar desde cero. Tu sistema cardiovascular y muscular trabajan al límite.</div></div>
-      <div class="method-card" data-v="HIIT"><div class="mn">HIIT</div><div class="md">Intervalos de alta intensidad alternados con recuperación. Máximo gasto calórico.</div><div class="md-extra">Elígelo si buscas quemar grasa sin sacrificar músculo. La recuperación es parte del método — respétala. Escucha cómo responde tu cuerpo cada día.</div></div>
-      <div class="method-card" data-v="EMOM"><div class="mn">EMOM</div><div class="md">Cada minuto completas un número fijo de reps. Ritmo constante y medible.</div><div class="md-extra">Perfecto para medir tu progreso con precisión. Te obliga a mantener la técnica bajo presión de tiempo. Si un día no llegas al ritmo, es información valiosa sobre tu recuperación.</div></div>
-      <div class="method-card" data-v="3/7"><div class="mn">Método 3/7</div><div class="md">Series de 3 a 7 reps con 15s de pausa entre ellas. Alta densidad de trabajo.</div><div class="md-extra">Muy efectivo para hipertrofia con menos carga. Las micropausas permiten mantener la calidad del movimiento. Bueno para días en que tu energía no está al 100%.</div></div>
-      <div class="method-card" data-v="AMRAP"><div class="mn">AMRAP</div><div class="md">Máximo de reps o rondas en un tiempo fijo. Mide y supera tu marca.</div><div class="md-extra">Ideal para competir contigo mismo. Anota siempre tu resultado — la mejora progresiva es la clave. Para cuando te sientes fuerte y motivado.</div></div>
-      <div class="method-card" data-v="GVT"><div class="mn">GVT</div><div class="md">10 series de 10 reps con el mismo ejercicio. Volumen alto para hipertrofia.</div><div class="md-extra">Método exigente que requiere buena base. La carga debe ser moderada — no la que usas habitualmente. Respeta los descansos; el músculo crece en la recuperación.</div></div>
-      <div class="method-card" data-v="5x5"><div class="mn">5×5</div><div class="md">5 series de 5 reps con cargas altas. Método clásico de fuerza y masa.</div><div class="md-extra">Simple y muy efectivo. La técnica es innegociable — nunca sacrifiques forma por peso. Progresa despacio y de forma sostenida.</div></div>
-      <div class="method-card" data-v="Weider"><div class="mn">Weider</div><div class="md">Splits musculares por día. Cada sesión trabaja un grupo muscular en profundidad.</div><div class="md-extra">Permite recuperación entre grupos. Ideal si entrenas 4-5 días. La fatiga acumulada de la semana importa — ajusta la intensidad según cómo llegas a cada sesión.</div></div>
-      <div class="method-card" data-v="PHA"><div class="mn">PHA</div><div class="md">Alterna ejercicios de tren superior e inferior. Mantiene el corazón activo.</div><div class="md-extra">Eficiente y dinámico. Mientras descansa una zona, trabaja la otra. Buena opción si quieres combinar fuerza y acondicionamiento cardiovascular.</div></div>
-      <div class="method-card" data-v="Dropset"><div class="mn">Dropset</div><div class="md">Al fallo, bajas el peso y continúas sin descanso. Máximo estímulo muscular.</div><div class="md-extra">Técnica de intensidad alta — úsala con criterio, no en todos los ejercicios. El cuerpo necesita más recuperación después. Escucha las señales de fatiga real.</div></div>
-      <div class="method-card" data-v="Superseries"><div class="mn">Superseries</div><div class="md">Dos ejercicios seguidos sin descanso. Ahorra tiempo y aumenta la intensidad.</div><div class="md-extra">Muy versátil. Puedes combinar músculos antagonistas o zonas diferentes. Mantén la técnica en el segundo ejercicio aunque la fatiga apriete.</div></div>
-      <div class="method-card" data-v="Piramidal"><div class="mn">Piramidal</div><div class="md">Sube o baja la carga progresivamente entre series. Adaptación progresiva.</div><div class="md-extra">Ideal para días variables — el calentamiento progresivo está integrado en el método. Respeta el tope de tu cuerpo ese día concreto.</div></div>
-      <div class="method-card" data-v="Heavy Duty"><div class="mn">Heavy Duty</div><div class="md">Pocas series pero al fallo muscular absoluto. Máxima intensidad, mínimo volumen.</div><div class="md-extra">No es para todos los días ni para todos los niveles. Requiere conocer bien tu cuerpo. La recuperación es larga — planifica bien el descanso posterior.</div></div>
-      <div class="method-card" data-v="Cluster"><div class="mn">Cluster</div><div class="md">Micropausas dentro de la serie para mover más carga. Fuerza e hipertrofia.</div><div class="md-extra">Permite trabajar con más peso del habitual manteniendo la técnica. Ideal para superar estancamientos. Escucha la calidad de cada repetición.</div></div>
+      <div class="method-card" data-v="Tabata"><div class="mn">Tabata</div><div class="md">20s trabajo / 10s descanso, 8 rondas. Alta intensidad en poco tiempo.</div></div>
+      <div class="method-card" data-v="HIIT"><div class="mn">HIIT</div><div class="md">Intervalos de alta intensidad alternados con recuperación. Máximo gasto calórico.</div></div>
+      <div class="method-card" data-v="EMOM"><div class="mn">EMOM</div><div class="md">Cada minuto completas un número fijo de reps. Ritmo constante y medible.</div></div>
+      <div class="method-card" data-v="3/7"><div class="mn">Método 3/7</div><div class="md">Series de 3 a 7 reps con 15s de pausa entre ellas. Alta densidad de trabajo.</div></div>
+      <div class="method-card" data-v="AMRAP"><div class="mn">AMRAP</div><div class="md">Máximo de reps o rondas en un tiempo fijo. Mide y supera tu marca.</div></div>
+      <div class="method-card" data-v="GVT"><div class="mn">GVT</div><div class="md">10 series de 10 reps con el mismo ejercicio. Volumen alto para hipertrofia.</div></div>
+      <div class="method-card" data-v="5x5"><div class="mn">5×5</div><div class="md">5 series de 5 reps con cargas altas. Método clásico de fuerza y masa.</div></div>
+      <div class="method-card" data-v="Weider"><div class="mn">Weider</div><div class="md">Splits musculares por día. Cada sesión trabaja un grupo muscular en profundidad.</div></div>
+      <div class="method-card" data-v="PHA"><div class="mn">PHA</div><div class="md">Alterna ejercicios de tren superior e inferior. Mantiene el corazón activo.</div></div>
+      <div class="method-card" data-v="Dropset"><div class="mn">Dropset</div><div class="md">Al fallo, bajas el peso y continúas sin descanso. Máximo estímulo muscular.</div></div>
+      <div class="method-card" data-v="Superseries"><div class="mn">Superseries</div><div class="desc md">Dos ejercicios seguidos sin descanso. Ahorra tiempo y aumenta la intensidad.</div></div>
+      <div class="method-card" data-v="Piramidal"><div class="mn">Piramidal</div><div class="md">Sube o baja la carga progresivamente entre series. Adaptación progresiva.</div></div>
+      <div class="method-card" data-v="Heavy Duty"><div class="mn">Heavy Duty</div><div class="md">Pocas series pero al fallo muscular absoluto. Máxima intensidad, mínimo volumen.</div></div>
+      <div class="method-card" data-v="Cluster"><div class="mn">Cluster</div><div class="md">Micropausas dentro de la serie para mover más carga. Fuerza e hipertrofia.</div></div>
     </div>
     <div class="step-nav">
       <button class="btn-back" onclick="go(-1)">← Atrás</button>
@@ -541,7 +471,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
 </div>
 
 <script>
-const APIKEY = ''; // Gestionado desde el servidor
+// API key está SEGURA en servidor (Render env var: ANTHROPIC_API_KEY)
 let cur = 0;
 const LABELS = ['Perfil','Objetivos','Métodos','Disponibilidad','Generando...','Tu Plan'];
 const S = { nivel:'', obj:[], met:[], dias:'', dur:'', lugar:'', plan:'' };
@@ -560,28 +490,6 @@ function updateWeekUI() {
 function changeWeek(d) {
   currentWeek = Math.max(1, currentWeek + d);
   updateWeekUI();
-  // Resetear botones guardados al cambiar semana
-  document.querySelectorAll('.sens-save.saved').forEach(btn => {
-    btn.classList.remove('saved');
-    btn.textContent = 'Guardar';
-  });
-}
-
-// Timbre al terminar cronómetro
-function playBeep() {
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.frequency.value = 880;
-    osc.type = 'sine';
-    gain.gain.setValueAtTime(0.5, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.8);
-    osc.start(ctx.currentTime);
-    osc.stop(ctx.currentTime + 0.8);
-  } catch(e) {}
 }
 
 function startApp() {
@@ -638,14 +546,74 @@ function go(d) {
 }
 
 const BANCO = `EJERCICIOS (nombres exactos):
-PIERNA/GLÚTEO: Hip thrust con barra semanas 1-2, Hip thrust Smith o máquina semanas 3-4, Hip thrust unilateral semana 5+, Glute bridge con barra, Sentadilla búlgara con mancuerna, Sentadilla búlgara goblet, Sentadilla libre barra alta, Sentadilla goblet, Sentadilla con rebote, Sentadilla+crusty lunge con disco, Rack Kettlebell squat, Sentadilla cossak con mancuerna, Prensa unilateral, Step up con mancuerna, Peso muerto rumano unilateral con mancuernas, Peso muerto rumano bilateral, Peso muerto sumo, Pull through en polea, Patada glúteo en polea, Curl de femoral en máquina tumbada, Curl de femoral fitball, KB swings unilateral, Skiier swings con disco, Extensión de cadera en máquina, Abducción de cadera en máquina, Clamshell con liga, Hiperextensión, Gemelos en prensa, Box jumps, HIIT drop squats con disco, Ball wall lateral.
+PIERNA/GLÚTEO: Hip thrust con barra, Glute bridge con barra, Hip thrust unilateral, Sentadilla búlgara con mancuerna, Sentadilla búlgara goblet, Sentadilla libre barra alta, Sentadilla goblet, Sentadilla con rebote, Sentadilla+crusty lunge con disco, Rack Kettlebell squat, Sentadilla cossak con mancuerna, Prensa unilateral, Step up con mancuerna, Peso muerto rumano unilateral con mancuernas, Peso muerto rumano bilateral, Peso muerto sumo, Pull through en polea, Patada glúteo en polea, Curl de femoral en máquina tumbada, Curl de femoral fitball, KB swings unilateral, Skiier swings con disco, Extensión de cadera en máquina, Abducción de cadera en máquina, Clamshell con liga, Hiperextensión, Gemelos en prensa, Box jumps, HIIT drop squats con disco, Ball wall lateral.
 TORSO EMPUJE: Press banca con barra, Press banca inclinado mancuernas, Flexiones poliméricas, Cruce poleas ascendente.
 TORSO TIRÓN: Jalón al pecho en polea, Jalón unilateral en polea, Remo Gironda unilateral en polea, Remo seal mancuernas, Remo barra 90°, Pullover en polea, Australian pull-ups, Face pull polea, Reverse pec-deck.
 HOMBRO: Press de hombro mancuernas, Elevaciones laterales mancuernas, Elevaciones laterales en polea, Elevaciones lat+frontal alternas, Deltoides posterior en máquina, Landmine thruster, Samurai pulls en polea, Ball pushes.
 BÍCEPS/TRÍCEPS: Curl bíceps mancuernas, Skull crusher, Extensión tríceps en polea, Patada de tríceps, Press francés en máquina.
-CORE ROTADO: Día 1 Ball wall lateral + Samurai pulls en polea, Día 2 Elevación piernas colgada + Press Pallof con liga, Día 3 Kettlebell windmill + Crunch con resistencia, Día 4 Plancha frontal + Rollouts con barra, Día 5 Clamshell dinámico + Pallof anti-rotación banda, Día 6 Box-to-box anti-rotación + Piernas colgadas en L. EXTRAS CORE: Plancha inversa con toque rodilla, Pike en fitball, McGill crunch.
+CORE: Plancha frontal, Plancha inversa con toque rodilla, Press Pallof con liga, Rollouts con barra, Russian twist con disco, Pike en fitball, McGill crunch, Elevación piernas colgada, KB windmill.
 MOVILIDAD: Cat-cow, Cossak squat, Flex tobillo-rodilla en lunge, Balanceo de pierna, Rotación humeral con peso, Prone snow angels, Runners lunge with reach, Leg rockback, Hip 90-90, Shoulder swim unilateral.
-CARDIO MODERADO: Caminar 15 min zona 2, Bicicleta estática 20 min moderado, Remadora 15-20 min ritmo conversacional, Elíptica 20 min inclinada, Marcha en banda inclinada, Caminar al aire libre 20-30 min.`;
+HIIT: Side to side bounds, Burpee sin salto, Bench over jumps, Jumping jacks, Tuck jumps, Lunge drop, Pulse jump squats.`;
+
+// DESCRIPCIONES DINÁMICAS POR EJERCICIO Y NIVEL
+const BANCO_MAESTRO = {
+  "Hip thrust con barra": {"principiante":"Smith/máquina. Pad protector. Empuje talones, estabilidad máxima lumbar.","intermedio":"Barra banco. Carga progresiva. Explosivo, squeeze 1s, lumbar neutral.","avanzado":"Barra cadera. Rango completo. Explosivo, máxima contracción glúteo."},
+  "Hip thrust con banda": "Espalda en banco, banda sobre rodillas. Eleva cadera alineada con tronco.",
+  "Glute bridge con barra": "Eleva cadera desde suelo apretando glúteos al final.",
+  "Rotación humeral con peso": {"principiante":"Codo FIJO rodilla. SOLO húmero rota (arriba-abajo). Codo pegado SIEMPRE.","intermedio":"Codo fijo. Rota completo (arriba-abajo-atrás-adelante). Codo pegado.","avanzado":"Brazo extendido, codo fijo. Rotación 360° suave. Codo NUNCA se mueve."},
+  "Sentadilla búlgara goblet": "Pierna trasera elevada. Desciende controlado sobre pierna delantera.",
+  "Sentadilla libre barra alta": "Barra sobre trapecios. Mantén tronco erguido.",
+  "Sentadilla goblet": "Sentadilla sujetando mancuerna/kettlebell frente al pecho.",
+  "Press banca inclinado mancuernas": "Banco inclinado 30-40°. Empuje sobre pecho superior.",
+  "Press banca con barra": "Empuja barra desde pecho hasta extender brazos.",
+  "Jalón al pecho": "Tira barra hacia pecho superior. Retracción escapular fuerte.",
+  "Remo Gironda unilateral": "Remo hacia cadera. Torso estable.",
+  "Remo seal": "Tumbado banca inclinada. Codos hacia pecho. Máxima contracción dorsales.",
+  "Press de hombro": "Empuja mancuernas sobre cabeza.",
+  "Elevaciones laterales": "Eleva brazos laterales hasta hombros.",
+  "Curl bíceps": "Flexiona codos. Codos pegados torso.",
+  "Extensión tríceps en polea": "Empuja polea hacia abajo extendiendo codos.",
+  "Plancha frontal": "Línea recta antebrazos-pies. Core activo.",
+  "Rollouts con barra": "Desliza barra alejándola. Vuelve controlado.",
+  "Dead Bug": "Extiende brazo-pierna opuestos. Core neutro.",
+  "Cat-cow": "Alterna flexión-extensión columna suave.",
+  "Monster Walk": "Camina adelante tensión banda constante.",
+  "Clamshell con liga": "Tumbado lado. Rodillas flex, pies juntos. Abre rodilla superior.",
+  "Patada glúteo con banda": "Extiende pierna atrás contra banda.",
+  "Pull Apart": "Abre brazos separando banda pecho.",
+  "Face Pull con banda": "Tira banda hacia cara. Escápulas juntas.",
+  "Pallof Press": "Empuja banda adelante. Evita rotación tronco.",
+  "Flex tobillo-rodilla": "Rodilla adelante. Dorsiflexión.",
+  "Cossack squat": "Sentadilla lateral. Desplaza peso.",
+  "Burpee sin salto": "Burpee eliminando salto final.",
+  "Mountain climbers": "Carrera horizontal plancha.",
+  "Jumping jacks": "Saltos abriendo-cerrando brazos-piernas.",
+  "Side Plank": "Plancha lateral.",
+  "Bird Dog": "Extensión cruzada cuadrupedia.",
+  "Press Pallof": "Empuja banda evitando rotación.",
+  "Prone snow angels": "Desliza brazos simulando ángel nieve.",
+  "Runners lunge with reach": "Zancada larga + alcance brazo.",
+  "Hip 90-90": "Rotaciones cadera 90-90.",
+  "Sentadilla corporales": "Sentadilla sin peso. Lento controlado.",
+  "Walking lunges": "Zancadas avanzando.",
+  "Step-ups escaleras": "Sube escalones controlado.",
+  "Flexiones": "Cuerpo recto. Desciende pecho casi toque suelo.",
+  "Dips": "Empuje peso corporal paralelas.",
+  "Dominadas": "Tracción vertical agarre pronación.",
+  "Australian pull-ups": "Remo invertido barra fija.",
+  "Remo con banda": "Tira banda hacia abdomen. Escápulas juntas.",
+  "High knees": "Carrera elevando rodillas.",
+  "Butt kicks": "Carrera talones glúteos."
+};
+
+function getDescripcion(ejercicio, nivel = 'intermedio') {
+  const desc = BANCO_MAESTRO[ejercicio];
+  if (!desc) return 'Ver guía técnica.';
+  if (typeof desc === 'string') return desc;
+  if (typeof desc === 'object' && desc[nivel]) return desc[nivel];
+  if (typeof desc === 'object') return desc.intermedio || Object.values(desc)[0];
+  return desc;
+}
 
 const loadMsgs = ['Analizando tu perfil...','Seleccionando ejercicios...','Calculando progresión RIR...','Estructurando las sesiones...','Ajustes finales...'];
 let loadIdx = 0, loadTimer;
@@ -659,29 +627,24 @@ async function generatePlan() {
     document.getElementById('loadingMsg').textContent = loadMsgs[loadIdx];
   }, 1800);
 
-  const prompt = `Eres entrenador personal. Responde SOLO JSON válido, sin backticks ni texto extra.
-PERFIL: ${document.getElementById('nombre').value||'usuario'}, edad=${document.getElementById('edad').value||'30'}, peso=${document.getElementById('peso').value||'70'}kg, nivel=${S.nivel||'intermedio'}, lesiones=${document.getElementById('lesiones').value||'ninguna'}
-OBJETIVOS: ${S.obj.join(', ')||'salud general'} | MÉTODOS: ${S.met.join(', ')||'los más adecuados'}
-DISPONIBILIDAD: ${S.dias||'3'} días/semana, ${S.dur||'60'} min/sesión, ${S.lugar||'gimnasio'}, plan ${S.plan||'4 semanas'}
+  const listaEj = 'Hip thrust con barra,Glute bridge con barra,Hip thrust unilateral,Sentadilla búlgara goblet,Sentadilla libre barra alta,Sentadilla goblet,Prensa unilateral,Step up con mancuerna,Peso muerto rumano bilateral,Peso muerto sumo,Pull through en polea,Patada glúteo en polea,Curl femoral en máquina tumbada,Abducción de cadera en máquina,Clamshell con liga,Monster Walk,Box jumps,Press banca con barra,Press inclinado con mancuernas,Jalón al pecho,Remo Gironda unilateral,Remo seal con mancuernas,Pullover en polea,Face Pull,Press de hombro con mancuernas,Elevaciones laterales,Deltoides posterior en máquina,Curl bíceps con mancuernas,Extensión tríceps en polea,Plancha frontal,Rollouts con barra,Russian Twist con disco,Rotación humeral con peso,Cat-Cow,Mountain Climbers,Jumping Jacks,Burpee sin salto';
+  
+  const prompt = `JSON trainer. PERFIL: ${S.nivel||'intermedio'}, ${S.dias||3}d/week, ${S.dur||'60m'}, lesiones=${document.getElementById('lesiones').value||'ninguno'}, objetivo=${S.obj.join(',')||'general'}.
+BANCO (40+ ejercicios disponibles, usar solo nombres EXACTOS): ${listaEj}
 
-${BANCO}
+CRÍTICO:
+- Hip thrust: Sem1-2→máquina/Smith, Sem3-4→barra banco, Sem5+→barra rango completo
+- Rotación humeral: Codo FIJO rodilla. SOLO húmero rota (arriba-abajo).
+- Responde SOLO JSON, sin preamble. Max 7-8 ejercicios/día.
 
-INSTRUCCIONES CRÍTICAS:
-1. HIP THRUST: semanas 1-2 usa "Hip thrust con barra semanas 1-2", semanas 3-4 usa "Hip thrust Smith o máquina semanas 3-4", semana 5+ usa "Hip thrust unilateral semana 5+"
-2. CORE: nunca repitas mismo ejercicio 2 veces en la misma semana. Alterna: Ball wall lateral, Samurai pulls en polea, Elevación piernas colgada, Press Pallof con liga
-3. Instrucciones: máx 15 palabras, específicas y técnicas
-4. Incluye al final: "cardio_extra": "Si tienes tiempo: 15-20 min zona 2 (caminar, bici, remadora)"
-
-JSON REQUERIDO:
-{"resumen":"string","progresion":[{"sem":"string","rir":"string","fase":"string","nota":"string"}],"dias":[{"titulo":"string","enfasis":"string","dur":"string","ejercicios":[{"tipo":"string","nom":"string","instruccion":"string","musculos_principales":["string"],"musculos_accesorios":["string"],"series":"string","reps":"string","rir":"string","descanso":"string"}]}],"cardio_extra":"string"}
-
-Reglas: nombres EXACTOS del banco, 6-8 ejercicios/día, tipos: Movilidad/Fuerza/Core/Cardio, 2 principales + 1 accesorio, rir "3→2" o "—", descanso en segundos.`;
+JSON structure:
+{"resumen":"1-2 frases","progresion":[{"sem":"Semana 1","rir":"3-4","fase":"Aprendizaje"}],"dias":[{"titulo":"Día 1","enfasis":"pierna","dur":"50","ejercicios":[{"tipo":"Fuerza","nom":"exacto banco","series":"3","reps":"10","rir":"2","descanso":"90"}]}]}`
 
   try {
     const res = await fetch('/api/claude', {
       method:'POST',
-      headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({model:'claude-sonnet-4-6',max_tokens:6000,messages:[{role:'user',content:prompt}]})
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4000,messages:[{role:'user',content:prompt}]})
     });
     clearInterval(loadTimer);
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message||`Error ${res.status}`); }
@@ -689,6 +652,19 @@ Reglas: nombres EXACTOS del banco, 6-8 ejercicios/día, tipos: Movilidad/Fuerza/
     let raw = data.content?.map(b=>b.text||'').join('')||'';
     raw = raw.replace(/```json|```/g,'').trim();
     currentPlan = JSON.parse(raw);
+    
+    // POST-PROCESAMIENTO: Inyectar descripciones del BANCO MAESTRO
+    if (currentPlan.dias) {
+      currentPlan.dias.forEach(dia => {
+        if (dia.ejercicios) {
+          dia.ejercicios.forEach(ej => {
+            const nivel = S.nivel || 'intermedio';
+            ej.descripcion = getDescripcion(ej.nom, nivel);
+          });
+        }
+      });
+    }
+    
     renderPlan(currentPlan);
     go(1);
   } catch(e) {
@@ -703,7 +679,6 @@ function renderPlan(plan) {
   const nombre = document.getElementById('nombre').value||'';
   let h = `<div class="step-title">Plan de ${nombre}</div>
     <p class="step-sub">${S.obj.join(', ')} · ${S.dias} días/sem · ${S.dur} · ${S.plan}</p>`;
-  h += `<div class="storage-notice">Tu plan y registros se guardan automáticamente en este dispositivo. Para usarlo en otro dispositivo, descárgalo en PDF.</div>`;
   h += `<div class="plan-resumen">${plan.resumen||''}</div>`;
   h += `<div class="sec-title">Progresión del mesociclo</div><div class="prog-grid">`;
   const pcs = ['pc1','pc2','pc3','pc4'];
@@ -734,49 +709,32 @@ function renderPlan(plan) {
       const t = ex.tipo||'Fuerza';
       if (t!==lastT) { h+=`<tr class="sec-row"><td colspan="7">${t}</td></tr>`; lastT=t; }
       const sid=`s${di}_${ei}`;
-      const numSeries = parseInt(ex.series)||3;
-      const descansoSeg = parsearDescanso(ex.descanso||'');
       const exData = JSON.stringify({
         nom: ex.nom, tipo: ex.tipo,
         instruccion: ex.instruccion||'',
         principales: ex.musculos_principales||[],
         accesorios: ex.musculos_accesorios||[]
       }).replace(/'/g,"\'");
-
-      // Generar checkboxes de series
-      let checks = '';
-      for(let s=0;s<numSeries;s++){
-        checks += `<div class="serie-check" id="sc_${sid}_${s}" onclick="toggleSerie('${sid}',${s})"></div>`;
-      }
-
       h+=`<tr>
         <td><span class="tbadge tb-${t}">${t}</span></td>
         <td>
           <div class="ex-name" onclick='showModal(${exData})'>${ex.nom||''}</div>
           <div class="ex-muscles">${(ex.musculos_principales||[]).join(' · ')}</div>
         </td>
-        <td>
-          <span class="stat-pill">${ex.series||'—'}</span>
-          <div class="series-checks">${checks}</div>
-        </td>
+        <td><span class="stat-pill">${ex.series||'—'}</span></td>
         <td><span class="stat-pill">${ex.reps||'—'}</span></td>
         <td><span class="stat-pill">${ex.rir||'—'}</span></td>
-        <td>
-          <span class="stat-pill">${ex.descanso||'—'}</span>
-          ${descansoSeg>0?`<div class="timer-wrap" id="tw_${sid}">
-            <div class="timer-display" id="td_${sid}">0:${String(descansoSeg).padStart(2,'0')}</div>
-            <button class="timer-btn" id="tb_${sid}" onclick="startTimer('${sid}',${descansoSeg})">▶ Iniciar</button>
-          </div>`:''}
-        </td>
+        <td><span class="stat-pill">${ex.descanso||'—'}</span></td>
         <td>
           <div class="registro-cell">
             <div class="peso-row">
-              <span class="peso-lbl">Carga:</span>
-              <input type="text" class="peso-inp" id="pr_${sid}" placeholder="kg" />
+              <span class="peso-lbl">Peso:</span>
+              <input type="text" class="peso-inp" id="pr_${sid}" placeholder="kg hoy" />
             </div>
-            <textarea class="sens-ta" id="${sid}" placeholder="sensaciones, notas..."></textarea>
+            <textarea class="sens-ta" id="${sid}" placeholder="sensaciones, notas del día..."></textarea>
             <div class="sens-row">
-              <button class="sens-save" id="btn_${sid}" onclick="guardar('${sid}')">Guardar</button>
+              <button class="sens-save" onclick="guardar('${sid}')">Guardar</button>
+              <span class="sens-ok" id="ok_${sid}">✓ guardado</span>
             </div>
           </div>
         </td>
@@ -785,69 +743,7 @@ function renderPlan(plan) {
     h+=`</tbody></table></div></div></div>`;
   });
 
-  h+=`<div class="hipo-section">
-    <div class="hipo-header">
-      <span class="hipo-icon">🌬</span>
-      <div>
-        <div class="hipo-title">Hipopresivos — Core profundo</div>
-        <div class="hipo-sub">Técnicas de baja presión para activar la faja abdominal y el suelo pélvico sin comprometer estructuras vulnerables. Complementa tu entrenamiento.</div>
-      </div>
-    </div>
-
-    <div class="hipo-respiracion">
-      <strong>Patrón respiratorio base:</strong> Inspira suave por la nariz → espira lenta por la boca → apnea espiratoria (vacío) 4-8 segundos → recupera con 2-3 respiraciones normales.
-    </div>
-
-    <div class="hipo-grid">
-      <div class="hipo-card carga">
-        <div class="hipo-tipo">Postura de carga · Plano vertical</div>
-        <div class="hipo-nom">Bipedestación activa</div>
-        <div class="hipo-inst">De pie, pies al ancho de caderas, rodillas ligeramente flexionadas. Crece desde los talones hasta la coronilla. Hombros alejados de las orejas, escápulas abiertas. Aplica el patrón respiratorio base manteniendo la postura. 3-4 repeticiones.</div>
-        <div class="hipo-beneficio">Activa transverso del abdomen y suelo pélvico. Mejora postura y elongación vertebral.</div>
-      </div>
-      <div class="hipo-card carga">
-        <div class="hipo-tipo">Postura de carga · Plano vertical con activación</div>
-        <div class="hipo-nom">Bipedestación con activación escapular</div>
-        <div class="hipo-inst">Misma base que la anterior. Añade rotación interna de hombros con codos flexionados a 90°. Mantén la apertura de escápulas y el crecimiento axial. Aplica el patrón respiratorio base. 3-4 repeticiones.</div>
-        <div class="hipo-beneficio">Mayor activación de cintura escapular y cadena anterior. Aumenta el desafío propioceptivo.</div>
-      </div>
-      <div class="hipo-card descarga">
-        <div class="hipo-tipo">Postura de descarga · Plano horizontal</div>
-        <div class="hipo-nom">Cuadrupedia sobre antebrazos</div>
-        <div class="hipo-inst">Rodillas al ancho de caderas, antebrazos apoyados, codos bajo hombros. Columna larga, mentón ligeramente retraído. Eje corporal ligeramente adelantado. Aplica el patrón respiratorio base. 3-4 repeticiones.</div>
-        <div class="hipo-beneficio">Reduce la carga gravitatoria. Facilita la conciencia del core profundo y elongación dorsal.</div>
-      </div>
-      <div class="hipo-card descarga">
-        <div class="hipo-tipo">Postura de descarga · Decúbito supino</div>
-        <div class="hipo-nom">Tumbado boca arriba</div>
-        <div class="hipo-inst">Decúbito supino, rodillas flexionadas, pies apoyados. Estiramiento axial, elongación cervical, escápulas abiertas. Brazos a los lados o sobre el abdomen. Aplica el patrón respiratorio base. 3-4 repeticiones.</div>
-        <div class="hipo-beneficio">Máxima descarga vertebral y pélvica. Ideal como cierre de sesión o recuperación activa.</div>
-      </div>
-    </div>
-
-    <div class="hipo-nota">
-      💡 Estos son los fundamentos básicos. Para el programa completo con progresión, evaluación postural y pranayamas integrados, contacta directamente con Jocy:<br><br>
-      <a href="https://wa.me/+34645355098?text=Hola%20Jocy%2C%20quiero%20saber%20m%C3%A1s%20sobre%20el%20programa%20completo%20de%20hipopresivos" style="color:var(--mint-deep);font-weight:600;">💬 WhatsApp</a> &nbsp;·&nbsp;
-      <a href="mailto:biomovetherapybyjocyfk@gmail.com" style="color:var(--mint-deep);font-weight:600;">✉️ Email</a> &nbsp;·&nbsp;
-      <a href="https://jocyfk.com" style="color:var(--mint-deep);font-weight:600;">🌐 jocyfk.com</a>
-    </div>
-  </div>
-
-  ${plan.cardio_extra ? `<div class="cardio-section">
-    <div class="cardio-header">
-      <span class="cardio-icon">🏃</span>
-      <div>
-        <div class="cardio-title">Cardio extra — Zona 2</div>
-        <div class="cardio-sub">Complemento opcional para recuperación activa y capacidad aeróbica</div>
-      </div>
-    </div>
-    <div class="cardio-content">
-      <p>${plan.cardio_extra}</p>
-    </div>
-  </div>` : ''}
-
-  <div class="plan-actions">
-    <div class="print-notice">⚠️ <strong>Antes de generar un nuevo plan:</strong> imprime o guarda este plan en PDF. Al generar uno nuevo, el plan actual se reemplazará.</div>
+  h+=`<div class="plan-actions">
     <button class="btn-outline" onclick="nuevoPlan()">← Nuevo plan</button>
     <button class="btn-green" onclick="window.print()">Imprimir / PDF</button>
   </div>`;
@@ -865,20 +761,6 @@ function showModal(data) {
   document.getElementById('mDesc').textContent = data.instruccion||'';
   document.getElementById('mPrimary').innerHTML = (data.principales||[]).map(m=>`<span class="muscle-tag">${m}</span>`).join('');
   document.getElementById('mSecondary').innerHTML = (data.accesorios||[]).map(m=>`<span class="muscle-tag secondary">${m}</span>`).join('');
-  
-  // Mensaje humano aleatorio sobre escuchar el cuerpo
-  const mensajes = [
-    'Antes de cargar, haz 1-2 series ligeras para despertar el patrón de movimiento. Tu cuerpo te dirá cómo está hoy.',
-    'La técnica es el primer peso. Empieza con menos carga de la que crees que necesitas.',
-    'Cada día es diferente. El peso de ayer puede no ser el de hoy — y eso está bien.',
-    'Respira antes de cada serie. El sistema nervioso también se entrena.',
-    'Si algo no se siente bien, no es el momento. Ajusta la carga o el ejercicio sin juicio.',
-    'La serie de calentamiento no es perder el tiempo — es preparar el tejido, la mente y el movimiento.',
-    'Nota cómo responde tu cuerpo hoy. Esa información vale más que cualquier número.',
-  ];
-  const msg = mensajes[Math.floor(Math.random() * mensajes.length)];
-  const mHuman = document.getElementById('mHuman');
-  if(mHuman) mHuman.textContent = msg;
   document.getElementById('modalOverlay').classList.add('open');
 }
 function closeModal(e) {
@@ -890,92 +772,21 @@ function toggleDay(di) {
   const b=document.getElementById('db'+di), a=document.getElementById('arr'+di);
   const h=b.style.display==='none'; b.style.display=h?'':'none'; a.classList.toggle('open',h);
 }
-function parsearDescanso(d) {
-  if (!d || d==='—') return 0;
-  const m = d.match(/(\d+)/);
-  return m ? parseInt(m[1]) : 0;
-}
-
-function toggleSerie(sid, idx) {
-  const el = document.getElementById(`sc_${sid}_${idx}`);
-  if (!el) return;
-  el.classList.toggle('done');
-  // Mostrar cronómetro al marcar serie
-  const tw = document.getElementById(`tw_${sid}`);
-  if (tw && el.classList.contains('done')) tw.classList.add('visible');
-  // Guardar estado en localStorage
-  const key = `mb_sc_${sid}_${idx}`;
-  localStorage.setItem(key, el.classList.contains('done') ? '1' : '0');
-}
-
-// Cronómetros activos
-const timers = {};
-function startTimer(sid, secs) {
-  const td = document.getElementById(`td_${sid}`);
-  const tb = document.getElementById(`tb_${sid}`);
-  if (!td || !tb) return;
-  // Si ya hay uno corriendo, pararlo
-  if (timers[sid]) {
-    clearInterval(timers[sid]);
-    delete timers[sid];
-    tb.textContent = '▶ Iniciar';
-    tb.classList.remove('running');
-    const m = Math.floor(secs/60), s = secs%60;
-    td.textContent = `${m}:${String(s).padStart(2,'0')}`;
-    return;
-  }
-  let remaining = secs;
-  tb.textContent = '⏸ Parar';
-  tb.classList.add('running');
-  timers[sid] = setInterval(() => {
-    remaining--;
-    const m = Math.floor(remaining/60), s = remaining%60;
-    td.textContent = `${m}:${String(s).padStart(2,'0')}`;
-    if (remaining <= 0) {
-      clearInterval(timers[sid]);
-      delete timers[sid];
-      tb.textContent = '▶ Iniciar';
-      tb.classList.remove('running');
-      td.textContent = '¡Listo!';
-      td.style.background = 'var(--mint)';
-      playBeep();
-      setTimeout(() => {
-        const mm = Math.floor(secs/60), ss = secs%60;
-        td.textContent = `${mm}:${String(ss).padStart(2,'0')}`;
-        td.style.background = '';
-      }, 2000);
-    }
-  }, 1000);
-}
-
 function guardar(id) {
   const v=document.getElementById(id)?.value||'';
   const pr=document.getElementById('pr_'+id)?.value||'';
   localStorage.setItem('mb_s_'+id,v);
   if(pr) localStorage.setItem('mb_p_'+id,pr);
-  const btn=document.getElementById('btn_'+id);
-  if(btn){ 
-    btn.classList.add('saved');
-    btn.textContent='✓ Guardado';
-  }
+  const ok=document.getElementById('ok_'+id);
+  if(ok){ ok.style.display='inline'; setTimeout(()=>ok.style.display='none',2000); }
 }
 function cargarDatos() {
   document.querySelectorAll('.sens-ta').forEach(ta=>{
-    const v=localStorage.getItem('mb_s_'+ta.id); 
-    if(v) { 
-      ta.value=v;
-      const btn=document.getElementById('btn_'+ta.id);
-      if(btn){ btn.classList.add('saved'); btn.textContent='✓ Guardado'; }
-    }
+    const v=localStorage.getItem('mb_s_'+ta.id); if(v) ta.value=v;
   });
   document.querySelectorAll('.peso-inp').forEach(inp=>{
     const id=inp.id.replace('pr_','');
     const v=localStorage.getItem('mb_p_'+id); if(v) inp.value=v;
-  });
-  // Recuperar checkboxes de series
-  document.querySelectorAll('.serie-check').forEach(el=>{
-    const key='mb_'+el.id;
-    if(localStorage.getItem(key)==='1') el.classList.add('done');
   });
 }
 function nuevoPlan() {

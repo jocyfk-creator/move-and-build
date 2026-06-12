@@ -629,10 +629,14 @@ async function generatePlan() {
 
   const listaEj = 'Hip thrust con barra,Glute bridge con barra,Hip thrust unilateral,Sentadilla búlgara goblet,Sentadilla libre barra alta,Sentadilla goblet,Prensa unilateral,Step up con mancuerna,Peso muerto rumano bilateral,Peso muerto sumo,Pull through en polea,Patada glúteo en polea,Curl femoral en máquina tumbada,Abducción de cadera en máquina,Clamshell con liga,Monster Walk,Box jumps,Press banca con barra,Press inclinado con mancuernas,Jalón al pecho,Remo Gironda unilateral,Remo seal con mancuernas,Pullover en polea,Face Pull,Press de hombro con mancuernas,Elevaciones laterales,Deltoides posterior en máquina,Curl bíceps con mancuernas,Extensión tríceps en polea,Plancha frontal,Rollouts con barra,Russian Twist con disco,Rotación humeral con peso,Cat-Cow,Mountain Climbers,Jumping Jacks,Burpee sin salto';
   
-  const prompt = `JSON trainer. PERFIL: ${S.nivel||'intermedio'}, ${S.dias||3}d/week, ${S.dur||'60m'}, lesiones=${document.getElementById('lesiones').value||'ninguno'}, objetivo=${S.obj.join(',')||'general'}.
+  // Extraer número de semanas
+  const semanas = S.plan ? parseInt(S.plan.split(' ')[0]) : 4;
+  
+  const prompt = `JSON trainer. PERFIL: ${S.nivel||'intermedio'}, ${S.dias||3}d/week, ${semanas} semanas, ${S.dur||'60m'}, lesiones=${document.getElementById('lesiones').value||'ninguno'}, objetivo=${S.obj.join(',')||'general'}.
 BANCO (40+ ejercicios disponibles, usar solo nombres EXACTOS): ${listaEj}
 
 CRÍTICO:
+- Generar EXACTAMENTE ${semanas} semana(s). Cada semana = ${S.dias||3} días de entrenamiento.
 - Hip thrust: Sem1-2→máquina/Smith, Sem3-4→barra banco, Sem5+→barra rango completo
 - Rotación humeral: Codo FIJO rodilla. SOLO húmero rota (arriba-abajo).
 - Responde SOLO JSON, sin preamble. Max 7-8 ejercicios/día.
@@ -724,7 +728,7 @@ function renderPlan(plan) {
         <td><span class="stat-pill">${ex.series||'—'}</span></td>
         <td><span class="stat-pill">${ex.reps||'—'}</span></td>
         <td><span class="stat-pill">${ex.rir||'—'}</span></td>
-        <td><span class="stat-pill">${ex.descanso||'—'}</span></td>
+        <td><span class="stat-pill">${ex.descripcion ? ex.descripcion.substring(0,20)+'...' : (ex.descanso||'—')}</span></td>
         <td>
           <div class="registro-cell">
             <div class="peso-row">

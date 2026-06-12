@@ -18,7 +18,7 @@ app.post('/api/claude', async (req, res) => {
   try {
     const { model, max_tokens, messages } = req.body;
     if (!model || !max_tokens || !messages) {
-      return res.status(400).json({ error: 'Faltan parámetros' });
+      return res.status(400).json({ error: 'Faltan parámetros (model, max_tokens, messages)' });
     }
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -28,7 +28,11 @@ app.post('/api/claude', async (req, res) => {
         'x-api-key': ANTHROPIC_KEY,
         'anthropic-version': '2023-06-01'
       },
-      body: JSON.stringify({ model, max_tokens, messages })
+      body: JSON.stringify({
+        model,
+        max_tokens,
+        messages
+      })
     });
 
     if (!response.ok) {
@@ -39,10 +43,12 @@ app.post('/api/claude', async (req, res) => {
     const data = await response.json();
     res.json(data);
   } catch (err) {
-    console.error('Error:', err);
+    console.error('Error en /api/claude:', err);
     res.status(500).json({ error: err.message });
   }
 });
 
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`✓ Server running on port ${PORT}`));
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`✓ Server en puerto ${PORT}`));

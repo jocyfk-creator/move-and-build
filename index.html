@@ -471,7 +471,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
 </div>
 
 <script>
-// API key está SEGURA en servidor (Render env var: ANTHROPIC_API_KEY)
+// API key está SEGURA en Render env vars - NO en HTML
 let cur = 0;
 const LABELS = ['Perfil','Objetivos','Métodos','Disponibilidad','Generando...','Tu Plan'];
 const S = { nivel:'', obj:[], met:[], dias:'', dur:'', lugar:'', plan:'' };
@@ -555,66 +555,6 @@ CORE: Plancha frontal, Plancha inversa con toque rodilla, Press Pallof con liga,
 MOVILIDAD: Cat-cow, Cossak squat, Flex tobillo-rodilla en lunge, Balanceo de pierna, Rotación humeral con peso, Prone snow angels, Runners lunge with reach, Leg rockback, Hip 90-90, Shoulder swim unilateral.
 HIIT: Side to side bounds, Burpee sin salto, Bench over jumps, Jumping jacks, Tuck jumps, Lunge drop, Pulse jump squats.`;
 
-// DESCRIPCIONES DINÁMICAS POR EJERCICIO Y NIVEL
-const BANCO_MAESTRO = {
-  "Hip thrust con barra": {"principiante":"Smith/máquina. Pad protector. Empuje talones, estabilidad máxima lumbar.","intermedio":"Barra banco. Carga progresiva. Explosivo, squeeze 1s, lumbar neutral.","avanzado":"Barra cadera. Rango completo. Explosivo, máxima contracción glúteo."},
-  "Hip thrust con banda": "Espalda en banco, banda sobre rodillas. Eleva cadera alineada con tronco.",
-  "Glute bridge con barra": "Eleva cadera desde suelo apretando glúteos al final.",
-  "Rotación humeral con peso": {"principiante":"Codo FIJO rodilla. SOLO húmero rota (arriba-abajo). Codo pegado SIEMPRE.","intermedio":"Codo fijo. Rota completo (arriba-abajo-atrás-adelante). Codo pegado.","avanzado":"Brazo extendido, codo fijo. Rotación 360° suave. Codo NUNCA se mueve."},
-  "Sentadilla búlgara goblet": "Pierna trasera elevada. Desciende controlado sobre pierna delantera.",
-  "Sentadilla libre barra alta": "Barra sobre trapecios. Mantén tronco erguido.",
-  "Sentadilla goblet": "Sentadilla sujetando mancuerna/kettlebell frente al pecho.",
-  "Press banca inclinado mancuernas": "Banco inclinado 30-40°. Empuje sobre pecho superior.",
-  "Press banca con barra": "Empuja barra desde pecho hasta extender brazos.",
-  "Jalón al pecho": "Tira barra hacia pecho superior. Retracción escapular fuerte.",
-  "Remo Gironda unilateral": "Remo hacia cadera. Torso estable.",
-  "Remo seal": "Tumbado banca inclinada. Codos hacia pecho. Máxima contracción dorsales.",
-  "Press de hombro": "Empuja mancuernas sobre cabeza.",
-  "Elevaciones laterales": "Eleva brazos laterales hasta hombros.",
-  "Curl bíceps": "Flexiona codos. Codos pegados torso.",
-  "Extensión tríceps en polea": "Empuja polea hacia abajo extendiendo codos.",
-  "Plancha frontal": "Línea recta antebrazos-pies. Core activo.",
-  "Rollouts con barra": "Desliza barra alejándola. Vuelve controlado.",
-  "Dead Bug": "Extiende brazo-pierna opuestos. Core neutro.",
-  "Cat-cow": "Alterna flexión-extensión columna suave.",
-  "Monster Walk": "Camina adelante tensión banda constante.",
-  "Clamshell con liga": "Tumbado lado. Rodillas flex, pies juntos. Abre rodilla superior.",
-  "Patada glúteo con banda": "Extiende pierna atrás contra banda.",
-  "Pull Apart": "Abre brazos separando banda pecho.",
-  "Face Pull con banda": "Tira banda hacia cara. Escápulas juntas.",
-  "Pallof Press": "Empuja banda adelante. Evita rotación tronco.",
-  "Flex tobillo-rodilla": "Rodilla adelante. Dorsiflexión.",
-  "Cossack squat": "Sentadilla lateral. Desplaza peso.",
-  "Burpee sin salto": "Burpee eliminando salto final.",
-  "Mountain climbers": "Carrera horizontal plancha.",
-  "Jumping jacks": "Saltos abriendo-cerrando brazos-piernas.",
-  "Side Plank": "Plancha lateral.",
-  "Bird Dog": "Extensión cruzada cuadrupedia.",
-  "Press Pallof": "Empuja banda evitando rotación.",
-  "Prone snow angels": "Desliza brazos simulando ángel nieve.",
-  "Runners lunge with reach": "Zancada larga + alcance brazo.",
-  "Hip 90-90": "Rotaciones cadera 90-90.",
-  "Sentadilla corporales": "Sentadilla sin peso. Lento controlado.",
-  "Walking lunges": "Zancadas avanzando.",
-  "Step-ups escaleras": "Sube escalones controlado.",
-  "Flexiones": "Cuerpo recto. Desciende pecho casi toque suelo.",
-  "Dips": "Empuje peso corporal paralelas.",
-  "Dominadas": "Tracción vertical agarre pronación.",
-  "Australian pull-ups": "Remo invertido barra fija.",
-  "Remo con banda": "Tira banda hacia abdomen. Escápulas juntas.",
-  "High knees": "Carrera elevando rodillas.",
-  "Butt kicks": "Carrera talones glúteos."
-};
-
-function getDescripcion(ejercicio, nivel = 'intermedio') {
-  const desc = BANCO_MAESTRO[ejercicio];
-  if (!desc) return 'Ver guía técnica.';
-  if (typeof desc === 'string') return desc;
-  if (typeof desc === 'object' && desc[nivel]) return desc[nivel];
-  if (typeof desc === 'object') return desc.intermedio || Object.values(desc)[0];
-  return desc;
-}
-
 const loadMsgs = ['Analizando tu perfil...','Seleccionando ejercicios...','Calculando progresión RIR...','Estructurando las sesiones...','Ajustes finales...'];
 let loadIdx = 0, loadTimer;
 
@@ -627,50 +567,40 @@ async function generatePlan() {
     document.getElementById('loadingMsg').textContent = loadMsgs[loadIdx];
   }, 1800);
 
-  const listaEj = 'Hip thrust con barra,Glute bridge con barra,Hip thrust unilateral,Sentadilla búlgara goblet,Sentadilla libre barra alta,Sentadilla goblet,Prensa unilateral,Step up con mancuerna,Peso muerto rumano bilateral,Peso muerto sumo,Pull through en polea,Patada glúteo en polea,Curl femoral en máquina tumbada,Abducción de cadera en máquina,Clamshell con liga,Monster Walk,Box jumps,Press banca con barra,Press inclinado con mancuernas,Jalón al pecho,Remo Gironda unilateral,Remo seal con mancuernas,Pullover en polea,Face Pull,Press de hombro con mancuernas,Elevaciones laterales,Deltoides posterior en máquina,Curl bíceps con mancuernas,Extensión tríceps en polea,Plancha frontal,Rollouts con barra,Russian Twist con disco,Rotación humeral con peso,Cat-Cow,Mountain Climbers,Jumping Jacks,Burpee sin salto';
-  
-  // Extraer número de semanas
-  const semanas = S.plan ? parseInt(S.plan.split(' ')[0]) : 4;
-  
-  const prompt = `JSON trainer. PERFIL: ${S.nivel||'intermedio'}, ${S.dias||3}d/week, ${semanas} semanas, ${S.dur||'60m'}, lesiones=${document.getElementById('lesiones').value||'ninguno'}, objetivo=${S.obj.join(',')||'general'}.
-BANCO (40+ ejercicios disponibles, usar solo nombres EXACTOS): ${listaEj}
-
-CRÍTICO:
-- Generar EXACTAMENTE ${semanas} semana(s). Cada semana = ${S.dias||3} días de entrenamiento.
-- Hip thrust: Sem1-2→máquina/Smith, Sem3-4→barra banco, Sem5+→barra rango completo
-- Rotación humeral: Codo FIJO rodilla. SOLO húmero rota (arriba-abajo).
-- Responde SOLO JSON, sin preamble. Max 7-8 ejercicios/día.
-
-JSON structure:
-{"resumen":"1-2 frases","progresion":[{"sem":"Semana 1","rir":"3-4","fase":"Aprendizaje"}],"dias":[{"titulo":"Día 1","enfasis":"pierna","dur":"50","ejercicios":[{"tipo":"Fuerza","nom":"exacto banco","series":"3","reps":"10","rir":"2","descanso":"90"}]}]}`
+  const prompt = `Eres entrenador personal experto. Responde SOLO JSON válido sin texto extra ni backticks.
+PERFIL: nombre=${document.getElementById('nombre').value||'usuario'}, edad=${document.getElementById('edad').value||'—'}, peso=${document.getElementById('peso').value||'—'}kg, altura=${document.getElementById('altura').value||'—'}cm, sexo=${document.getElementById('sexo').value||'—'}, nivel=${S.nivel||'intermedio'}, lesiones=${document.getElementById('lesiones').value||'ninguna'}, obs=${document.getElementById('obs').value||'ninguna'}
+OBJETIVOS: ${S.obj.join(', ')||'salud general'}
+MÉTODOS: ${S.met.length>0?S.met.join(', '):'los más adecuados'}
+DÍAS: ${S.dias||'3'}, SESIÓN: ${S.dur||'60 min'}, LUGAR: ${S.lugar||'gimnasio completo'}, PLAN: ${S.plan||'4 semanas'}
+${BANCO}
+JSON exacto:
+{"resumen":"2 frases","progresion":[{"sem":"Semana 1","rir":"3-4","fase":"Aprendizaje","nota":"texto"},{"sem":"Semana 2","rir":"2-3","fase":"Acumulación","nota":"texto"},{"sem":"Semana 3","rir":"1-2","fase":"Intensificación","nota":"texto"},{"sem":"Semana 4","rir":"4-5","fase":"Descarga","nota":"texto"}],"dias":[{"titulo":"Día 1 — nombre","enfasis":"músculos","dur":"X min","ejercicios":[{"tipo":"Movilidad","nom":"nombre exacto","instruccion":"cómo ejecutarlo en 1-2 frases claras","musculos_principales":["músculo1","músculo2"],"musculos_accesorios":["músculo3"],"series":"1","reps":"10","rir":"—","descanso":"—"}]}]}
+Reglas: nombres EXACTOS del banco. 6-9 ejercicios/día. tipos: Movilidad/Fuerza/Potencia/Core/Cardio. rir "3→2" o "—". descanso "45''","60''","90''","—". instruccion máx 20 palabras. 2-3 musculos_principales, 1-2 accesorios.`;
 
   try {
     const res = await fetch('/api/claude', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4000,messages:[{role:'user',content:prompt}]})
+      body: JSON.stringify({model:'claude-sonnet-4-6',max_tokens:6000,messages:[{role:'user',content:prompt}]})
     });
     clearInterval(loadTimer);
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message||`Error ${res.status}`); }
     const data = await res.json();
     let raw = data.content?.map(b=>b.text||'').join('')||'';
-    raw = raw.replace(/```json|```/g,'').trim();
-    currentPlan = JSON.parse(raw);
+    raw = raw.replace(/```json|```|\\n/g,'').trim();
     
-    // POST-PROCESAMIENTO: Inyectar descripciones del BANCO MAESTRO
-    if (currentPlan.dias) {
-      currentPlan.dias.forEach(dia => {
-        if (dia.ejercicios) {
-          dia.ejercicios.forEach(ej => {
-            const nivel = S.nivel || 'intermedio';
-            ej.descripcion = getDescripcion(ej.nom, nivel);
-          });
-        }
-      });
+    // Limpiar caracteres problemáticos
+    raw = raw.replace(/[\x00-\x1F\x7F]/g, '');
+    raw = raw.replace(/,\s*}/g, '}').replace(/,\s*\]/g, ']');
+    
+    try {
+      currentPlan = JSON.parse(raw);
+      renderPlan(currentPlan);
+      go(1);
+    } catch(parseErr) {
+      console.error('JSON parse error:', parseErr, 'Raw:', raw.substring(0, 200));
+      throw new Error('JSON inválido en respuesta. Reintentar.');
     }
-    
-    renderPlan(currentPlan);
-    go(1);
   } catch(e) {
     clearInterval(loadTimer);
     document.getElementById('loadingWrap').style.display='none';
@@ -728,7 +658,7 @@ function renderPlan(plan) {
         <td><span class="stat-pill">${ex.series||'—'}</span></td>
         <td><span class="stat-pill">${ex.reps||'—'}</span></td>
         <td><span class="stat-pill">${ex.rir||'—'}</span></td>
-        <td><span class="stat-pill">${ex.descripcion ? ex.descripcion.substring(0,20)+'...' : (ex.descanso||'—')}</span></td>
+        <td><span class="stat-pill">${ex.descanso||'—'}</span></td>
         <td>
           <div class="registro-cell">
             <div class="peso-row">

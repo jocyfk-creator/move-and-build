@@ -656,18 +656,10 @@ BANCO (nombres EXACTOS): ${listaEj}
 
 INSTRUCCIONES CRÍTICAS:
 1. VARIACIÓN SEMANAL OBLIGATORIA: Hip thrust Sem1→máquina, Sem2→barra banco, Sem3→rango completo. Rota accesorios (patada glúteo, clamshell, abducción). Nunca repetir 2+ ejercicios en la misma semana.
-2. HIPOPRESIVOS (posturas por planos): Agregar sección "hipopresivos" con:
-   - bipedestacion: [Venus (de pie, brazos relajados, crecimiento axial), Atenea (brazos rotación interna 90°), Hestia (sentado)]
-   - sobre_rodillas: [Aura (rodillas separadas, eje adelantado)]
-   - cuadrupedia_antebrazos: [Maya (apoyo antebrazos, variantes con flexión cervical o diagonal)]
-   - cuadrupedia_manos: [Gaia (manos al suelo, propiocepción avanzada)]
-   - decubito_supino: [Demeter (simétrico/asimétrico, estiramiento axial)]
-   Cada una: nombre, plano, descripción breve técnica.
+2. HIPOPRESIVOS (posturas por planos): Agregar sección "hipopresivos" con: bipedestacion (Venus, Atenea, Hestia), sobre_rodillas (Aura), cuadrupedia_antebrazos (Maya), cuadrupedia_manos (Gaia), decubito_supino (Demeter). Cada una: nombre, plano, descripción breve técnica.
 3. MUSCLE RELEASE (4 grupos, técnica+puntos): glúteos, cuádriceps, isquiotibiales, pectoral
 4. CARDIO: sugerencia tipo/duración/zona intensidad
-5. Responde JSON exacto:
-
-{"resumen":"2 frases","progresion":[{"sem":"Semana 1","rir":"3-4","fase":"Aprendizaje"}],"dias":[{"titulo":"Día 1","enfasis":"pierna","dur":"50","ejercicios":[{"tipo":"Fuerza","nom":"exacto banco","series":"3","reps":"10"}]}],"hipopresivos":{"bipedestacion":[{"nombre":"Venus","tecnica":"..."}],"sobre_rodillas":[...],"cuadrupedia_antebrazos":[...],"cuadrupedia_manos":[...],"decubito_supino":[...]},"muscle_release":{"gluteos":"técnica...","cuadriceps":"técnica...","isquiotibiales":"técnica...","pectoral":"técnica..."},"cardio":"tipo/duración/zona"}`;
+5. Responde JSON exacto con estructura: resumen, progresion, dias, hipopresivos, muscle_release, cardio`;
 
   try {
     const res = await fetch('/api/claude', {

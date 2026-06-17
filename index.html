@@ -237,25 +237,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
 
 /* ACTIONS + FOOTER */
 .plan-actions { display:flex; gap:10px; margin-top:2rem; flex-wrap:wrap; }
-.plan-actions button { flex:1; min-width:150px; }
-
-/* HIPOPRESIVOS, MUSCLE RELEASE, CARDIO, MÚSCULOS */
-.sec-title { font-size:1.1rem; font-weight:600; color:var(--mint-deep); margin-top:2.5rem; margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.05em; }
-.hipopresivos-sec { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:12px; margin-bottom:1.5rem; }
-.postura { background:var(--mint-pale); padding:12px; border-radius:6px; border-left:3px solid var(--mint-dark); }
-.postura strong { color:var(--ink); display:block; margin-bottom:4px; }
-.plano { font-size:0.8rem; color:var(--mint-deep); font-weight:500; }
-.postura p { font-size:0.85rem; color:var(--muted); margin:6px 0 0 0; line-height:1.4; }
-
-.release-sec { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; margin-bottom:1.5rem; }
-.release-item { background:var(--card); padding:12px; border-radius:6px; border-top:2px solid var(--mint); }
-.release-item strong { color:var(--ink-soft); text-transform:uppercase; font-size:0.85rem; display:block; margin-bottom:6px; }
-.release-item p { font-size:0.8rem; color:var(--muted); margin:0; line-height:1.5; }
-
-.cardio-info { background:var(--ink); color:#fff; padding:14px; border-radius:6px; font-size:0.9rem; line-height:1.6; margin-bottom:1.5rem; }
-
-.muscles-ref { background:var(--card); padding:14px; border-radius:6px; margin-bottom:1.5rem; }
-.muscles-img { max-width:100%; height:auto; width:100%; border-radius:6px; display:block; }
 .btn-outline { padding:10px 22px; border-radius:100px; border:1.5px solid var(--border);
   background:var(--card); font-size:0.88rem; cursor:pointer; color:var(--muted); transition:all 0.15s; }
 .btn-outline:hover { border-color:var(--mint-dark); color:var(--mint-dark); }
@@ -271,6 +252,27 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
   .prog-grid { grid-template-columns:1fr 1fr; }
   .method-grid { grid-template-columns:1fr 1fr; }
 }
+
+
+/* NUEVAS SECCIONES */
+.sec-title { font-size:1.05rem; font-weight:600; color:var(--mint-deep); margin-top:2rem; margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.05em; }
+
+.hipos-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; margin-bottom:1.5rem; }
+.hipo-card { background:var(--mint-pale); padding:12px; border-radius:6px; border-left:3px solid var(--mint); }
+.hipo-card strong { color:var(--ink); display:block; margin-bottom:3px; font-size:0.95rem; }
+.hipo-plano { font-size:0.75rem; color:var(--mint-deep); font-weight:500; display:block; margin-bottom:5px; }
+.hipo-card p { font-size:0.8rem; color:var(--muted); margin:0; line-height:1.4; }
+
+.release-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin-bottom:1.5rem; }
+.release-box { background:var(--card); padding:12px; border-radius:6px; border-top:2px solid var(--ink); }
+.release-box strong { color:var(--ink-soft); text-transform:uppercase; font-size:0.8rem; display:block; margin-bottom:6px; }
+.release-box p { font-size:0.75rem; color:var(--muted); margin:0; line-height:1.5; }
+
+.cardio-sugerencia { background:var(--ink); color:#fff; padding:14px; border-radius:6px; font-size:0.9rem; line-height:1.6; margin-bottom:1.5rem; }
+
+.muscles-img-box { background:var(--card); padding:12px; border-radius:6px; margin-bottom:1.5rem; }
+.muscles-img { max-width:100%; height:auto; display:block; border-radius:6px; }
+
 </style>
 </head>
 <body>
@@ -651,18 +653,19 @@ async function generatePlan() {
   // Extraer número de semanas
   const semanas = S.plan ? parseInt(S.plan.split(' ')[0]) : 4;
   
-  const prompt = `Eres entrenador experto en programación de ejercicios, hipopresivos y recuperación miofascial. Responde SOLO JSON válido sin preamble ni backticks.
+  const prompt = `Eres entrenador experto. Responde SOLO JSON sin preamble.
 
-PERFIL: ${S.nivel||'intermedio'}, ${S.dias||3}d/sem, ${semanas} semanas, ${S.dur||'60m'}, lesiones=${document.getElementById('lesiones').value||'ninguno'}, objetivo=${S.obj.join(',')||'general'}.
+PERFIL: ${S.nivel||'intermedio'}, ${S.dias||3}d/week, ${semanas} semanas, ${S.dur||'60m'}, lesiones=${document.getElementById('lesiones').value||'ninguno'}, objetivo=${S.obj.join(',')||'general'}.
+BANCO (40+ ejercicios disponibles, usar solo nombres EXACTOS): ${listaEj}
 
-BANCO (usar EXACTAMENTE estos nombres): ${listaEj}
+CRÍTICO:
+- Generar EXACTAMENTE ${semanas} semana(s). Cada semana = ${S.dias||3} días de entrenamiento.
+- Hip thrust: Sem1-2→máquina/Smith, Sem3-4→barra banco, Sem5+→barra rango completo
+- Rotación humeral: Codo FIJO rodilla. SOLO húmero rota (arriba-abajo).
+- Responde SOLO JSON, sin preamble. Max 7-8 ejercicios/día.
 
-INSTRUCCIONES CRÍTICAS:
-1. VARIACIÓN SEMANAL: Hip thrust Sem1→máquina/Smith, Sem2→barra banco, Sem3+→rango completo. Rota accesorios (patada glúteo, clamshell, abducción). No repetir 2+ ejercicios misma semana.
-2. Generar 5 posturas hipopresivas: {nombre, plano, técnica}
-3. Generar 4 grupos muscle release: glúteos, cuádriceps/psoas, isquiotibiales, pectoral con descripción técnica.
-4. Generar cardio sugerencia: tipo, duración, zona intensidad.
-5. Responde JSON: {resumen, progresion, dias, hipopresivos, muscle_release, cardio}`;
+JSON structure:
+{"resumen":"1-2 frases","progresion":[{"sem":"Semana 1","rir":"3-4","fase":"Aprendizaje"}],"dias":[{"titulo":"Día 1","enfasis":"pierna","dur":"50","ejercicios":[{"tipo":"Fuerza","nom":"exacto banco","series":"3","reps":"10","rir":"2","descanso":"90"}]}]}`
 
   try {
     const res = await fetch('/api/claude', {
@@ -769,10 +772,10 @@ function renderPlan(plan) {
 
   // HIPOPRESIVOS
   if (plan.hipopresivos) {
-    h += `<div class="sec-title">Hipopresivos (Extra - Fuera del tiempo)</div><div class="hipopresivos-sec">`;
+    h += `<div class="sec-title">Hipopresivos (Extra)</div><div class="hipos-grid">`;
     if (Array.isArray(plan.hipopresivos)) {
-      plan.hipopresivos.forEach((p, i) => {
-        h += `<div class="postura"><strong>${p.nombre||''}</strong><br/><span class="plano">${p.plano||''}</span><p>${p.tecnica||''}</p></div>`;
+      plan.hipopresivos.forEach(p => {
+        h += `<div class="hipo-card"><strong>${p.nombre||''}</strong><span class="hipo-plano">${p.plano||''}</span><p>${p.tecnica||''}</p></div>`;
       });
     }
     h += `</div>`;
@@ -780,23 +783,20 @@ function renderPlan(plan) {
 
   // MUSCLE RELEASE
   if (plan.muscle_release) {
-    h += `<div class="sec-title">Liberación Miofascial (Extra - Fuera del tiempo)</div><div class="release-sec">`;
+    h += `<div class="sec-title">Liberación Miofascial (Extra)</div><div class="release-grid">`;
     Object.entries(plan.muscle_release).forEach(([k, v]) => {
-      h += `<div class="release-item"><strong>${k}</strong><p>${v}</p></div>`;
+      h += `<div class="release-box"><strong>${k}</strong><p>${v}</p></div>`;
     });
     h += `</div>`;
   }
 
   // CARDIO
   if (plan.cardio) {
-    h += `<div class="sec-title">Cardio (Opcional)</div><div class="cardio-info">${plan.cardio}</div>`;
+    h += `<div class="sec-title">Cardio Sugerido</div><div class="cardio-sugerencia">${plan.cardio}</div>`;
   }
 
   // MÚSCULOS
-  h += `<div class="sec-title">Grupos Musculares Trabajados</div>
-    <div class="muscles-ref">
-      <img src="musculos_resaltados.png" alt="Músculos" class="muscles-img" />
-    </div>`;
+  h += `<div class="sec-title">Grupos Musculares</div><div class="muscles-img-box"><img src="musculos_resaltados.png" alt="Músculos" class="muscles-img" /></div>`;
 
   h+=`<div class="plan-actions">
     <button class="btn-outline" onclick="nuevoPlan()">← Nuevo plan</button>

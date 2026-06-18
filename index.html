@@ -88,6 +88,29 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
 .step.active { display:block; animation:fadeUp 0.25s ease; }
 .step-title { font-family:'Bebas Neue',sans-serif; font-size:2rem; letter-spacing:1px; color:var(--ink-soft); margin-bottom:0.2rem; }
 .step-sub { font-size:0.85rem; color:var(--muted); margin-bottom:1.75rem; }
+
+/* DISCLAIMER EN PASOS */
+.disclaimer-paso { background:#fff3cd; border-left:4px solid #ffc107; padding:12px; margin-bottom:1rem; border-radius:4px; font-size:0.85rem; line-height:1.5; color:#856404; }
+.disclaimer-paso strong { color:#856404; }
+
+/* NUEVAS SECCIONES DEL PLAN */
+.sec-title { font-size:1.05rem; font-weight:600; color:var(--mint-deep); margin-top:2rem; margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.05em; }
+
+.hippos-sec { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; margin-bottom:1.5rem; }
+.hipo-item { background:var(--mint-pale); padding:10px; border-radius:6px; border-left:3px solid var(--mint); }
+.hipo-item strong { color:var(--ink); display:block; margin-bottom:2px; }
+.hipo-plano { font-size:0.75rem; color:var(--mint-deep); font-weight:500; }
+.hipo-item p { font-size:0.8rem; color:var(--muted); margin:4px 0 0 0; line-height:1.4; }
+
+.release-sec { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:10px; margin-bottom:1.5rem; }
+.release-item { background:var(--card); padding:10px; border-radius:6px; border-top:2px solid var(--ink); }
+.release-item strong { color:var(--ink-soft); font-size:0.8rem; display:block; margin-bottom:4px; }
+.release-item p { font-size:0.75rem; color:var(--muted); margin:0; line-height:1.5; }
+
+.cardio-box { background:var(--ink); color:#fff; padding:12px; border-radius:6px; font-size:0.9rem; line-height:1.6; margin-bottom:1.5rem; }
+
+.muscles-box { background:var(--card); padding:12px; border-radius:6px; margin-bottom:1.5rem; }
+.muscles-img { max-width:100%; height:auto; width:100%; border-radius:6px; display:block; }
 .field { margin-bottom:1.2rem; }
 .field label { display:block; font-size:0.75rem; font-weight:500; color:var(--muted);
   letter-spacing:0.05em; text-transform:uppercase; margin-bottom:6px; }
@@ -252,49 +275,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
   .prog-grid { grid-template-columns:1fr 1fr; }
   .method-grid { grid-template-columns:1fr 1fr; }
 }
-
-
-/* NUEVAS SECCIONES */
-.sec-title { font-size:1.05rem; font-weight:600; color:var(--mint-deep); margin-top:2rem; margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.05em; }
-
-.hipos-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; margin-bottom:1.5rem; }
-.hipo-card { background:var(--mint-pale); padding:12px; border-radius:6px; border-left:3px solid var(--mint); }
-.hipo-card strong { color:var(--ink); display:block; margin-bottom:3px; font-size:0.95rem; }
-.hipo-plano { font-size:0.75rem; color:var(--mint-deep); font-weight:500; display:block; margin-bottom:5px; }
-.hipo-card p { font-size:0.8rem; color:var(--muted); margin:0; line-height:1.4; }
-
-.release-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin-bottom:1.5rem; }
-.release-box { background:var(--card); padding:12px; border-radius:6px; border-top:2px solid var(--ink); }
-.release-box strong { color:var(--ink-soft); text-transform:uppercase; font-size:0.8rem; display:block; margin-bottom:6px; }
-.release-box p { font-size:0.75rem; color:var(--muted); margin:0; line-height:1.5; }
-
-.cardio-sugerencia { background:var(--ink); color:#fff; padding:14px; border-radius:6px; font-size:0.9rem; line-height:1.6; margin-bottom:1.5rem; }
-
-.muscles-img-box { background:var(--card); padding:12px; border-radius:6px; margin-bottom:1.5rem; }
-.muscles-img { max-width:100%; height:auto; display:block; border-radius:6px; }
-
-
-/* BADGES DE MÚSCULOS */
-.badges-musculos { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
-.badge-principal { background:#86ECAD; color:#0D1F1A; font-size:0.7rem; padding:3px 6px; border-radius:12px; font-weight:600; }
-.badge-accesorio { background:#f0f0f0; color:#666; font-size:0.7rem; padding:3px 6px; border-radius:12px; border:1px solid #ddd; }
-
-/* IMAGEN AL INICIO DEL PLAN */
-.plan-header-img { background:var(--card); padding:16px; border-radius:8px; margin-bottom:2rem; }
-.plan-header-img img { max-width:100%; height:auto; border-radius:6px; }
-.plan-header-desc { font-size:0.85rem; color:var(--muted); margin-top:10px; line-height:1.5; text-align:center; }
-
-/* VOLUMEN Y CALORÍAS */
-.plan-metrics { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-bottom:1.5rem; background:var(--mint-pale); padding:16px; border-radius:8px; }
-.metric-box { text-align:center; }
-.metric-label { font-size:0.75rem; color:var(--muted); text-transform:uppercase; margin-bottom:4px; }
-.metric-value { font-size:1.5rem; font-weight:600; color:var(--ink); }
-
-/* AVISOS HONESTOS */
-.disclaimer { background:#fff3cd; border-left:3px solid #ffc107; padding:12px; margin-bottom:1.5rem; border-radius:4px; }
-.disclaimer-title { font-weight:600; color:#856404; font-size:0.85rem; margin-bottom:4px; }
-.disclaimer-text { font-size:0.8rem; color:#856404; line-height:1.4; }
-
 </style>
 </head>
 <body>
@@ -424,6 +404,12 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
   <div class="step" id="step2">
     <div class="step-title">Métodos</div>
     <p class="step-sub">Opcional — si no eliges ninguno, el plan selecciona los más adecuados.</p>
+    
+    <div class="disclaimer-paso">
+      <strong>⚠️ Cómo funciona:</strong> El programa genera un plan basado en el método que selecciones. 
+      Si lo que te propone no encaja 100%, ajústalo manualmente. La IA hace su mejor trabajo, pero TÚ conoces tu cuerpo.
+    </div>
+
     <div class="method-grid">
       <div class="method-card" data-v="Tabata"><div class="mn">Tabata</div><div class="md">20s trabajo / 10s descanso, 8 rondas. Alta intensidad en poco tiempo.</div></div>
       <div class="method-card" data-v="HIIT"><div class="mn">HIIT</div><div class="md">Intervalos de alta intensidad alternados con recuperación. Máximo gasto calórico.</div></div>
@@ -450,6 +436,19 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
   <div class="step" id="step3">
     <div class="step-title">Disponibilidad</div>
     <p class="step-sub">Cuánto tiempo tienes y dónde entrenas.</p>
+
+    <div class="disclaimer-paso">
+      <strong>⚠️ Sobre LESIONES:</strong> Si tienes lesión, especifícala abajo. El programa lo considerará, pero REVISA ANTES DE HACER. Si ves un ejercicio riesgoso, cámbialo. No excluye automáticamente.
+    </div>
+    
+    <div class="disclaimer-paso">
+      <strong>⚠️ Sobre DURACIÓN:</strong> El tiempo estimado es aproximado. Puede variar ±15 min según tu ritmo, descansos reales, y técnica ejecutiva.
+    </div>
+    
+    <div class="disclaimer-paso">
+      <strong>⚠️ Sobre PROGRESIÓN:</strong> El plan se genera automáticamente, pero VALIDA entre semanas. Si algo no tiene sentido (semana 1: 20 reps vs semana 2: 5 reps), ajusta manualmente.
+    </div>
+
     <div class="grid2">
       <div class="field"><label>Días por semana</label>
         <div class="chip-group" id="diasG">
@@ -588,8 +587,6 @@ function go(d) {
   if (cur === 5) document.getElementById('weekTracker').style.display = 'flex';
 }
 
-
-
 // DESCRIPCIONES DINÁMICAS POR EJERCICIO Y NIVEL
 const BANCO_MAESTRO = {
   "Hip thrust con barra": {"principiante":"Smith/máquina. Pad protector. Empuje talones, estabilidad máxima lumbar.","intermedio":"Barra banco. Carga progresiva. Explosivo, squeeze 1s, lumbar neutral.","avanzado":"Barra cadera. Rango completo. Explosivo, máxima contracción glúteo."},
@@ -667,9 +664,7 @@ async function generatePlan() {
   // Extraer número de semanas
   const semanas = S.plan ? parseInt(S.plan.split(' ')[0]) : 4;
   
-  const prompt = `Eres entrenador experto. Responde SOLO JSON sin preamble.
-
-PERFIL: ${S.nivel||'intermedio'}, ${S.dias||3}d/week, ${semanas} semanas, ${S.dur||'60m'}, lesiones=${document.getElementById('lesiones').value||'ninguno'}, objetivo=${S.obj.join(',')||'general'}.
+  const prompt = `JSON trainer. PERFIL: ${S.nivel||'intermedio'}, ${S.dias||3}d/week, ${semanas} semanas, ${S.dur||'60m'}, lesiones=${document.getElementById('lesiones').value||'ninguno'}, objetivo=${S.obj.join(',')||'general'}.
 BANCO (40+ ejercicios disponibles, usar solo nombres EXACTOS): ${listaEj}
 
 CRÍTICO:
@@ -685,12 +680,12 @@ JSON structure:
     const res = await fetch('/api/claude', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({prompt:prompt})
+      body: JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4000,messages:[{role:'user',content:prompt}]})
     });
     clearInterval(loadTimer);
-    if (!res.ok) { const e = await res.json(); throw new Error(e.error||`Error ${res.status}`); }
+    if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message||`Error ${res.status}`); }
     const data = await res.json();
-    let raw = data.message || '';
+    let raw = data.content?.map(b=>b.text||'').join('')||'';
     raw = raw.replace(/```json|```/g,'').trim();
     currentPlan = JSON.parse(raw);
     
@@ -720,61 +715,6 @@ function renderPlan(plan) {
   const nombre = document.getElementById('nombre').value||'';
   let h = `<div class="step-title">Plan de ${nombre}</div>
     <p class="step-sub">${S.obj.join(', ')} · ${S.dias} días/sem · ${S.dur} · ${S.plan}</p>`;
-  // IMAGEN Y AVISOS AL INICIO
-  h += `<div class="plan-header-img">
-    <img src="musculos_resaltados.png" alt="Grupos Musculares" />
-    <div class="plan-header-desc">Verde = Músculos principales | Morado = Accesorios (cambios próximas iteraciones)</div>
-  </div>`;
-
-  // AVISOS HONESTOS
-  h += `<div class="disclaimer">
-    <div class="disclaimer-title">⚠️ FEEDBACK</div>
-    <div class="disclaimer-text">Se guarda localmente. En versión futura se usará automáticamente para ajustar próximo plan.</div>
-  </div>`;
-  
-  h += `<div class="disclaimer">
-    <div class="disclaimer-title">⚠️ LESIÓN</div>
-    <div class="disclaimer-text">Si especificaste lesión, el plan la considera. REVISA ANTES de hacer. Si ves ejercicio riesgoso, cámbialo. No excluye automáticamente.</div>
-  </div>`;
-
-  h += `<div class="disclaimer">
-    <div class="disclaimer-title">⚠️ DURACIÓN</div>
-    <div class="disclaimer-text">Es estimada. Puede variar ±15 min según ritmo, descansos reales, técnica.</div>
-  </div>`;
-
-  h += `<div class="disclaimer">
-    <div class="disclaimer-title">⚠️ PROGRESIÓN</div>
-    <div class="disclaimer-text">Se genera automáticamente, pero VALIDA entre semanas. Si algo no tiene sentido, ajusta manualmente.</div>
-  </div>`;
-
-  // MÉTRICAS (VOLUMEN Y CALORÍAS)
-  let totalSeries = 0;
-  let totalCalories = 0;
-  if (plan.dias && Array.isArray(plan.dias)) {
-    plan.dias.forEach(dia => {
-      if (dia.ejercicios) {
-        dia.ejercicios.forEach(ej => {
-          const series = parseInt(ej.series) || 0;
-          totalSeries += series;
-          // Estimado: 15 cal por serie (fuerza) o 20 (cardio)
-          const multiplier = ej.tipo === 'Cardio' ? 20 : 15;
-          totalCalories += series * multiplier;
-        });
-      }
-    });
-  }
-  
-  h += `<div class="plan-metrics">
-    <div class="metric-box">
-      <div class="metric-label">Series/semana</div>
-      <div class="metric-value">${totalSeries}</div>
-    </div>
-    <div class="metric-box">
-      <div class="metric-label">Calorías est.</div>
-      <div class="metric-value">${totalCalories}</div>
-    </div>
-  </div>`;
-
   h += `<div class="plan-resumen">${plan.resumen||''}</div>`;
   h += `<div class="sec-title">Progresión del mesociclo</div><div class="prog-grid">`;
   const pcs = ['pc1','pc2','pc3','pc4'];
@@ -815,7 +755,6 @@ function renderPlan(plan) {
         <td><span class="tbadge tb-${t}">${t}</span></td>
         <td>
           <div class="ex-name" onclick='showModal(${exData})'>${ex.nom||''}</div>
-          <div class="badges-musculos" id="badges-${ex.nom||''}"></div>
           <div class="ex-muscles">${(ex.musculos_principales||[]).join(' · ')}</div>
         </td>
         <td><span class="stat-pill">${ex.series||'—'}</span></td>
@@ -840,12 +779,12 @@ function renderPlan(plan) {
     h+=`</tbody></table></div></div></div>`;
   });
 
-  // HIPOPRESIVOS
+    // HIPOPRESIVOS
   if (plan.hipopresivos) {
-    h += `<div class="sec-title">Hipopresivos (Extra)</div><div class="hipos-grid">`;
+    h += `<div class="sec-title">Hipopresivos (Extra)</div><div class="hippos-sec">`;
     if (Array.isArray(plan.hipopresivos)) {
       plan.hipopresivos.forEach(p => {
-        h += `<div class="hipo-card"><strong>${p.nombre||''}</strong><span class="hipo-plano">${p.plano||''}</span><p>${p.tecnica||''}</p></div>`;
+        h += `<div class="hipo-item"><strong>${p.nombre||''}</strong> <span class="hipo-plano">(${p.plano||''})</span><p>${p.tecnica||''}</p></div>`;
       });
     }
     h += `</div>`;
@@ -853,52 +792,26 @@ function renderPlan(plan) {
 
   // MUSCLE RELEASE
   if (plan.muscle_release) {
-    h += `<div class="sec-title">Liberación Miofascial (Extra)</div><div class="release-grid">`;
+    h += `<div class="sec-title">Liberación Miofascial (Extra)</div><div class="release-sec">`;
     Object.entries(plan.muscle_release).forEach(([k, v]) => {
-      h += `<div class="release-box"><strong>${k}</strong><p>${v}</p></div>`;
+      h += `<div class="release-item"><strong>${k.toUpperCase()}</strong><p>${v}</p></div>`;
     });
     h += `</div>`;
   }
 
   // CARDIO
   if (plan.cardio) {
-    h += `<div class="sec-title">Cardio Sugerido</div><div class="cardio-sugerencia">${plan.cardio}</div>`;
+    h += `<div class="sec-title">Cardio Sugerido</div><div class="cardio-box">${plan.cardio}</div>`;
   }
 
   // MÚSCULOS
-  h += `<div class="sec-title">Grupos Musculares</div><div class="muscles-img-box"><img src="musculos_resaltados.png" alt="Músculos" class="muscles-img" /></div>`;
+  h += `<div class="sec-title">Referencia de Músculos</div><div class="muscles-box"><img src="musculos_resaltados.png" alt="Músculos" class="muscles-img" /></div>`;
 
   h+=`<div class="plan-actions">
     <button class="btn-outline" onclick="nuevoPlan()">← Nuevo plan</button>
     <button class="btn-green" onclick="window.print()">Imprimir / PDF</button>
   </div>`;
   document.getElementById('planOutput').innerHTML = h;
-  
-  // LLENAR BADGES DE MÚSCULOS
-  const musculos_map = {
-    "Hip thrust con barra": {principal: ["Glúteo Mayor"], accesorio: ["Core"]},
-    "Glute bridge con barra": {principal: ["Glúteo Mayor"], accesorio: ["Isquiotibiales"]},
-    "Sentadilla búlgara goblet": {principal: ["Cuádriceps", "Glúteo"], accesorio: ["Isquiotibiales"]},
-    "Press banca con barra": {principal: ["Pectoral Mayor"], accesorio: ["Tríceps"]},
-    "Jalón al pecho": {principal: ["Dorsal Ancho"], accesorio: ["Bíceps"]},
-    "Press de hombro con mancuernas": {principal: ["Deltoides"], accesorio: ["Tríceps"]},
-    "Curl bíceps con mancuernas": {principal: ["Bíceps"], accesorio: ["Antebrazo"]},
-    "Extensión tríceps en polea": {principal: ["Tríceps"], accesorio: ["Antebrazo"]},
-    "Plancha frontal": {principal: ["Abdominales", "Core"], accesorio: ["Espalda Baja"]},
-    "Mountain Climbers": {principal: ["Core", "Cardio"], accesorio: ["Cuádriceps"]},
-    "Jumping Jacks": {principal: ["Cardio"], accesorio: ["Hombros"]},
-  };
-  Object.keys(musculos_map).forEach(ej => {
-    const badge_el = document.getElementById('badges-' + ej);
-    if (badge_el) {
-      const muscs = musculos_map[ej];
-      let html = '';
-      (muscs.principal || []).forEach(m => html += '<span class="badge-principal">' + m + '</span>');
-      (muscs.accesorio || []).forEach(m => html += '<span class="badge-accesorio">' + m + '</span>');
-      badge_el.innerHTML = html;
-    }
-  });
-  
   cargarDatos();
 }
 

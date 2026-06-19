@@ -721,7 +721,7 @@ function renderPlan(plan) {
         instruccion: ex.instruccion||'',
         principales: ex.musculos_principales||[],
         accesorios: ex.musculos_accesorios||[]
-      }).replace(/'/g,"\'");
+      });
       h+=`<tr>
         <td><span class="tbadge tb-${t}">${t}</span></td>
         <td>

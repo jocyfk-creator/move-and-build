@@ -660,12 +660,12 @@ JSON structure:
     const res = await fetch('/api/claude', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4000,messages:[{role:'user',content:prompt}]})
+      body: JSON.stringify({prompt:prompt})
     });
     clearInterval(loadTimer);
-    if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message||`Error ${res.status}`); }
+    if (!res.ok) { const e = await res.json(); throw new Error(e.error||`Error ${res.status}`); }
     const data = await res.json();
-    let raw = data.content?.map(b=>b.text||'').join('')||'';
+    let raw = data.message || '';
     raw = raw.replace(/```json|```/g,'').trim();
     currentPlan = JSON.parse(raw);
     

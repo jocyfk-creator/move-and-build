@@ -88,29 +88,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
 .step.active { display:block; animation:fadeUp 0.25s ease; }
 .step-title { font-family:'Bebas Neue',sans-serif; font-size:2rem; letter-spacing:1px; color:var(--ink-soft); margin-bottom:0.2rem; }
 .step-sub { font-size:0.85rem; color:var(--muted); margin-bottom:1.75rem; }
-
-/* DISCLAIMER EN PASOS */
-.disclaimer-paso { background:#fff3cd; border-left:4px solid #ffc107; padding:12px; margin-bottom:1rem; border-radius:4px; font-size:0.85rem; line-height:1.5; color:#856404; }
-.disclaimer-paso strong { color:#856404; }
-
-/* NUEVAS SECCIONES DEL PLAN */
-.sec-title { font-size:1.05rem; font-weight:600; color:var(--mint-deep); margin-top:2rem; margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.05em; }
-
-.hippos-sec { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; margin-bottom:1.5rem; }
-.hipo-item { background:var(--mint-pale); padding:10px; border-radius:6px; border-left:3px solid var(--mint); }
-.hipo-item strong { color:var(--ink); display:block; margin-bottom:2px; }
-.hipo-plano { font-size:0.75rem; color:var(--mint-deep); font-weight:500; }
-.hipo-item p { font-size:0.8rem; color:var(--muted); margin:4px 0 0 0; line-height:1.4; }
-
-.release-sec { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:10px; margin-bottom:1.5rem; }
-.release-item { background:var(--card); padding:10px; border-radius:6px; border-top:2px solid var(--ink); }
-.release-item strong { color:var(--ink-soft); font-size:0.8rem; display:block; margin-bottom:4px; }
-.release-item p { font-size:0.75rem; color:var(--muted); margin:0; line-height:1.5; }
-
-.cardio-box { background:var(--ink); color:#fff; padding:12px; border-radius:6px; font-size:0.9rem; line-height:1.6; margin-bottom:1.5rem; }
-
-.muscles-box { background:var(--card); padding:12px; border-radius:6px; margin-bottom:1.5rem; }
-.muscles-img { max-width:100%; height:auto; width:100%; border-radius:6px; display:block; }
 .field { margin-bottom:1.2rem; }
 .field label { display:block; font-size:0.75rem; font-weight:500; color:var(--muted);
   letter-spacing:0.05em; text-transform:uppercase; margin-bottom:6px; }
@@ -404,12 +381,9 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
   <div class="step" id="step2">
     <div class="step-title">Métodos</div>
     <p class="step-sub">Opcional — si no eliges ninguno, el plan selecciona los más adecuados.</p>
-    
-    <div class="disclaimer-paso">
-      <strong>⚠️ Cómo funciona:</strong> El programa genera un plan basado en el método que selecciones. 
-      Si lo que te propone no encaja 100%, ajústalo manualmente. La IA hace su mejor trabajo, pero TÚ conoces tu cuerpo.
+    <div style="background:#fff3cd; border-left:4px solid #ffc107; padding:12px; margin-bottom:1rem; border-radius:4px; font-size:0.85rem; color:#856404; line-height:1.5;">
+      <strong>⚠️ Importante:</strong> El programa genera un plan basado en el método que selecciones. Si algo no te encaja 100%, ajústalo manualmente. La IA hace su mejor trabajo, pero TÚ conoces tu cuerpo.
     </div>
-
     <div class="method-grid">
       <div class="method-card" data-v="Tabata"><div class="mn">Tabata</div><div class="md">20s trabajo / 10s descanso, 8 rondas. Alta intensidad en poco tiempo.</div></div>
       <div class="method-card" data-v="HIIT"><div class="mn">HIIT</div><div class="md">Intervalos de alta intensidad alternados con recuperación. Máximo gasto calórico.</div></div>
@@ -436,19 +410,15 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
   <div class="step" id="step3">
     <div class="step-title">Disponibilidad</div>
     <p class="step-sub">Cuánto tiempo tienes y dónde entrenas.</p>
-
-    <div class="disclaimer-paso">
-      <strong>⚠️ Sobre LESIONES:</strong> Si tienes lesión, especifícala abajo. El programa lo considerará, pero REVISA ANTES DE HACER. Si ves un ejercicio riesgoso, cámbialo. No excluye automáticamente.
+    <div style="background:#fff3cd; border-left:4px solid #ffc107; padding:12px; margin-bottom:1rem; border-radius:4px; font-size:0.85rem; color:#856404; line-height:1.5;">
+      <strong>⚠️ LESIÓN:</strong> Si tienes lesión, especifícala. El programa lo considerará, pero REVISA ANTES DE HACER. Si ves algo riesgoso, cámbialo.
     </div>
-    
-    <div class="disclaimer-paso">
-      <strong>⚠️ Sobre DURACIÓN:</strong> El tiempo estimado es aproximado. Puede variar ±15 min según tu ritmo, descansos reales, y técnica ejecutiva.
+    <div style="background:#fff3cd; border-left:4px solid #ffc107; padding:12px; margin-bottom:1rem; border-radius:4px; font-size:0.85rem; color:#856404; line-height:1.5;">
+      <strong>⚠️ DURACIÓN:</strong> Es estimada. Puede variar ±15 min según tu ritmo y descansos reales.
     </div>
-    
-    <div class="disclaimer-paso">
-      <strong>⚠️ Sobre PROGRESIÓN:</strong> El plan se genera automáticamente, pero VALIDA entre semanas. Si algo no tiene sentido (semana 1: 20 reps vs semana 2: 5 reps), ajusta manualmente.
+    <div style="background:#fff3cd; border-left:4px solid #ffc107; padding:12px; margin-bottom:1rem; border-radius:4px; font-size:0.85rem; color:#856404; line-height:1.5;">
+      <strong>⚠️ PROGRESIÓN:</strong> El plan se genera automáticamente. Si algo no tiene sentido entre semanas, ajusta manualmente.
     </div>
-
     <div class="grid2">
       <div class="field"><label>Días por semana</label>
         <div class="chip-group" id="diasG">
@@ -587,6 +557,16 @@ function go(d) {
   if (cur === 5) document.getElementById('weekTracker').style.display = 'flex';
 }
 
+const BANCO = `EJERCICIOS (nombres exactos):
+PIERNA/GLÚTEO: Hip thrust con barra, Glute bridge con barra, Hip thrust unilateral, Sentadilla búlgara con mancuerna, Sentadilla búlgara goblet, Sentadilla libre barra alta, Sentadilla goblet, Sentadilla con rebote, Sentadilla+crusty lunge con disco, Rack Kettlebell squat, Sentadilla cossak con mancuerna, Prensa unilateral, Step up con mancuerna, Peso muerto rumano unilateral con mancuernas, Peso muerto rumano bilateral, Peso muerto sumo, Pull through en polea, Patada glúteo en polea, Curl de femoral en máquina tumbada, Curl de femoral fitball, KB swings unilateral, Skiier swings con disco, Extensión de cadera en máquina, Abducción de cadera en máquina, Clamshell con liga, Hiperextensión, Gemelos en prensa, Box jumps, HIIT drop squats con disco, Ball wall lateral.
+TORSO EMPUJE: Press banca con barra, Press banca inclinado mancuernas, Flexiones poliméricas, Cruce poleas ascendente.
+TORSO TIRÓN: Jalón al pecho en polea, Jalón unilateral en polea, Remo Gironda unilateral en polea, Remo seal mancuernas, Remo barra 90°, Pullover en polea, Australian pull-ups, Face pull polea, Reverse pec-deck.
+HOMBRO: Press de hombro mancuernas, Elevaciones laterales mancuernas, Elevaciones laterales en polea, Elevaciones lat+frontal alternas, Deltoides posterior en máquina, Landmine thruster, Samurai pulls en polea, Ball pushes.
+BÍCEPS/TRÍCEPS: Curl bíceps mancuernas, Skull crusher, Extensión tríceps en polea, Patada de tríceps, Press francés en máquina.
+CORE: Plancha frontal, Plancha inversa con toque rodilla, Press Pallof con liga, Rollouts con barra, Russian twist con disco, Pike en fitball, McGill crunch, Elevación piernas colgada, KB windmill.
+MOVILIDAD: Cat-cow, Cossak squat, Flex tobillo-rodilla en lunge, Balanceo de pierna, Rotación humeral con peso, Prone snow angels, Runners lunge with reach, Leg rockback, Hip 90-90, Shoulder swim unilateral.
+HIIT: Side to side bounds, Burpee sin salto, Bench over jumps, Jumping jacks, Tuck jumps, Lunge drop, Pulse jump squats.`;
+
 // DESCRIPCIONES DINÁMICAS POR EJERCICIO Y NIVEL
 const BANCO_MAESTRO = {
   "Hip thrust con barra": {"principiante":"Smith/máquina. Pad protector. Empuje talones, estabilidad máxima lumbar.","intermedio":"Barra banco. Carga progresiva. Explosivo, squeeze 1s, lumbar neutral.","avanzado":"Barra cadera. Rango completo. Explosivo, máxima contracción glúteo."},
@@ -680,12 +660,12 @@ JSON structure:
     const res = await fetch('/api/claude', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({prompt:prompt})
+      body: JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4000,messages:[{role:'user',content:prompt}]})
     });
     clearInterval(loadTimer);
-    if (!res.ok) { const e = await res.json(); throw new Error(e.error||`Error ${res.status}`); }
+    if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message||`Error ${res.status}`); }
     const data = await res.json();
-    let raw = data.message || '';
+    let raw = data.content?.map(b=>b.text||'').join('')||'';
     raw = raw.replace(/```json|```/g,'').trim();
     currentPlan = JSON.parse(raw);
     
@@ -779,38 +759,38 @@ function renderPlan(plan) {
     h+=`</tbody></table></div></div></div>`;
   });
 
-    // HIPOPRESIVOS
-  if (plan.hipopresivos) {
-    h += `<div class="sec-title">Hipopresivos (Extra)</div><div class="hippos-sec">`;
-    if (Array.isArray(plan.hipopresivos)) {
-      plan.hipopresivos.forEach(p => {
-        h += `<div class="hipo-item"><strong>${p.nombre||''}</strong> <span class="hipo-plano">(${p.plano||''})</span><p>${p.tecnica||''}</p></div>`;
+  h+=`<div class="plan-actions">
+    <button class="btn-outline" onclick="nuevoPlan()">← Nuevo plan</button>
+    <button class="btn-green" onclick="window.print()">Imprimir / PDF</button>
+  </div>`;
+  // HIPOPRESIVOS
+  if (currentPlan.hipopresivos) {
+    h += `<div style="font-size:1.05rem; font-weight:600; color:#4a9b7f; margin-top:2rem; margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.05em;">Hipopresivos (Extra)</div><div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; margin-bottom:1.5rem;">`;
+    if (Array.isArray(currentPlan.hipopresivos)) {
+      currentPlan.hipopresivos.forEach(p => {
+        h += `<div style="background:#d4f5e8; padding:10px; border-radius:6px; border-left:3px solid #86ECAD;"><strong style="color:#0D1F1A; display:block; margin-bottom:2px;">${p.nombre||''}</strong><span style="font-size:0.75rem; color:#4a9b7f; font-weight:500;">${p.plano||''}</span><p style="font-size:0.8rem; color:#888; margin:4px 0 0 0; line-height:1.4;">${p.tecnica||''}</p></div>`;
       });
     }
     h += `</div>`;
   }
 
   // MUSCLE RELEASE
-  if (plan.muscle_release) {
-    h += `<div class="sec-title">Liberación Miofascial (Extra)</div><div class="release-sec">`;
-    Object.entries(plan.muscle_release).forEach(([k, v]) => {
-      h += `<div class="release-item"><strong>${k.toUpperCase()}</strong><p>${v}</p></div>`;
+  if (currentPlan.muscle_release) {
+    h += `<div style="font-size:1.05rem; font-weight:600; color:#4a9b7f; margin-top:2rem; margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.05em;">Liberación Miofascial (Extra)</div><div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:10px; margin-bottom:1.5rem;">`;
+    Object.entries(currentPlan.muscle_release).forEach(([k, v]) => {
+      h += `<div style="background:#f5f5f5; padding:10px; border-radius:6px; border-top:2px solid #0D1F1A;"><strong style="color:#2a4d47; font-size:0.8rem; display:block; margin-bottom:4px; text-transform:uppercase;">${k}</strong><p style="font-size:0.75rem; color:#888; margin:0; line-height:1.5;">${v}</p></div>`;
     });
     h += `</div>`;
   }
 
   // CARDIO
-  if (plan.cardio) {
-    h += `<div class="sec-title">Cardio Sugerido</div><div class="cardio-box">${plan.cardio}</div>`;
+  if (currentPlan.cardio) {
+    h += `<div style="font-size:1.05rem; font-weight:600; color:#4a9b7f; margin-top:2rem; margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.05em;">Cardio Sugerido</div><div style="background:#0D1F1A; color:#fff; padding:12px; border-radius:6px; font-size:0.9rem; line-height:1.6; margin-bottom:1.5rem;">${currentPlan.cardio}</div>`;
   }
 
   // MÚSCULOS
-  h += `<div class="sec-title">Referencia de Músculos</div><div class="muscles-box"><img src="musculos_resaltados.png" alt="Músculos" class="muscles-img" /></div>`;
+  h += `<div style="font-size:1.05rem; font-weight:600; color:#4a9b7f; margin-top:2rem; margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.05em;">Referencia de Músculos</div><div style="background:#f5f5f5; padding:12px; border-radius:6px; margin-bottom:1.5rem;"><img src="musculos_resaltados.png" alt="Músculos" style="max-width:100%; height:auto; width:100%; border-radius:6px; display:block;" /></div>`;
 
-  h+=`<div class="plan-actions">
-    <button class="btn-outline" onclick="nuevoPlan()">← Nuevo plan</button>
-    <button class="btn-green" onclick="window.print()">Imprimir / PDF</button>
-  </div>`;
   document.getElementById('planOutput').innerHTML = h;
   cargarDatos();
 }

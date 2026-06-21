@@ -813,7 +813,7 @@ CRÍTICO:
 - Generar EXACTAMENTE ${semanas} semana(s). Cada semana = ${S.dias||3} días de entrenamiento.
 - Hip thrust: Sem1-2→máquina/Smith, Sem3-4→barra banco, Sem5+→barra rango completo
 - Rotación humeral: Codo FIJO rodilla. SOLO húmero rota (arriba-abajo).
-- Responde SOLO JSON, sin preamble. Max 7-8 ejercicios/día.
+- Responde SOLO JSON válido, sin preamble. Max 7-8 ejercicios/día. JSON válido: sin comas antes de } o ].
 - musculos_principales y musculos_accesorios: máximo 2 elementos cada uno, nombres cortos (ej: "Glúteo mayor").
 - cardio: 1 frase breve y específica al objetivo del usuario.
 
@@ -831,6 +831,7 @@ JSON structure:
     const data = await res.json();
     let raw = data.message || '';
     raw = raw.replace(/```json|```/g,'').trim();
+    raw = raw.replace(/,(\s*[}\]])/g, '$1'); // limpia comas sobrantes antes de } o ]
     currentPlan = JSON.parse(raw);
     
     // POST-PROCESAMIENTO: Inyectar descripciones del BANCO MAESTRO

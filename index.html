@@ -466,7 +466,8 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
       <p class="loading-msg" id="loadingMsg">Analizando tu perfil...</p>
     </div>
     <div class="gen-error" id="genError">
-      <p id="genErrorMsg"></p>
+      <textarea id="genErrorMsg" readonly rows="8" style="width:100%; font-family:monospace; font-size:0.75rem; background:#fff; color:#333; border:1px solid #ccc; border-radius:6px; padding:8px; resize:vertical; box-sizing:border-box;"></textarea>
+      <button class="btn-back" onclick="copiarError(this)" style="margin-bottom:8px;">📋 Copiar error</button>
       <button class="btn-back" onclick="go(-1)">← Volver</button>
     </div>
   </div>
@@ -857,15 +858,22 @@ JSON structure:
     const m = /position (\d+)/.exec(e.message||'');
     if (m && raw) {
       const pos = parseInt(m[1]);
-      const inicio = Math.max(0, pos-100);
-      const fragmento = raw.substring(inicio, pos+100);
+      const inicio = Math.max(0, pos-60);
+      const fragmento = raw.substring(inicio, pos+300);
       detalle += '\n\nFRAGMENTO PROBLEMÁTICO (cópialo y compártelo):\n' + fragmento;
     }
     const msgEl = document.getElementById('genErrorMsg');
-    msgEl.style.whiteSpace = 'pre-wrap';
-    msgEl.style.textAlign = 'left';
-    msgEl.style.fontSize = '0.78rem';
-    msgEl.textContent = detalle;
+    msgEl.value = detalle;
+  }
+}
+function copiarError(btn) {
+  const el = document.getElementById('genErrorMsg');
+  el.focus(); el.select();
+  const ok = () => { const t = btn.textContent; btn.textContent = '✓ Copiado'; setTimeout(()=>btn.textContent = t, 2000); };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(el.value).then(ok).catch(() => { document.execCommand('copy'); ok(); });
+  } else {
+    document.execCommand('copy'); ok();
   }
 }
 

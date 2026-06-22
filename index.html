@@ -820,6 +820,7 @@ CRÍTICO:
 JSON structure:
 {"resumen":"1-2 frases","progresion":[{"sem":"Semana 1","rir":"3-4","fase":"Aprendizaje"}],"dias":[{"titulo":"Día 1","enfasis":"pierna","dur":"50","ejercicios":[{"tipo":"Fuerza","nom":"exacto banco","series":"3","reps":"10","rir":"2","descanso":"90","musculos_principales":["Glúteo mayor"],"musculos_accesorios":["Isquiotibiales"]}]}],"cardio":"1 frase breve"}`
 
+  let raw = '';
   try {
     const res = await fetch('/api/claude', {
       method:'POST',
@@ -829,7 +830,7 @@ JSON structure:
     clearInterval(loadTimer);
     if (!res.ok) { const e = await res.json(); throw new Error(e.error||`Error ${res.status}`); }
     const data = await res.json();
-    let raw = data.message || '';
+    raw = data.message || '';
     raw = raw.replace(/```json|```/g,'').trim();
     raw = raw.replace(/,(\s*[}\]])/g, '$1'); // limpia comas sobrantes antes de } o ]
     currentPlan = JSON.parse(raw);
@@ -852,7 +853,19 @@ JSON structure:
     clearInterval(loadTimer);
     document.getElementById('loadingWrap').style.display='none';
     document.getElementById('genError').style.display='block';
-    document.getElementById('genErrorMsg').textContent='Error: '+e.message;
+    let detalle = 'Error: '+e.message;
+    const m = /position (\d+)/.exec(e.message||'');
+    if (m && raw) {
+      const pos = parseInt(m[1]);
+      const inicio = Math.max(0, pos-100);
+      const fragmento = raw.substring(inicio, pos+100);
+      detalle += '\n\nFRAGMENTO PROBLEMÁTICO (cópialo y compártelo):\n' + fragmento;
+    }
+    const msgEl = document.getElementById('genErrorMsg');
+    msgEl.style.whiteSpace = 'pre-wrap';
+    msgEl.style.textAlign = 'left';
+    msgEl.style.fontSize = '0.78rem';
+    msgEl.textContent = detalle;
   }
 }
 

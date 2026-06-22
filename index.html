@@ -815,11 +815,11 @@ CRÍTICO:
 - Hip thrust: Sem1-2→máquina/Smith, Sem3-4→barra banco, Sem5+→barra rango completo
 - Rotación humeral: Codo FIJO rodilla. SOLO húmero rota (arriba-abajo).
 - Responde SOLO JSON válido, sin preamble. Max 7-8 ejercicios/día. JSON válido: sin comas antes de } o ].
-- musculos_principales y musculos_accesorios: máximo 2 elementos cada uno, nombres cortos (ej: "Glúteo mayor").
+- musculos_principales y musculos_accesorios: SOLO 1 elemento cada uno (no más), nombre corto (ej: "Glúteo mayor").
 - cardio: 1 frase breve y específica al objetivo del usuario.
 
 JSON structure:
-{"resumen":"1-2 frases","progresion":[{"sem":"Semana 1","rir":"3-4","fase":"Aprendizaje"}],"dias":[{"titulo":"Día 1","enfasis":"pierna","dur":"50","ejercicios":[{"tipo":"Fuerza","nom":"exacto banco","series":"3","reps":"10","rir":"2","descanso":"90","musculos_principales":["Glúteo mayor"],"musculos_accesorios":["Isquiotibiales"]}]}],"cardio":"1 frase breve"}`
+{"resumen":"1-2 frases","progresion":[{"sem":"Semana 1","rir":"3-4","fase":"Aprendizaje","nota":"breve, 4-6 palabras"}],"dias":[{"titulo":"Día 1","enfasis":"pierna","dur":"50","ejercicios":[{"tipo":"Fuerza","nom":"exacto banco","series":"3","reps":"10","rir":"2","descanso":"90","musculos_principales":["Glúteo mayor"],"musculos_accesorios":["Isquiotibiales"]}]}],"cardio":"1 frase breve"}`
 
   let raw = '';
   try {

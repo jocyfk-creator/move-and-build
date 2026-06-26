@@ -202,6 +202,15 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
   display:none; align-items:center; gap:4px; }
 .timer-disp.show { display:flex; }
 
+.cardio-opt { background:var(--mint-pale); border:1.5px solid transparent; border-radius:8px;
+  padding:12px; cursor:pointer; transition:all 0.15s; text-align:center; }
+.cardio-opt:hover { border-color:var(--mint); }
+.cardio-opt:active { transform:scale(0.97); }
+.cardio-opt-title { font-weight:600; color:var(--mint-deep); font-size:0.85rem; margin-bottom:4px; }
+.cardio-opt-desc { font-size:0.72rem; color:var(--muted); line-height:1.4; margin-bottom:8px; }
+.cardio-opt-count { font-size:0.72rem; font-weight:600; color:var(--ink-soft); background:var(--card);
+  border-radius:100px; padding:3px 10px; display:inline-block; }
+
 .stat-pill { display:inline-block; font-family:'DM Mono',monospace; font-size:0.72rem;
   padding:2px 7px; border-radius:5px; background:var(--cream); color:var(--ink-soft); white-space:nowrap; }
 
@@ -426,7 +435,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
       <strong>⚠️ LESIÓN:</strong> Si tienes lesión, especifícala. El programa lo considerará, pero REVISA ANTES DE HACER. Si ves algo riesgoso, cámbialo.
     </div>
     <div style="background:#fff3cd; border-left:4px solid #ffc107; padding:12px; margin-bottom:1rem; border-radius:4px; font-size:0.85rem; color:#856404; line-height:1.5;">
-      <strong>⚠️ DURACIÓN:</strong> Es estimada. Puede variar ±15 min según tu ritmo y descansos reales.
+      <strong>⚠️ DURACIÓN:</strong> Es estimada. Puede variar según tu ritmo, tus descansos reales, tu recuperación entre series, y si en el gimnasio tienes que esperar máquinas ocupadas. Cada persona es distinta — ajusta sin culpa.
     </div>
     <div style="background:#fff3cd; border-left:4px solid #ffc107; padding:12px; margin-bottom:1rem; border-radius:4px; font-size:0.85rem; color:#856404; line-height:1.5;">
       <strong>⚠️ PROGRESIÓN:</strong> El plan se genera automáticamente. Si algo no tiene sentido entre semanas, ajusta manualmente.
@@ -1002,10 +1011,10 @@ BANCO disponible para tu lugar de entrenamiento (usar SOLO nombres EXACTOS de es
 CRÍTICO:
 - Generar EXACTAMENTE ${semanas} semana(s). Cada semana = ${S.dias||3} días de entrenamiento.
 - Cada día lleva su número de "semana" (1, 2, 3...) según a qué semana pertenece. "titulo" es solo "Día 1", "Día 2"... (sin repetir la semana, ya va en su propio campo).
-- Cada día DEBE incluir: 2-3 ejercicios tipo "Movilidad" y 1 ejercicio tipo "Activación" (activación previa de baja carga antes de la fuerza). Esto aplica a TODOS los días, no solo algunos.
+- Cada día DEBE incluir: 2-3 ejercicios tipo "Movilidad", 1 ejercicio tipo "Activación" y 2 ejercicios tipo "Core". Esto aplica a TODOS los días, no solo algunos.
 - Hip thrust: Sem1-2→máquina/Smith, Sem3-4→barra banco, Sem5+→barra rango completo
 - Rotación humeral: Codo FIJO rodilla. SOLO húmero rota (arriba-abajo).
-- Responde SOLO JSON válido, sin preamble. Max 7-8 ejercicios/día. JSON válido: sin comas antes de } o ].
+- Responde SOLO JSON válido, sin preamble. Max 9-10 ejercicios/día (deja espacio real para Fuerza después de Movilidad+Activación+Core). JSON válido: sin comas antes de } o ].
 - Para tipo "Fuerza": prioriza barra/mancuerna/máquina/kettlebell sobre ejercicios con banda/liga. Las bandas son para Movilidad y Activación, no para Fuerza — salvo que el lugar sea "casa sin material" (ahí no hay otra opción).
 - cardio_zona: elige UNA palabra exacta según el objetivo del usuario: "Recuperación" (baja intensidad/movilidad/salud general), "Quema grasa" (pérdida de grasa, tonificación), "Intervalo" (rendimiento, resistencia). Solo esa palabra, nada más.
 
@@ -1171,16 +1180,25 @@ function renderPlan(plan) {
   });
   h += `</div>`;
 
-  // CARDIO
-  if (currentPlan.cardio_zona) {
-    const CARDIO_TEXTOS = {
-      "Recuperación": "20 min de cardio libre (elíptica, cinta o bici) a ritmo suave.",
-      "Quema grasa": "20 min de cardio libre (elíptica, cinta o bici) a ritmo moderado.",
-      "Intervalo": "20 min de cardio libre (elíptica, cinta o bici) con intervalos de intensidad."
-    };
-    const zona = currentPlan.cardio_zona;
-    h += `<div style="font-size:1.05rem; font-weight:600; color:#4a9b7f; margin-top:2rem; margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.05em;">Cardio Sugerido</div><div style="background:#0D1F1A; color:#fff; padding:12px; border-radius:6px; font-size:0.9rem; line-height:1.6; margin-bottom:1.5rem;"><span style="color:#86ECAD; font-weight:600;">${zona}</span> · ${CARDIO_TEXTOS[zona]||CARDIO_TEXTOS['Quema grasa']}</div>`;
-  }
+  // CARDIO — la persona marca qué hizo, no lo decide la IA ni un cálculo automático.
+  // Cada marca queda guardada (contador por zona) para sumarse al volumen de entrenamiento más adelante.
+  const CARDIO_TEXTOS = {
+    "Recuperación": "20 min de cardio libre (elíptica, cinta o bici) a ritmo suave.",
+    "Quema grasa": "20 min de cardio libre (elíptica, cinta o bici) a ritmo moderado.",
+    "Intervalo": "20 min de cardio libre (elíptica, cinta o bici) con intervalos de intensidad."
+  };
+  h += `<div style="font-size:1.05rem; font-weight:600; color:#4a9b7f; margin-top:2rem; margin-bottom:0.5rem; text-transform:uppercase; letter-spacing:0.05em;">Cardio (Extra)</div>`;
+  h += `<p style="font-size:0.85rem; color:#555; margin-bottom:1rem; line-height:1.5;">Esto es opcional, además de tu entreno. Cuando hagas una sesión, toca la zona que corresponda — queda registrado.</p>`;
+  h += `<div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:10px; margin-bottom:1.5rem;">`;
+  Object.keys(CARDIO_TEXTOS).forEach(z => {
+    const zid = z.replace(/[^a-zA-Z]/g,'');
+    h += `<div class="cardio-opt" data-zona="${z}" onclick="marcarCardio(this)">
+      <div class="cardio-opt-title">${z}</div>
+      <div class="cardio-opt-desc">${CARDIO_TEXTOS[z]}</div>
+      <div class="cardio-opt-count" id="cardio_count_${zid}">0 sesiones</div>
+    </div>`;
+  });
+  h += `</div>`;
 
   document.getElementById('planOutput').innerHTML = h;
   cargarDatos();
@@ -1224,11 +1242,36 @@ function guardar(id) {
   localStorage.setItem('mb_s_'+id,v);
   if(pr) localStorage.setItem('mb_p_'+id,pr);
   const ok=document.getElementById('ok_'+id);
-  if(ok){ ok.style.display='inline'; setTimeout(()=>ok.style.display='none',2000); }
+  if(ok){
+    ok.style.display='inline';
+    const ta=document.getElementById(id);
+    const pi=document.getElementById('pr_'+id);
+    const ocultar=()=>{ ok.style.display='none'; };
+    if(ta) ta.oninput=ocultar;
+    if(pi) pi.oninput=ocultar;
+  }
 }
+function marcarCardio(el) {
+  const zona = el.dataset.zona;
+  const key = 'mb_cardio_'+zona;
+  const count = (parseInt(localStorage.getItem(key))||0) + 1;
+  localStorage.setItem(key, count);
+  actualizarCardioUI();
+}
+function actualizarCardioUI() {
+  document.querySelectorAll('.cardio-opt').forEach(el=>{
+    const zona = el.dataset.zona;
+    const zid = zona.replace(/[^a-zA-Z]/g,'');
+    const count = parseInt(localStorage.getItem('mb_cardio_'+zona))||0;
+    const span = document.getElementById('cardio_count_'+zid);
+    if (span) span.textContent = count + (count===1 ? ' sesión' : ' sesiones');
+  });
+}
+
 function cargarDatos() {
   document.querySelectorAll('.sens-ta').forEach(ta=>{
-    const v=localStorage.getItem('mb_s_'+ta.id); if(v) ta.value=v;
+    const v=localStorage.getItem('mb_s_'+ta.id);
+    if(v){ ta.value=v; const ok=document.getElementById('ok_'+ta.id); if(ok){ ok.style.display='inline'; ta.oninput=()=>ok.style.display='none'; } }
   });
   document.querySelectorAll('.peso-inp').forEach(inp=>{
     const id=inp.id.replace('pr_','');
@@ -1238,6 +1281,7 @@ function cargarDatos() {
     const key = 'mb_serie_'+chip.dataset.sid+'_'+chip.dataset.i;
     if (localStorage.getItem(key)) chip.classList.add('done');
   });
+  actualizarCardioUI();
 }
 
 const mbTimers = {};

@@ -191,6 +191,17 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
 .ex-name::after { content:'ⓘ'; font-size:0.7rem; color:var(--mint); opacity:0.7; }
 .ex-muscles { font-size:0.72rem; color:var(--muted); margin-top:2px; }
 
+/* Checkboxes de serie + cronómetro de descanso */
+.serie-row { display:flex; align-items:center; gap:5px; margin-top:6px; flex-wrap:wrap; }
+.serie-chip { width:22px; height:22px; border-radius:50%; border:1.5px solid var(--border);
+  display:flex; align-items:center; justify-content:center; font-size:0.68rem; font-weight:600;
+  color:var(--muted); cursor:pointer; transition:all 0.15s; background:var(--paper); user-select:none; }
+.serie-chip:hover { border-color:var(--mint); }
+.serie-chip.done { background:var(--mint); border-color:var(--mint); color:#fff; }
+.timer-disp { font-size:0.72rem; font-weight:600; color:var(--mint-deep); margin-top:4px;
+  display:none; align-items:center; gap:4px; }
+.timer-disp.show { display:flex; }
+
 .stat-pill { display:inline-block; font-family:'DM Mono',monospace; font-size:0.72rem;
   padding:2px 7px; border-radius:5px; background:var(--cream); color:var(--ink-soft); white-space:nowrap; }
 
@@ -570,192 +581,361 @@ function go(d) {
 
 // DESCRIPCIONES DINÁMICAS POR EJERCICIO Y NIVEL
 const BANCO_MAESTRO = {
-  "Hip thrust con barra": "Eleva la cadera apoyando la espalda en un banco hasta alinear hombros, cadera y rodillas.",
-  "Glute bridge con barra": "Eleva la cadera desde el suelo apretando los glúteos al final.",
-  "Hip thrust unilateral": "Versión a una pierna del hip thrust para mejorar fuerza y estabilidad.",
-  "Sentadilla búlgara con mancuerna": "Pierna trasera elevada; desciende controladamente sobre la pierna delantera.",
-  "Sentadilla búlgara goblet": "Sentadilla búlgara sujetando una mancuerna frente al pecho.",
-  "Sentadilla libre barra alta": "Sentadilla con barra apoyada sobre trapecios, manteniendo el tronco erguido.",
-  "Sentadilla goblet": "Sentadilla sujetando una mancuerna o kettlebell frente al pecho.",
-  "Sentadilla con rebote": "Realiza una pequeña pausa o rebote controlado en la parte baja antes de subir.",
-  "Sentadilla + curtsy lunge con disco": "Combina una sentadilla con una zancada cruzada hacia atrás.",
-  "Rack kettlebell squat": "Sentadilla con una o dos kettlebells apoyadas cerca de los hombros.",
-  "Sentadilla Cossack con mancuerna": "Desplaza el peso lateralmente mientras una pierna se flexiona y la otra permanece extendida.",
-  "Prensa unilateral": "Empuja la plataforma de prensa utilizando una sola pierna.",
-  "Step up con mancuerna": "Sube a un cajón o banco impulsándote con una pierna.",
-  "Peso muerto rumano unilateral": "Bisagra de cadera a una pierna manteniendo el equilibrio.",
-  "Peso muerto rumano bilateral": "Empuja la cadera atrás manteniendo la espalda neutra.",
-  "Peso muerto sumo": "Peso muerto con postura amplia y puntas ligeramente abiertas.",
-  "Pull through en polea": "Tira de la polea entre las piernas extendiendo la cadera.",
-  "Patada glúteo en polea": "Extiende la pierna hacia atrás contra la resistencia de la polea.",
-  "Curl femoral tumbado": "Flexiona las rodillas llevando los talones hacia los glúteos.",
-  "Curl femoral fitball": "Acerca el balón hacia el cuerpo flexionando las rodillas.",
-  "KB Swing unilateral": "Balancea una kettlebell con una mano usando el impulso de la cadera.",
-  "Skiier swings con disco": "Balanceo explosivo del disco simulando el gesto de un esquiador.",
-  "Extensión de cadera en máquina": "Empuja hacia atrás activando principalmente el glúteo.",
-  "Abducción de cadera en máquina": "Separa las piernas contra la resistencia de la máquina.",
-  "Clamshell con liga": "Abre las rodillas manteniendo los pies juntos y la pelvis estable.",
-  "Hiperextensión": "Eleva el tronco desde una posición inclinada usando glúteos y espalda.",
-  "Gemelos en prensa": "Realiza flexión plantar empujando únicamente con los pies.",
-  "Box jumps": "Salta explosivamente sobre un cajón.",
-  "HIIT Drop Squats con disco": "Sentadilla rápida llevando el disco al suelo y recuperando la posición.",
-  "Ball Wall Lateral": "Empuja una pelota contra la pared mientras estabilizas lateralmente el cuerpo.",
-  "Press banca con barra": "Empuja la barra desde el pecho hasta extender los brazos.",
-  "Press inclinado con mancuernas": "Empuje sobre banco inclinado para enfatizar el pecho superior.",
-  "Flexiones pliométricas": "Flexiones explosivas con impulso donde las manos despegan del suelo.",
-  "Cruce de poleas ascendente": "Lleva las manos desde abajo hacia delante y arriba.",
-  "Jalón al pecho": "Tira de la barra hacia la parte superior del pecho.",
-  "Jalón unilateral": "Realiza el jalón con un solo brazo.",
-  "Remo Gironda unilateral": "Remo hacia la cadera manteniendo el torso estable.",
-  "Remo Seal con mancuernas": "Remo tumbado boca abajo sobre banco.",
-  "Remo barra 90°": "Remo inclinado con tronco paralelo al suelo.",
-  "Pullover en polea": "Lleva los brazos extendidos hacia las caderas.",
-  "Australian Pull-Ups": "Remo invertido utilizando una barra fija.",
-  "Face Pull": "Tira de la cuerda hacia la cara separando las manos.",
-  "Reverse Pec Deck": "Abre los brazos hacia atrás en máquina.",
-  "Press de hombro con mancuernas": "Empuja las mancuernas por encima de la cabeza.",
-  "Elevaciones laterales": "Eleva los brazos lateralmente hasta la altura de los hombros.",
-  "Elevaciones laterales en polea": "Mismo patrón utilizando polea.",
-  "Elevaciones lateral + frontal alternas": "Alterna elevaciones laterales y frontales.",
-  "Deltoides posterior en máquina": "Abre los brazos hacia atrás controladamente.",
-  "Landmine Thruster": "Sentadilla seguida de un empuje explosivo del landmine.",
-  "Samurai Pulls": "Tirón diagonal desde polea enfatizando control escapular.",
-  "Ball Pushes": "Empuja una pelota contra una superficie manteniendo estabilidad del hombro.",
-  "Curl bíceps con mancuernas": "Flexiona los codos elevando las mancuernas.",
-  "Skull Crusher": "Extiende los codos llevando la carga desde la frente.",
-  "Extensión tríceps en polea": "Empuja la polea hacia abajo extendiendo los brazos.",
-  "Patada de tríceps": "Extiende el codo con el brazo pegado al cuerpo.",
-  "Press francés en máquina": "Extensión de codos utilizando una máquina guiada.",
-  "Plancha frontal": "Mantén una línea recta apoyado sobre antebrazos y pies.",
-  "Plancha inversa con toque rodilla": "Desde posición invertida, acerca una rodilla hacia el cuerpo.",
-  "Press Pallof con liga": "Empuja la banda al frente evitando girar el tronco.",
-  "Rollouts con barra": "Desliza la barra alejándola del cuerpo y vuelve controladamente.",
-  "Russian Twist con disco": "Rota el tronco llevando el disco de un lado a otro.",
-  "Pike en fitball": "Eleva la cadera acercando el balón hacia las manos.",
-  "McGill Crunch": "Elevación corta del tronco manteniendo la columna neutra.",
-  "Elevación de piernas colgada": "Eleva las piernas manteniendo el control del balanceo.",
-  "KB Windmill": "Flexión lateral manteniendo una kettlebell elevada.",
-  "Cat-Cow": "Alterna flexión y extensión suave de la columna.",
-  "Cossack Squat": "Sentadilla lateral profunda para movilidad de cadera.",
-  "Flexión tobillo-rodilla en lunge": "Lleva la rodilla hacia delante mejorando la dorsiflexión.",
-  "Balanceo de pierna": "Oscila la pierna adelante-atrás o lateralmente.",
-  "Rotación humeral con peso": "Rota el brazo desde el hombro manteniendo el codo fijo.",
-  "Prone Snow Angels": "Desliza los brazos sobre el suelo simulando un ángel de nieve.",
-  "Runner's Lunge with Reach": "Zancada larga con alcance del brazo para abrir cadera y tórax.",
-  "Leg Rockback": "Lleva la cadera hacia atrás desde cuadrupedia.",
-  "Hip 90-90": "Rotaciones de cadera entre dos posiciones de 90°.",
-  "Shoulder Swim unilateral": "Movimiento circular controlado del hombro con un brazo.",
-  "Side to Side Bounds": "Saltos laterales de una pierna a otra.",
-  "Burpee sin salto": "Burpee eliminando el salto final.",
-  "Bench Over Jumps": "Saltos laterales pasando por encima de un banco.",
-  "Jumping Jacks": "Saltos abriendo y cerrando brazos y piernas.",
-  "Tuck Jumps": "Salto vertical llevando las rodillas al pecho.",
-  "Lunge Drop": "Cambio rápido de zancadas descendiendo explosivamente.",
-  "Pulse Jump Squats": "Pequeños rebotes en sentadilla seguidos de un salto.",
-  "Sentadilla frontal con barra": "Barra apoyada delante de los hombros para enfatizar cuádriceps.",
-  "Sentadilla Zercher": "Barra sostenida en los pliegues de los codos.",
-  "Sentadilla caja (Box Squat)": "Sentadilla controlada tocando una caja o banco.",
-  "Sissy Squat": "Flexión de rodillas manteniendo el cuerpo alineado.",
-  "Walking Lunges": "Zancadas avanzando de forma continua.",
-  "Frog Pumps": "Puente de glúteo con plantas de los pies juntas.",
-  "Single Leg Glute Bridge": "Puente de glúteo a una pierna.",
-  "Good Morning con barra": "Bisagra de cadera con barra apoyada sobre la espalda.",
-  "Good Morning con banda": "Versión con resistencia elástica.",
-  "Nordic Curl": "Descenso controlado utilizando los isquiotibiales.",
-  "Slider Leg Curl": "Curl femoral utilizando discos o toallas deslizantes.",
-  "Monster Walk": "Caminar con banda manteniendo tensión lateral.",
-  "Lateral Band Walk": "Desplazamiento lateral con minibanda.",
-  "Fire Hydrant": "Elevación lateral de rodilla en cuadrupedia.",
-  "Donkey Kicks": "Patada de glúteo desde cuadrupedia.",
-  "Elevación gemelos unilateral": "Trabajo de una sola pierna.",
-  "Farmer Walk en puntillas": "Caminar sobre las puntas cargando peso.",
-  "Saltos de tobillo (Pogo Jumps)": "Pequeños rebotes rápidos usando solo tobillos.",
-  "Press militar barra": "Empuje vertical desde hombros.",
-  "Press Arnold": "Rotación durante el empuje.",
-  "Press mancuernas neutro": "Empuje con agarre neutro.",
-  "Press suelo (Floor Press)": "Press tumbado en el suelo.",
-  "Fondos en paralelas": "Empuje utilizando el peso corporal.",
-  "Flexiones inclinadas": "Flexiones con manos elevadas.",
-  "Flexiones diamante": "Mayor participación del tríceps.",
-  "Aperturas con mancuernas": "Movimiento de apertura y cierre para pectoral.",
-  "Dominadas pronas": "Tracción vertical con agarre prono.",
-  "Chin Ups": "Dominadas con agarre supino.",
-  "Dominadas neutras": "Dominadas con agarre paralelo.",
-  "Remo mancuerna unilateral": "Remo clásico a una mano.",
-  "Remo pecho apoyado": "Remo con soporte para reducir estrés lumbar.",
-  "Remo TRX": "Remo utilizando suspensión.",
-  "Pulldown brazos rectos": "Jalón sin flexionar codos.",
-  "Scapular Pull Ups": "Trabajo específico de escápulas.",
-  "Press Z sentado": "Press sentado en el suelo.",
-  "Press unilateral mancuerna": "Trabajo independiente de cada brazo.",
-  "Elevación frontal mancuerna": "Elevación frontal del brazo.",
-  "Elevación frontal alterna": "Trabajo unilateral alternado.",
-  "Cuban Press": "Rotación externa más press.",
-  "Y Raise": "Elevación en forma de Y.",
-  "T Raise": "Elevación en forma de T.",
-  "W Raise": "Elevación en forma de W.",
-  "Wall Slides": "Deslizamientos de brazos en pared.",
-  "Curl martillo": "Curl con agarre neutro.",
-  "Curl inclinado": "Curl sentado en banco inclinado.",
-  "Curl concentración": "Trabajo unilateral apoyado.",
-  "Curl en polea baja": "Resistencia continua.",
-  "Curl tipo drag": "Codos hacia atrás durante el recorrido.",
-  "Fondos en banco": "Empuje utilizando banco.",
-  "Extensión unilateral overhead": "Extensión por encima de la cabeza.",
-  "Press cerrado": "Press enfatizando tríceps.",
-  "Pressdown cuerda": "Extensión de tríceps con cuerda.",
-  "Dead Bug": "Extensión alterna de brazo y pierna.",
-  "Hollow Hold": "Posición isométrica en forma de barco.",
-  "Bear Hold": "Cuadrupedia suspendida.",
-  "Pallof Walkout": "Alejarse del anclaje manteniendo tensión.",
-  "Bird Dog": "Extensión cruzada en cuadrupedia.",
-  "Renegade Row": "Plancha con remo alternado.",
-  "Side Plank": "Plancha lateral.",
-  "Side Plank Reach Through": "Rotación controlada desde plancha lateral.",
-  "Suitcase Carry": "Caminar cargando peso en un solo lado.",
-  "World's Greatest Stretch": "Movilidad global de cadera y tórax.",
-  "Frog Stretch": "Movilidad de aductores.",
-  "Pigeon Stretch": "Estiramiento de glúteo profundo.",
-  "Hip Airplanes": "Control rotacional de cadera.",
-  "Thread The Needle": "Rotación torácica en cuadrupedia.",
-  "Open Book": "Rotación torácica en decúbito lateral.",
-  "Child's Pose": "Flexión relajada de columna.",
-  "Shoulder CARs": "Rotaciones articulares completas.",
-  "Banded Shoulder Dislocates": "Movilidad de hombro con banda.",
-  "Scapular Circles": "Control escapular activo.",
-  "Mountain Climbers": "Carrera horizontal en plancha.",
-  "Skater Jumps": "Saltos laterales amplios.",
-  "High Knees": "Carrera elevando rodillas.",
-  "Butt Kicks": "Carrera llevando talones a glúteos.",
-  "Squat Thrusts": "Burpee simplificado.",
-  "Plank Jacks": "Apertura y cierre de piernas en plancha.",
-  "Med Ball Slams": "Lanzamiento explosivo de balón al suelo.",
-  "Battle Ropes Alternas": "Ondas alternadas con cuerdas.",
-  "Sprint Shuttle": "Carreras cortas ida y vuelta.",
-  "Sentadilla española": "Banda gruesa detrás de las rodillas, mantén el tronco vertical mientras desciendes. Muy usada en rehabilitación de rodilla.",
-  "Terminal Knee Extension (TKE)": "Extiende la rodilla contra la resistencia de la banda para activar el vasto medial y estabilizar la rodilla.",
+  "Hip thrust con barra": "Apoya la parte inferior de las escápulas en un banco, pies al ancho de caderas, barra sobre la pelvis. Empuja el suelo con los talones y eleva la cadera hasta formar línea recta entre hombros, caderas y rodillas. Claves: Mentón ligeramente recogido. Tibias casi verticales arriba. Evita: Arquear la zona lumbar.",
+  "Glute bridge con barra": "Tumbado boca arriba con rodillas flexionadas y pies apoyados. Eleva la pelvis apretando los glúteos hasta alinear rodillas, cadera y hombros. Claves: Mantén las costillas bajas. Presiona el suelo con los talones. Evita: Empujar con la zona lumbar.",
+  "Hip thrust unilateral": "Igual que el hip thrust, pero una pierna permanece elevada. Impulsa la cadera usando solo la pierna de apoyo, pelvis nivelada todo el recorrido. Claves: Movimiento lento y estable. Evita: Dejar que la cadera rote.",
+  "Sentadilla búlgara con mancuerna": "Pie trasero apoyado en banco, pie delantero adelantado. Desciende flexionando cadera y rodilla delantera hasta paralelo, empuja el suelo para subir. Claves: Tronco ligeramente inclinado. Rodilla alineada con el segundo dedo del pie. Evita: Impulsarte con la pierna trasera.",
+  "Sentadilla búlgara goblet": "Igual que la búlgara, sujetando mancuerna o kettlebell delante del pecho. Mantén el peso pegado al torso. Claves: Codos orientados hacia abajo. Columna neutra. Evita: Perder estabilidad del tronco.",
+  "Sentadilla libre barra alta": "Barra sobre trapecios superiores, pies algo más abiertos que las caderas. Flexiona rodillas y caderas a la vez, bajando sin perder la neutralidad lumbar. Claves: Pecho abierto. Peso distribuido en toda la planta del pie. Evita: Perder la neutralidad lumbar.",
+  "Sentadilla goblet": "Desciende llevando la cadera entre los talones manteniendo el peso delante del pecho. Claves: Talones apoyados, pecho abierto, abdomen activo. Evita: Elevar talones o colapsar rodillas.",
+  "Sentadilla con rebote": "Realiza una sentadilla completa y añade un pequeño rebote controlado en la posición baja antes de iniciar el ascenso. El rebote debe mantenerse bajo tensión muscular. Claves: Mantén la espalda neutra. Rodillas alineadas con los pies. Rebote suave y controlado. Evita: Relajar la tensión abajo. Hundir la zona lumbar. Elevar talones.",
+  "Sentadilla + curtsy lunge con disco": "Realiza una sentadilla y, al incorporarte, lleva una pierna hacia atrás y cruzada en diagonal para ejecutar una zancada curtsy. Alterna ambos lados. Claves: Mantén pelvis estable. Controla la rodilla de apoyo. Tronco erguido. Evita: Colapsar rodilla hacia dentro. Perder equilibrio. Inclinar excesivamente el tronco.",
+  "Rack kettlebell squat": "Sostén una o dos kettlebells en posición rack junto a los hombros y realiza una sentadilla profunda manteniendo el torso vertical. Claves: Codos adelantados. Abdomen activo. Talones apoyados. Evita: Dejar caer los codos. Redondear espalda. Elevar talones.",
+  "Sentadilla Cossack con mancuerna": "Desde una postura amplia desplaza el peso lateralmente mientras una pierna se flexiona y la otra permanece extendida. Claves: Pecho elevado. Talón apoyado. Movimiento controlado. Evita: Perder movilidad de cadera. Elevar el talón. Redondear espalda.",
+  "Prensa unilateral": "Empuja la plataforma utilizando una sola pierna, controlando tanto la fase de subida como la de bajada. Claves: Pelvis estable. Recorrido completo. Rodilla alineada. Evita: Bloquear la rodilla. Despegar la cadera del respaldo.",
+  "Step up con mancuerna": "Sube a un banco o cajón impulsándote con la pierna apoyada y completa la extensión de cadera arriba. Claves: Apoya todo el pie. Controla la bajada. Mantén equilibrio. Evita: Impulsarse con la pierna de abajo. Caer bruscamente.",
+  "Peso muerto rumano unilateral": "Realiza una bisagra de cadera sobre una pierna mientras la otra se extiende hacia atrás para equilibrar el movimiento. Claves: Cadera nivelada. Espalda neutra. Movimiento lento. Evita: Rotar pelvis. Redondear espalda. Perder equilibrio por exceso de velocidad.",
+  "Peso muerto rumano bilateral": "Pies al ancho de caderas, barra o mancuernas delante de los muslos. Desplaza la cadera atrás con ligera flexión de rodillas, desciende hasta sentir tensión en isquiotibiales y vuelve extendiendo la cadera. Claves: Barra cerca del cuerpo. Espalda neutra. Evita: Redondear la espalda.",
+  "Peso muerto sumo": "Con una postura amplia y pies abiertos, eleva la carga extendiendo rodillas y caderas simultáneamente. Claves: Rodillas siguen la línea de los pies. Pecho abierto. Barra cerca del cuerpo. Evita: Redondear espalda. Separar la barra. Cerrar rodillas.",
+  "Pull through en polea": "Desde una bisagra de cadera, extiende las caderas empujando hacia delante mientras sujetas la cuerda de la polea entre las piernas. Claves: Movimiento desde la cadera. Glúteos activos. Columna neutra. Evita: Tirar con brazos. Arquear la espalda. Flexionar demasiado las rodillas.",
+  "Patada glúteo en polea": "Extiende la pierna hacia atrás contra la resistencia de la polea manteniendo el tronco estable. Claves: Mantén pelvis fija. Movimiento controlado. Contrae glúteos al final. Evita: Arquear la espalda. Balancear el cuerpo. Usar impulso.",
+  "Curl femoral tumbado": "Flexiona las rodillas acercando los talones a los glúteos y vuelve lentamente a la posición inicial. Claves: Mantén la pelvis apoyada. Recorrido controlado. Evita: Levantar la cadera. Usar inercia.",
+  "Curl femoral fitball": "Eleva la pelvis y acerca el balón al cuerpo flexionando las rodillas. Mantén la cadera elevada durante todo el movimiento. Claves: Glúteos activos. Movimiento fluido. Control lumbar. Evita: Dejar caer la pelvis. Mover el balón bruscamente.",
+  "KB Swing unilateral": "Balancea la kettlebell con una mano utilizando una potente extensión de cadera para generar el movimiento. Claves: Brazo relajado. Impulso desde la cadera. Abdomen activo. Evita: Levantar con el hombro. Redondear espalda. Sentadillear el movimiento.",
+  "Skiier swings con disco": "Balancea un disco entre las piernas y hacia delante mediante una extensión explosiva de cadera similar al gesto de esquí. Claves: Movimiento dinámico. Espalda neutra. Caderas potentes. Evita: Tirar con brazos. Perder alineación lumbar.",
+  "Extensión de cadera en máquina": "Empuja el soporte hacia atrás mediante una extensión de cadera controlada hasta completar la contracción del glúteo. Claves: Mantén pelvis estable. Controla la bajada. No arquees la espalda. Evita: Compensar con la zona lumbar. Recorrido excesivo.",
+  "Abducción de cadera en máquina": "Sentado en la máquina, separa las piernas contra la resistencia y vuelve lentamente a la posición inicial manteniendo el control. Claves: Movimiento controlado. Pelvis estable. Mantén tensión durante todo el recorrido. Evita: Balancear el tronco. Usar impulso. Soltar el peso al regresar.",
+  "Clamshell con liga": "Túmbate de lado, caderas y rodillas flexionadas ~45°, minibanda sobre las rodillas. Pies juntos, eleva la rodilla superior con rotación externa de cadera, sin mover la pelvis ni la lumbar. Claves: Pelvis estable. No rodar hacia atrás. Movimiento pequeño pero controlado. Evita: Abrir girando el tronco. Separar los pies. Compensar con la espalda.",
+  "Hiperextensión": "Desde un banco romano o máquina, inclina el tronco hacia delante y vuelve mediante una extensión de cadera controlada. Claves: Columna neutra. Movimiento desde la cadera. Glúteos activos. Evita: Hiperextender la espalda. Tirar con la zona lumbar.",
+  "Gemelos en prensa": "Coloca la punta de los pies sobre la plataforma y realiza flexión plantar completa elevando los talones. Claves: Máximo recorrido. Movimiento lento. Pausa arriba. Evita: Rebotar. Acortar recorrido. Flexionar rodillas excesivamente.",
+  "Box jumps": "Salta explosivamente sobre un cajón aterrizando de forma suave y estable. Baja controladamente antes de repetir. Claves: Aterrizaje silencioso. Rodillas alineadas. Usa la cadera para impulsar. Evita: Colapsar rodillas. Caer rígido. Elegir un cajón demasiado alto.",
+  "HIIT Drop Squats con disco": "Desciende rápidamente llevando el disco hacia el suelo y vuelve a incorporarte de forma explosiva manteniendo la técnica. Claves: Mantén el abdomen activo. Movimiento fluido. Control postural. Evita: Redondear la espalda. Perder alineación de rodillas.",
+  "Ball Wall Lateral": "Presiona una pelota contra la pared con el lateral del cuerpo mientras estabilizas pelvis y tronco. Claves: Mantén tensión constante. Cuerpo alineado. Respiración estable. Evita: Inclinarse excesivamente. Relajar el abdomen.",
+  "Press banca con barra": "Acostado en banco plano, baja la barra hasta el pecho y empuja hasta extender los brazos sin bloquear los codos. Claves: Escápulas retraídas. Pies firmes. Control de la barra. Evita: Rebotar en el pecho. Elevar hombros. Arquear en exceso.",
+  "Press inclinado con mancuernas": "Desde un banco inclinado, baja las mancuernas a ambos lados del pecho y empuja hacia arriba siguiendo un arco natural. Claves: Controla la bajada. Mantén hombros estables. Recorrido completo. Evita: Juntar las mancuernas golpeándolas. Encoger hombros.",
+  "Flexiones pliométricas": "Realiza una flexión explosiva generando suficiente fuerza para despegar las manos del suelo. Claves: Mantén cuerpo alineado. Aterriza suavemente. Core activo. Evita: Hundir la cadera. Perder control al aterrizar.",
+  "Cruce de poleas ascendente": "Lleva las manos desde una posición baja hacia delante y arriba describiendo un arco. Claves: Codos ligeramente flexionados. Movimiento amplio. Pecho elevado. Evita: Flexionar demasiado los codos. Balancear el cuerpo.",
+  "Jalón al pecho": "Desde polea alta, lleva la barra hacia la parte superior del pecho mediante depresión escapular y flexión de codos. Claves: Pecho abierto. Control escapular. Movimiento completo. Evita: Tirar detrás de la nuca. Balancearse. Tirar sólo con brazos.",
+  "Jalón unilateral": "Realiza el jalón con un solo brazo, permitiendo un mayor recorrido y control del movimiento. Claves: Mantén el tronco estable. Escápula activa. Recorrido completo. Evita: Rotar el cuerpo. Tirar con impulso.",
+  "Remo Gironda unilateral": "Lleva el codo hacia la cadera realizando una tracción controlada mientras mantienes el tronco estable. Claves: Inicia desde la escápula. Mantén el pecho abierto. Evita: Encoger hombros. Rotar el tronco.",
+  "Remo Seal con mancuernas": "Tumbado boca abajo sobre un banco elevado, realiza un remo llevando las mancuernas hacia el torso. Claves: Evita balanceos. Recorrido completo. Escápulas activas. Evita: Tirar con cuello. Acortar recorrido.",
+  "Remo barra 90°": "Inclina el tronco hasta quedar casi paralelo al suelo y lleva la barra hacia la parte baja del pecho o abdomen. Desciende de forma controlada. Claves: Espalda neutra. Abdomen activo. Barra cerca del cuerpo. Evita: Redondear la espalda. Incorporar el tronco para ayudar.",
+  "Pullover en polea": "Desde polea alta, lleva los brazos extendidos hacia las caderas mediante una extensión de hombro controlada. Claves: Brazos casi estirados. Movimiento desde los hombros. Core activo. Evita: Flexionar excesivamente los codos. Balancear el cuerpo.",
+  "Australian Pull-Ups": "Suspendido bajo una barra, lleva el pecho hacia ella manteniendo el cuerpo alineado. Claves: Escápulas activas. Cuerpo recto. Recorrido completo. Evita: Hundir la cadera. Tirar sólo con brazos.",
+  "Face Pull": "Tira de una cuerda hacia la cara separando las manos al final del recorrido. Claves: Codos altos. Retracción escapular. Movimiento controlado. Evita: Tirar hacia el pecho. Encoger hombros.",
+  "Reverse Pec Deck": "Sentado en la máquina, abre los brazos hacia atrás manteniendo una ligera flexión de codos. Claves: Pecho apoyado. Movimiento amplio. Control escapular. Evita: Impulsarse con el tronco. Encoger hombros.",
+  "Press de hombro con mancuernas": "Desde los hombros, empuja las mancuernas verticalmente hasta extender los brazos por encima de la cabeza. Claves: Abdomen activo. Muñecas alineadas. Control de la bajada. Evita: Arquear la zona lumbar. Elevar hombros excesivamente.",
+  "Elevaciones laterales": "Eleva los brazos lateralmente hasta la altura de los hombros y desciende lentamente. Claves: Codos ligeramente flexionados. Movimiento limpio. Evita: Balancear el cuerpo. Elevar por encima del hombro.",
+  "Elevaciones laterales en polea": "Igual que las elevaciones laterales tradicionales pero utilizando una polea para mantener tensión constante. Claves: Mantén tensión continua. Movimiento suave. Evita: Impulsarse con el tronco. Encoger hombros.",
+  "Elevaciones lateral + frontal alternas": "Alterna una elevación lateral y una frontal manteniendo el control en cada repetición. Claves: Movimiento independiente. Postura estable. Evita: Usar impulso. Subir demasiado rápido.",
+  "Deltoides posterior en máquina": "Empuja los brazos hacia atrás siguiendo el recorrido guiado de la máquina. Claves: Mantén el pecho apoyado. Movimiento controlado. Evita: Encoger hombros. Acortar recorrido.",
+  "Landmine Thruster": "Realiza una sentadilla y al subir transfiere la fuerza a un empuje explosivo del landmine por encima de la cabeza. Claves: Coordina piernas y brazos. Core activo. Evita: Empujar sólo con brazos. Perder alineación lumbar.",
+  "Samurai Pulls": "Desde polea, realiza un tirón diagonal hacia abajo enfatizando el control escapular y la estabilidad del tronco. Claves: Mantén hombros bajos. Movimiento fluido. Evita: Girar el tronco. Tirar con impulso.",
+  "Ball Pushes": "Empuja una pelota contra una pared o superficie manteniendo tensión constante y estabilidad escapular. Claves: Brazos activos. Escápulas estables. Core firme. Evita: Colapsar hombros. Relajar abdomen.",
+  "Curl bíceps con mancuernas": "Flexiona los codos llevando las mancuernas hacia los hombros sin mover el tronco. Claves: Codos pegados al cuerpo. Recorrido completo. Evita: Balancear el cuerpo. Adelantar los hombros.",
+  "Skull Crusher": "Acostado en banco, flexiona los codos llevando la carga hacia la frente y extiende nuevamente los brazos. Claves: Mantén codos estables. Movimiento controlado. Evita: Abrir los codos. Mover los hombros.",
+  "Extensión tríceps en polea": "De pie frente a la polea, extiende los codos empujando la barra o cuerda hacia abajo hasta completar la extensión. Regresa lentamente. Claves: Codos pegados al cuerpo. Hombros estables. Movimiento controlado. Evita: Abrir los codos. Balancear el tronco. Usar impulso.",
+  "Patada de tríceps": "Inclina ligeramente el tronco y lleva el brazo paralelo al cuerpo. Extiende el codo completamente y vuelve de forma controlada. Claves: Mantén el brazo fijo. Control total del recorrido. Evita: Mover el hombro. Balancear el brazo.",
+  "Press francés en máquina": "Desde la posición inicial con los brazos flexionados, extiende los codos siguiendo la trayectoria guiada de la máquina. Claves: Mantén los codos alineados. Movimiento completo. Evita: Acortar recorrido. Separar los codos.",
+  "Plancha frontal": "Apóyate sobre antebrazos y puntas de los pies manteniendo una línea recta entre hombros, cadera y tobillos. Claves: Abdomen activo. Glúteos contraídos. Cuello neutro. Evita: Hundir la cadera. Elevar demasiado la pelvis.",
+  "Plancha inversa con toque rodilla": "Desde una plancha invertida, eleva una rodilla hacia el pecho manteniendo la pelvis elevada y estable. Alterna ambos lados. Claves: Mantén la cadera alta. Movimiento controlado. Evita: Hundir la pelvis. Encoger hombros.",
+  "Press Pallof con liga": "Empuja la banda al frente resistiendo la rotación que genera la tensión lateral. Mantén la posición antes de regresar. Claves: Pelvis neutra. Costillas conectadas. Control respiratorio. Evita: Girar el tronco. Inclinarse lateralmente.",
+  "Rollouts con barra": "Desde rodillas o pies, rueda la barra hacia delante extendiendo el cuerpo y vuelve utilizando la fuerza del abdomen. Claves: Mantén la columna neutra. Controla el recorrido. Evita: Hundir la zona lumbar. Buscar demasiado rango.",
+  "Russian Twist con disco": "Sentado con ligera inclinación del tronco, rota el torso llevando el disco de un lado al otro. Claves: Movimiento desde el tronco. Abdomen activo. Evita: Mover sólo los brazos. Redondear la espalda.",
+  "Pike en fitball": "Desde una plancha con los pies sobre el balón, eleva la cadera acercando el balón hacia las manos. Claves: Hombros estables. Movimiento controlado. Evita: Doblar excesivamente las rodillas. Perder estabilidad.",
+  "McGill Crunch": "Tumbado boca arriba con una pierna flexionada, eleva ligeramente cabeza y hombros sin modificar la curva lumbar. Claves: Movimiento corto. Cuello relajado. Evita: Tirar del cuello. Elevar demasiado el tronco.",
+  "Elevación de piernas colgada": "Suspendido de una barra, eleva las piernas de forma controlada hasta el rango disponible. Desciende lentamente. Claves: Escápulas activas. Evita balanceos. Evita: Usar impulso. Arquear la espalda.",
+  "KB Windmill": "Con una kettlebell elevada sobre la cabeza, inclina el tronco lateralmente manteniendo el brazo vertical. Claves: Mantén la mirada en la pesa. Cadera estable. Evita: Flexionar el brazo superior. Perder alineación.",
+  "Cat-Cow": "Desde cuadrupedia alterna flexión y extensión de la columna movilizando cada segmento vertebral. Claves: Movimiento fluido. Coordina respiración. Evita: Mover sólo cuello o pelvis. Hacerlo demasiado rápido.",
+  "Cossack Squat": "Sentadilla lateral profunda desplazando el peso hacia una pierna mientras la otra permanece extendida. Claves: Pecho elevado. Talón apoyado. Evita: Elevar el talón. Redondear espalda.",
+  "Flexión tobillo-rodilla en lunge": "Desde una zancada, lleva la rodilla hacia delante sobre el pie para mejorar la movilidad del tobillo sin despegar el talón. Claves: Talón apoyado. Movimiento progresivo. Evita: Despegar el talón. Colapsar el pie.",
+  "Balanceo de pierna": "Balancea una pierna adelante-atrás o lateralmente de forma controlada para mejorar la movilidad dinámica de la cadera. Claves: Tronco estable. Movimiento progresivo. Mantén el equilibrio. Evita: Balancear todo el cuerpo. Movimientos bruscos.",
+  "Rotación humeral con peso": "Con una carga ligera, realiza rotaciones internas o externas desde el hombro manteniendo el codo estable. Claves: Poco peso. Movimiento lento. Control escapular. Evita: Compensar con el tronco. Utilizar exceso de carga.",
+  "Prone Snow Angels": "Tumbado boca abajo, desplaza los brazos desde la cintura hasta por encima de la cabeza formando un arco amplio. Claves: Abdomen activo. Cuello neutro. Movimiento fluido. Evita: Elevar excesivamente la cabeza. Encoger hombros.",
+  "Runner's Lunge with Reach": "Desde una zancada profunda, eleva y extiende un brazo favoreciendo la apertura de cadera y la movilidad torácica. Claves: Respira profundamente. Mantén estabilidad en piernas. Evita: Forzar la rotación. Perder alineación lumbar.",
+  "Leg Rockback": "Desde cuadrupedia, lleva la cadera hacia atrás acercándola a los talones y vuelve suavemente al inicio. Claves: Espalda neutra. Movimiento relajado. Evita: Redondear excesivamente la espalda.",
+  "Hip 90-90": "Sentado en el suelo con ambas piernas formando ángulos de 90°, rota las caderas alternando lados sin usar las manos si es posible. Claves: Mantén el tronco erguido. Movimiento desde la cadera. Evita: Compensar con la espalda. Perder alineación.",
+  "Shoulder Swim unilateral": "Realiza un movimiento circular amplio con un brazo buscando el máximo control articular posible. Claves: Movimiento lento. Hombro centrado. Evita: Compensar con el tronco. Encoger hombros.",
+  "Side to Side Bounds": "Salta lateralmente de una pierna a otra absorbiendo el impacto con control. Claves: Aterrizaje suave. Rodilla alineada. Evita: Colapsar la rodilla hacia dentro.",
+  "Burpee sin salto": "Desde pie, apoya las manos en el suelo, lleva los pies atrás, regresa y vuelve a incorporarte sin realizar salto final. Claves: Mantén el core activo. Movimiento fluido. Evita: Hundir la zona lumbar. Perder alineación.",
+  "Bench Over Jumps": "Salta lateralmente por encima de un banco o step aterrizando con control a cada lado. Claves: Usa ambos pies. Absorbe el impacto. Evita: Aterrizar rígido. Perder equilibrio.",
+  "Jumping Jacks": "Salta separando piernas y elevando brazos por encima de la cabeza, regresando después a la posición inicial. Claves: Ritmo constante. Coordinación. Evita: Aterrizajes bruscos. Mala sincronización.",
+  "Tuck Jumps": "Realiza un salto vertical llevando las rodillas hacia el pecho durante la fase aérea. Claves: Impulso explosivo. Aterrizaje suave. Evita: Perder control al aterrizar. Inclinar el tronco.",
+  "Lunge Drop": "Cambia rápidamente de una zancada a otra descendiendo de forma explosiva y controlada. Claves: Mantén alineación de rodillas. Tronco estable. Evita: Golpear la rodilla trasera contra el suelo.",
+  "Pulse Jump Squats": "Realiza pequeños rebotes en la parte baja de la sentadilla antes de ejecutar un salto vertical. Claves: Mantén tensión constante. Aterriza suavemente. Evita: Colapsar rodillas. Perder postura lumbar.",
+  "Sentadilla frontal con barra": "Coloca la barra sobre la parte frontal de los hombros, mantén los codos elevados y desciende en sentadilla manteniendo el torso vertical. Claves: Codos altos. Abdomen firme. Talones apoyados. Evita: Dejar caer los codos. Redondear espalda.",
+  "Sentadilla Zercher": "Sostén la barra en el pliegue de los codos y realiza una sentadilla profunda manteniendo el tronco erguido. Claves: Codos pegados al cuerpo. Abdomen activo. Pecho elevado. Evita: Redondear la espalda. Dejar caer los codos.",
+  "Sentadilla caja (Box Squat)": "Desciende hasta tocar suavemente una caja o banco con los glúteos y vuelve a incorporarte sin perder tensión. Claves: Controla la bajada. Mantén tensión al contactar con la caja. Evita: Sentarse completamente. Relajar el abdomen.",
+  "Sissy Squat": "Manteniendo el cuerpo alineado, flexiona las rodillas permitiendo que avancen mientras el tronco permanece relativamente recto. Claves: Mantén la tensión constante. Controla el recorrido. Evita: Doblar excesivamente la cadera. Perder equilibrio.",
+  "Walking Lunges": "Realiza zancadas avanzando de forma continua, alternando piernas en cada paso. Claves: Paso amplio. Tronco estable. Rodilla alineada. Evita: Pasos demasiado cortos. Inclinar el tronco.",
+  "Frog Pumps": "Acostado boca arriba con las plantas de los pies juntas, eleva la pelvis contrayendo los glúteos. Claves: Presiona las plantas entre sí. Mantén tensión arriba. Evita: Impulsar con la espalda. Acortar recorrido.",
+  "Single Leg Glute Bridge": "Realiza un puente de glúteo apoyando sólo una pierna mientras la otra permanece elevada. Claves: Pelvis estable. Extensión completa de cadera. Evita: Rotar la pelvis. Hundir la cadera.",
+  "Good Morning con barra": "Con la barra apoyada sobre la espalda, realiza una bisagra de cadera llevando el tronco hacia delante y regresando después. Claves: Espalda neutra. Rodillas ligeramente flexionadas. Evita: Redondear la espalda. Flexionar demasiado las rodillas.",
+  "Good Morning con banda": "Igual que la versión con barra, utilizando una banda elástica para generar resistencia. Claves: Mantén tensión constante. Control postural. Evita: Perder alineación lumbar. Realizar el movimiento demasiado rápido.",
+  "Nordic Curl": "Desde rodillas con los tobillos fijados, desciende lentamente utilizando la fuerza de los isquiotibiales para frenar la caída. Claves: Mantén el cuerpo alineado. Baja controladamente. Evita: Doblar la cadera. Dejarse caer.",
+  "Slider Leg Curl": "Tumbado boca arriba, desliza los pies hacia los glúteos manteniendo la pelvis elevada. Claves: Mantén la cadera arriba. Movimiento lento. Evita: Dejar caer la pelvis. Perder control del deslizamiento.",
+  "Monster Walk": "Minibanda sobre rodillas o tobillos. Flexión ligera de caderas y rodillas. Camina hacia delante manteniendo tensión constante, sin balancear el tronco. Claves: Pasos cortos. Rodillas apuntando al segundo dedo del pie. Evita: Arrastrar los pies. Perder tensión entre pasos.",
+  "Lateral Band Walk": "Desplázate lateralmente manteniendo la tensión de una banda elástica durante todo el recorrido. Claves: Pelvis estable. Pasos controlados. Evita: Balancear el tronco. Arrastrar los pies.",
+  "Fire Hydrant": "Desde cuadrupedia, eleva una rodilla lateralmente manteniendo la cadera estable. Claves: Mantén el abdomen activo. Movimiento limpio. Evita: Rotar la pelvis. Elevar demasiado la pierna.",
+  "Donkey Kicks": "Desde cuadrupedia, extiende la cadera empujando el pie hacia arriba o hacia atrás. Claves: Espalda neutra. Glúteo activo. Evita: Arquear la zona lumbar. Balancear el cuerpo.",
+  "Elevación gemelos unilateral": "Realiza una elevación de talón apoyándote sobre una sola pierna, buscando el máximo recorrido posible. Claves: Pausa arriba. Descenso completo. Evita: Rebotar. Acortar recorrido.",
+  "Farmer Walk en puntillas": "Camina manteniéndote sobre las puntas de los pies mientras sostienes cargas a ambos lados del cuerpo. Claves: Tronco erguido. Pasos cortos. Mantén los talones elevados. Evita: Apoyar los talones. Balancear excesivamente el cuerpo.",
+  "Saltos de tobillo (Pogo Jumps)": "Realiza pequeños saltos rápidos utilizando principalmente la articulación del tobillo y minimizando la flexión de rodillas. Claves: Contactos cortos con el suelo. Cuerpo alineado. Evita: Flexionar demasiado las rodillas. Saltar demasiado alto.",
+  "Press militar barra": "Desde los hombros, empuja la barra verticalmente por encima de la cabeza hasta extender completamente los brazos. Claves: Abdomen activo. Glúteos contraídos. Barra cerca del cuerpo. Evita: Arquear la zona lumbar. Separar la barra del eje corporal.",
+  "Press Arnold": "Inicia con las palmas orientadas hacia ti y rota los brazos durante el empuje hasta terminar con las palmas hacia delante. Claves: Movimiento fluido. Control de la rotación. Evita: Utilizar exceso de peso. Perder control de la trayectoria.",
+  "Press mancuernas neutro": "Empuja las mancuernas manteniendo las palmas enfrentadas durante todo el recorrido. Claves: Muñecas alineadas. Hombros estables. Evita: Abrir excesivamente los codos. Arquear la espalda.",
+  "Press suelo (Floor Press)": "Acostado en el suelo, baja las mancuernas o barra hasta que los codos contacten suavemente con el suelo y vuelve a empujar. Claves: Controla la bajada. Mantén tensión constante. Evita: Rebotar sobre el suelo. Abrir demasiado los codos.",
+  "Fondos en paralelas": "Desciende flexionando los codos y hombros hasta una profundidad segura y vuelve empujando hasta extender los brazos. Claves: Escápulas estables. Control del descenso. Evita: Hundir hombros. Descender más allá de la movilidad disponible.",
+  "Flexiones inclinadas": "Realiza una flexión con las manos apoyadas sobre una superficie elevada. Claves: Mantén una línea recta corporal. Core activo. Evita: Hundir la cadera. Sacar la cabeza hacia delante.",
+  "Flexiones diamante": "Coloca las manos juntas formando un triángulo bajo el pecho y realiza una flexión controlada. Claves: Codos cerca del cuerpo. Movimiento completo. Evita: Abrir excesivamente los codos. Hundir la pelvis.",
+  "Aperturas con mancuernas": "Desde banco plano o inclinado, abre los brazos en arco amplio y vuelve a cerrarlos sobre el pecho. Claves: Codos ligeramente flexionados. Movimiento controlado. Evita: Flexionar demasiado los codos. Bajar excesivamente la carga.",
+  "Dominadas pronas": "Suspendido de una barra con agarre prono, eleva el cuerpo hasta superar la barra con la barbilla. Claves: Inicia desde las escápulas. Movimiento completo. Evita: Balancearse. Acortar recorrido.",
+  "Chin Ups": "Realiza una dominada con agarre supino elevando el cuerpo hasta la barra. Claves: Pecho abierto. Escápulas activas. Evita: Tirar sólo con los brazos. Balancearse.",
+  "Dominadas neutras": "Ejecuta la dominada utilizando un agarre paralelo. Claves: Mantén el control en todo el recorrido. Evita: Impulsarse con las piernas. Acortar recorrido.",
+  "Remo mancuerna unilateral": "Apoyado sobre banco o soporte, lleva la mancuerna hacia la cadera manteniendo estable el tronco. Claves: Retracción escapular. Espalda neutra. Evita: Rotar el tronco. Tirar con impulso.",
+  "Remo pecho apoyado": "Con el pecho apoyado en un banco inclinado, realiza un remo llevando la carga hacia el torso. Claves: Evita balanceos. Mantén tensión constante. Evita: Encoger hombros. Acortar recorrido.",
+  "Remo TRX": "Con el cuerpo inclinado y suspendido de las asas, lleva el pecho hacia las manos manteniendo el cuerpo alineado. Claves: Mantén una línea recta corporal. Inicia desde las escápulas. Evita: Hundir la cadera. Tirar sólo con los brazos.",
+  "Pulldown brazos rectos": "Desde polea alta, lleva los brazos extendidos hacia las caderas sin flexionar apenas los codos. Claves: Pecho abierto. Core activo. Movimiento desde el hombro. Evita: Flexionar demasiado los codos. Balancear el tronco.",
+  "Scapular Pull Ups": "Suspendido de una barra, realiza únicamente una depresión y retracción escapular sin flexionar los codos. Claves: Movimiento corto y preciso. Control escapular. Evita: Doblar los brazos. Balancearse.",
+  "Press Z sentado": "Sentado en el suelo con piernas extendidas, realiza un press vertical manteniendo el tronco erguido. Claves: Abdomen muy activo. Espalda larga. Evita: Inclinarse hacia atrás. Arquear la zona lumbar.",
+  "Press unilateral mancuerna": "Realiza un press de hombro con un solo brazo mientras estabilizas el tronco. Claves: Evita inclinaciones laterales. Mantén la pelvis estable. Evita: Compensar con el tronco. Arquear la espalda.",
+  "Elevación frontal mancuerna": "Eleva una o dos mancuernas al frente hasta la altura de los hombros y desciende lentamente. Claves: Brazos casi extendidos. Movimiento controlado. Evita: Balancear el cuerpo. Elevar demasiado los hombros.",
+  "Elevación frontal alterna": "Realiza elevaciones frontales alternando un brazo cada vez. Claves: Mantén estabilidad corporal. Control del ritmo. Evita: Usar impulso. Girar el tronco.",
+  "Cuban Press": "Combina una rotación externa de hombro con un press por encima de la cabeza utilizando cargas ligeras. Claves: Movimiento lento. Prioriza técnica sobre peso. Evita: Utilizar cargas excesivas. Perder control articular.",
+  "Y Raise": "Desde posición inclinada o banco, eleva los brazos formando una \"Y\" por encima de la cabeza. Claves: Pulgares orientados hacia arriba. Movimiento limpio. Evita: Encoger hombros. Balancear el cuerpo.",
+  "T Raise": "Eleva los brazos lateralmente formando una \"T\" con el cuerpo. Claves: Mantén escápulas estables. Movimiento controlado. Evita: Impulsarse con el tronco. Elevar hombros.",
+  "W Raise": "Desde posición inclinada, lleva los codos hacia atrás formando una \"W\" con los brazos. Claves: Retracción escapular activa. Cuello relajado. Evita: Sacar la cabeza hacia delante. Encoger hombros.",
+  "Wall Slides": "Apoya espalda y brazos en una pared y deslízalos hacia arriba manteniendo el contacto. Claves: Costillas controladas. Movimiento fluido. Evita: Arquear la espalda. Separar los brazos de la pared.",
+  "Curl martillo": "Flexiona los codos manteniendo las palmas enfrentadas durante todo el recorrido. Claves: Codos pegados al cuerpo. Movimiento completo. Evita: Balancear el tronco. Adelantar hombros.",
+  "Curl inclinado": "Sentado en banco inclinado, flexiona los codos desde una posición de gran estiramiento del bíceps. Claves: Mantén hombros atrás. Controla la bajada. Evita: Mover los hombros hacia delante. Balancear el cuerpo.",
+  "Curl concentración": "Apoyado sobre el muslo, flexiona el codo aislando el bíceps con control total del movimiento. Claves: Codo fijo sobre el muslo. Movimiento lento. Evita: Balancear el cuerpo. Usar impulso.",
+  "Curl en polea baja": "Desde una polea baja, flexiona los codos manteniendo tensión constante durante todo el recorrido. Claves: Mantén los codos estables. Controla la bajada. Evita: Tirar con la espalda. Separar los codos.",
+  "Curl tipo drag": "Arrastra la barra pegada al cuerpo llevando los codos hacia atrás durante el recorrido. Claves: Codos hacia atrás. Barra pegada al cuerpo. Evita: Separar la barra del cuerpo. Balancear el tronco.",
+  "Fondos en banco": "Apoya las manos detrás del cuerpo sobre un banco y desciende flexionando los codos antes de volver a subir. Claves: Hombros controlados. Movimiento suave. Evita: Hundir excesivamente los hombros. Exceso de profundidad.",
+  "Extensión unilateral overhead": "Con una mancuerna sobre la cabeza, extiende el codo de un solo brazo manteniendo el hombro estable. Claves: Codo apuntando al techo. Movimiento controlado. Evita: Abrir el codo hacia fuera. Balancear el tronco.",
+  "Press cerrado": "Realiza un press de banca con agarre más estrecho que el habitual para aumentar la participación del tríceps. Claves: Codos cerca del cuerpo. Escápulas estables. Evita: Abrir los codos. Rebotar la barra.",
+  "Pressdown cuerda": "Desde polea alta, extiende los codos empujando la cuerda hacia abajo y separando las manos al final. Claves: Codos pegados al cuerpo. Separa las manos al final. Evita: Abrir los codos. Balancear el tronco.",
+  "Dead Bug": "Tumbado boca arriba, extiende brazo y pierna contrarios mientras mantienes la zona lumbar estable contra el suelo. Claves: Abdomen activo. Movimiento lento. Respiración controlada. Evita: Arquear la zona lumbar. Mover demasiado rápido.",
+  "Hollow Hold": "Acostado boca arriba, eleva hombros y piernas manteniendo la zona lumbar pegada al suelo. Claves: Costillas conectadas. Tensión constante. Evita: Despegar la espalda lumbar. Flexionar el cuello.",
+  "Bear Hold": "Desde cuadrupedia, eleva ligeramente las rodillas del suelo manteniendo la posición de forma isométrica. Claves: Espalda neutra. Rodillas a poca altura. Evita: Elevar demasiado la cadera. Arquear la espalda.",
+  "Pallof Walkout": "Aléjate del anclaje de la banda manteniendo la tensión y el tronco sin rotar. Claves: Pelvis neutra. Pasos cortos. Evita: Rotar el tronco. Perder tensión.",
+  "Bird Dog": "Desde cuadrupedia, extiende simultáneamente un brazo y la pierna contraria manteniendo la estabilidad del tronco. Claves: Pelvis estable. Movimiento controlado. Evita: Rotar la cadera. Elevar demasiado las extremidades.",
+  "Renegade Row": "En posición de plancha con dos mancuernas, realiza un remo alternando brazos mientras mantienes la estabilidad del cuerpo. Claves: Caderas estables. Core activo. Movimiento controlado. Evita: Rotar excesivamente el tronco. Separar demasiado los pies.",
+  "Side Plank": "Apóyate de lado sobre antebrazo y pies manteniendo el cuerpo en línea recta. Claves: Cadera elevada. Hombro alineado con el codo. Evita: Hundir la cadera. Rotar el tronco.",
+  "Side Plank Reach Through": "Desde plancha lateral, rota el brazo libre por debajo del cuerpo y vuelve a la posición inicial. Claves: Movimiento controlado. Cadera estable. Evita: Perder la alineación. Hundir la cadera.",
+  "Suitcase Carry": "Camina sosteniendo una carga en una sola mano, manteniendo el tronco completamente vertical y evitando inclinaciones laterales. Claves: Hombros nivelados. Abdomen activo. Pasos controlados. Evita: Inclinarse hacia un lado. Encoger el hombro que carga el peso.",
+  "World's Greatest Stretch": "Desde una zancada profunda, combina movilidad de cadera, tobillo y rotación torácica en un solo movimiento. Claves: Respiración controlada. Movimiento amplio. Evita: Hacerlo con prisas. Perder estabilidad.",
+  "Frog Stretch": "Desde rodillas, separa las rodillas y desplaza la cadera hacia atrás sintiendo el estiramiento en la ingle. Claves: Movimiento progresivo. Respiración profunda. Evita: Forzar el rango. Arquear la espalda.",
+  "Pigeon Stretch": "Sentado con una pierna flexionada al frente y la otra extendida atrás, inclina el tronco hacia delante. Claves: Pelvis nivelada. Movimiento progresivo. Evita: Forzar la rodilla delantera. Rotar la pelvis.",
+  "Hip Airplanes": "Apoyado en una pierna, rota el tronco y la pierna libre manteniendo el equilibrio. Claves: Movimiento lento. Mirada al frente. Evita: Perder el equilibrio. Forzar el rango.",
+  "Thread The Needle": "Desde cuadrupedia, desliza un brazo por debajo del cuerpo favoreciendo la rotación torácica. Claves: Movimiento relajado. Respiración profunda. Evita: Girar desde la pelvis. Forzar el cuello.",
+  "Open Book": "Acostado de lado con rodillas flexionadas, rota el brazo superior hacia atrás buscando movilidad torácica. Claves: Mantén las rodillas juntas. Movimiento suave. Evita: Compensar con la pelvis. Forzar el rango.",
+  "Child's Pose": "Desde rodillas, sienta la cadera hacia atrás y extiende los brazos al frente relajando la espalda. Claves: Respiración profunda. Movimiento pasivo. Evita: Forzar el estiramiento. Tensar los hombros.",
+  "Shoulder CARs": "Realiza círculos articulares amplios y lentos con el hombro explorando todo el rango disponible. Claves: Movimiento controlado. Sin compensaciones. Evita: Girar el tronco. Acortar el recorrido.",
+  "Banded Shoulder Dislocates": "Sostén una banda con ambas manos y llévala desde el frente hasta detrás de la cabeza manteniendo los brazos extendidos. Claves: Movimiento lento. Agarre amplio si hace falta. Evita: Forzar el rango. Flexionar los codos.",
+  "Scapular Circles": "Realiza círculos amplios con las escápulas manteniendo los brazos relajados. Claves: Movimiento amplio. Control escapular. Evita: Mover solo los hombros hacia arriba. Forzar el cuello.",
+  "Mountain Climbers": "Desde posición de plancha, alterna rápidamente la aproximación de las rodillas hacia el pecho manteniendo el tronco estable. Claves: Mantén hombros sobre las manos. Abdomen activo. Evita: Rebotar la pelvis. Hundir la espalda.",
+  "Skater Jumps": "Salta lateralmente de una pierna a otra simulando el patinaje, absorbiendo el impacto con control. Claves: Aterrizaje suave. Rodilla alineada. Evita: Colapsar la rodilla. Perder el equilibrio.",
+  "High Knees": "Corre en el lugar elevando las rodillas a la altura de la cadera con ritmo rápido. Claves: Ritmo constante. Brazos coordinados. Evita: Inclinar el tronco. Aterrizajes pesados.",
+  "Butt Kicks": "Corre en el lugar llevando los talones hacia los glúteos con ritmo rápido. Claves: Ritmo constante. Tronco erguido. Evita: Inclinarse hacia delante. Aterrizajes pesados.",
+  "Squat Thrusts": "Desde pie, baja a sentadilla, apoya las manos y lleva los pies atrás y de vuelta, sin salto final. Claves: Mantén el core activo. Movimiento fluido. Evita: Hundir la zona lumbar. Perder ritmo.",
+  "Plank Jacks": "Desde plancha, abre y cierra las piernas con un pequeño salto manteniendo el tronco estable. Claves: Cadera estable. Movimiento rápido y controlado. Evita: Hundir la cadera. Perder alineación.",
+  "Med Ball Slams": "Eleva el balón medicinal por encima de la cabeza y lánzalo con fuerza al suelo, recuperando para repetir. Claves: Core activo. Movimiento explosivo y controlado. Evita: Redondear excesivamente la espalda. Usar solo los brazos.",
+  "Battle Ropes Alternas": "Sujeta las cuerdas y genera ondas alternando brazos con ritmo constante. Claves: Rodillas semiflexionadas. Core activo. Ritmo sostenido. Evita: Usar solo los brazos. Perder ritmo.",
+  "Sprint Shuttle": "Realiza carreras cortas de ida y vuelta a máxima velocidad con cambios de dirección controlados. Claves: Aceleración progresiva. Cambios de dirección controlados. Evita: Frenar bruscamente. Perder la forma de carrera.",
+  "Sentadilla española": "Banda gruesa detrás de las rodillas, anclada delante. Tronco vertical mientras flexionas las rodillas, desciende hasta donde controles. Claves: Espalda neutra. Talones apoyados. Evita: Inclinarse hacia delante. Descenso brusco.",
+  "Terminal Knee Extension (TKE)": "Banda anclada detrás de la rodilla. Desde ligera flexión, extiende completamente la rodilla activando el cuádriceps. Claves: Movimiento corto. Buscar la contracción final. Evita: Mover toda la pierna. Inclinar el tronco.",
   "Puente de glúteos con banda": "Banda sobre las rodillas, eleva la cadera manteniendo las rodillas empujando hacia fuera.",
-  "Hip thrust con banda": "Espalda apoyada en banco y banda sobre las rodillas, eleva la cadera hasta alinearla con el tronco.",
+  "Hip thrust con banda": "Escápulas en banco, banda sobre las rodillas. Desde abajo, eleva la cadera hasta alinear hombros, pelvis y rodillas presionando ligeramente contra la banda. Claves: Barbilla recogida. Rodillas alineadas con los pies. Evita: Hiperextensión lumbar. Empujar desde la espalda.",
   "Abducción de cadera de pie": "Separa una pierna lateralmente manteniendo el tronco estable, trabaja glúteo medio.",
   "Sentadilla con banda": "Sentadilla tradicional con banda alrededor de las rodillas para activar glúteo medio.",
   "Remo con banda": "Tira de la banda hacia el abdomen acercando las escápulas.",
   "Remo unilateral con banda": "Rema con un solo brazo y banda evitando girar el tronco.",
   "Pull Apart": "Abre los brazos separando la banda a la altura del pecho. Ideal para quien pasa muchas horas sentado.",
   "Pull Apart alto": "Abre la banda a la altura de la cara para activar deltoides posterior y trapecio.",
-  "Face Pull con banda": "Tira de la banda hacia la cara separando las manos, escápulas juntas.",
+  "Face Pull con banda": "Banda anclada a la altura de la cara. Tira hacia las orejas separando ligeramente los brazos y juntando las escápulas. Claves: Codos altos. Pecho abierto. Evita: Encoger los hombros. Tirar solo con los brazos.",
   "Curl femoral con banda": "Flexiona la rodilla llevando el talón hacia el glúteo contra la resistencia de la banda.",
   "Flexión plantar con banda": "Empuja la punta del pie alejándola del cuerpo contra la banda.",
   "Press de pecho con banda": "Empuja la banda hacia delante como en un press de banca.",
   "Aperturas con banda": "Junta los brazos delante del cuerpo con ligera flexión de codos.",
   "Press militar con banda": "Empuja la banda por encima de la cabeza.",
   "Elevación lateral con banda": "Eleva los brazos lateralmente hasta la altura de los hombros con banda.",
-  "Rotación externa con banda": "Codo pegado al cuerpo, rota el antebrazo hacia fuera. Fundamental para la salud del hombro.",
+  "Rotación externa con banda": "Codo pegado al costado, flexionado 90°. Rota el antebrazo hacia fuera manteniendo el brazo inmóvil. Claves: Codo fijo. Movimiento lento. Evita: Separar el codo. Girar el tronco.",
   "Rotación interna con banda": "Lleva el antebrazo hacia el abdomen contra la resistencia de la banda.",
   "Curl bíceps con banda": "Flexiona los codos manteniendo los hombros quietos, resistencia de banda.",
   "Curl martillo con banda": "Flexiona los codos con agarre neutro contra la banda.",
   "Pressdown con banda": "Empuja la banda hacia abajo extendiendo los codos.",
   "Extensión tríceps overhead con banda": "Extiende los brazos por encima de la cabeza contra la banda.",
-  "Dead Bug con banda": "Extiende brazo y pierna opuestos manteniendo la tensión de la banda.",
+  "Dead Bug con banda": "Boca arriba, lumbar neutra. Mantén tensión en la banda mientras extiendes lentamente brazo y pierna contrarios. Claves: Costillas cerradas. Movimiento lento. Evita: Arquear la espalda. Mover demasiado rápido.",
+};
+const MUSCULOS_BANCO = {
+  "Hip thrust con barra": ["Glúteo mayor","isquiotibiales","aductor mayor"],
+  "Glute bridge con barra": ["Glúteo mayor","isquiotibiales"],
+  "Hip thrust unilateral": ["Glúteo mayor","glúteo medio","estabilizadores lumbo-pélvicos"],
+  "Sentadilla búlgara con mancuerna": ["Glúteo mayor","cuádriceps","isquiotibiales"],
+  "Sentadilla búlgara goblet": ["Cuádriceps","glúteo mayor","core"],
+  "Sentadilla libre barra alta": ["Cuádriceps","glúteo mayor","erectores espinales"],
+  "Sentadilla con rebote": ["Cuádriceps","glúteos","aductores"],
+  "Sentadilla + curtsy lunge con disco": ["Glúteo mayor","glúteo medio","cuádriceps"],
+  "Rack kettlebell squat": ["Cuádriceps","glúteos","core"],
+  "Sentadilla Cossack con mancuerna": ["Aductores","glúteos","cuádriceps"],
+  "Prensa unilateral": ["Cuádriceps","glúteos","isquiotibiales"],
+  "Step up con mancuerna": ["Glúteos","cuádriceps","estabilizadores de cadera"],
+  "Peso muerto rumano unilateral": ["Isquiotibiales","glúteo mayor","glúteo medio"],
+  "Peso muerto rumano bilateral": ["Isquiotibiales","glúteo mayor","erectores espinales"],
+  "Peso muerto sumo": ["Glúteos","aductores","cuádriceps"],
+  "Pull through en polea": ["Glúteo mayor","isquiotibiales"],
+  "Patada glúteo en polea": ["Glúteo mayor","isquiotibiales"],
+  "Curl femoral tumbado": ["Isquiotibiales","gastrocnemio"],
+  "Curl femoral fitball": ["Isquiotibiales","glúteos","core"],
+  "KB Swing unilateral": ["Glúteos","isquiotibiales","core"],
+  "Skiier swings con disco": ["Glúteos","isquiotibiales","hombros estabilizadores"],
+  "Extensión de cadera en máquina": ["Glúteo mayor","isquiotibiales"],
+  "Abducción de cadera en máquina": ["Glúteo medio","glúteo menor","tensor de la fascia lata"],
+  "Clamshell con liga": ["Glúteo medio","glúteo menor"],
+  "Hiperextensión": ["Glúteos","isquiotibiales","erectores espinales"],
+  "Gemelos en prensa": ["Gemelos","sóleo"],
+  "Box jumps": ["Cuádriceps","glúteos","gemelos"],
+  "HIIT Drop Squats con disco": ["Cuádriceps","glúteos","core"],
+  "Ball Wall Lateral": ["Glúteo medio","oblicuos","estabilizadores"],
+  "Press banca con barra": ["Pectoral mayor","tríceps","deltoides anterior"],
+  "Press inclinado con mancuernas": ["Pectoral superior","tríceps","deltoides anterior"],
+  "Flexiones pliométricas": ["Pectoral","tríceps","hombros"],
+  "Cruce de poleas ascendente": ["Pectoral superior","deltoides anterior"],
+  "Jalón al pecho": ["Dorsal ancho","bíceps","romboides"],
+  "Jalón unilateral": ["Dorsal ancho","bíceps","redondo mayor"],
+  "Remo Gironda unilateral": ["Dorsal ancho","romboides","bíceps"],
+  "Remo Seal con mancuernas": ["Dorsal ancho","romboides","trapecio medio"],
+  "Remo barra 90°": ["Dorsal ancho","romboides","trapecio medio"],
+  "Pullover en polea": ["Dorsal ancho","redondo mayor","tríceps (porción larga)"],
+  "Australian Pull-Ups": ["Dorsal ancho","romboides","bíceps"],
+  "Face Pull": ["Deltoides posterior","trapecio medio","romboides"],
+  "Reverse Pec Deck": ["Deltoides posterior","romboides","trapecio medio"],
+  "Press de hombro con mancuernas": ["Deltoides anterior","deltoides medio","tríceps"],
+  "Elevaciones laterales": ["Deltoides medio","supraespinoso"],
+  "Elevaciones laterales en polea": ["Deltoides medio"],
+  "Elevaciones lateral + frontal alternas": ["Deltoides anterior","medio"],
+  "Deltoides posterior en máquina": ["Deltoides posterior","romboides"],
+  "Landmine Thruster": ["Cuádriceps","glúteos","hombros"],
+  "Samurai Pulls": ["Dorsal ancho","serrato","romboides"],
+  "Ball Pushes": ["Serrato anterior","hombros","core"],
+  "Curl bíceps con mancuernas": ["Bíceps braquial","braquial anterior"],
+  "Skull Crusher": ["Tríceps braquial"],
+  "Extensión tríceps en polea": ["Tríceps braquial"],
+  "Patada de tríceps": ["Tríceps braquial"],
+  "Press francés en máquina": ["Tríceps braquial"],
+  "Plancha frontal": ["Core completo","transverso abdominal","glúteos"],
+  "Plancha inversa con toque rodilla": ["Core","glúteos","tríceps"],
+  "Press Pallof con liga": ["Oblicuos","transverso abdominal","core profundo"],
+  "Rollouts con barra": ["Recto abdominal","dorsal ancho","transverso"],
+  "Russian Twist con disco": ["Oblicuos","recto abdominal"],
+  "Pike en fitball": ["Core","hombros","flexores de cadera"],
+  "McGill Crunch": ["Recto abdominal","estabilizadores profundos"],
+  "Elevación de piernas colgada": ["Abdominal inferior","flexores de cadera"],
+  "KB Windmill": ["Oblicuos","glúteo medio","hombro estabilizador"],
+  "Cat-Cow": ["Movilidad espinal","estabilizadores profundos"],
+  "Cossack Squat": ["Aductores","glúteos","cuádriceps"],
+  "Flexión tobillo-rodilla en lunge": ["Tobillo","gemelos"],
+  "Balanceo de pierna": ["Flexores de cadera","glúteos","aductores"],
+  "Rotación humeral con peso": ["Manguito rotador"],
+  "Prone Snow Angels": ["Trapecio inferior","romboides","deltoides posterior"],
+  "Runner's Lunge with Reach": ["Flexores de cadera","glúteos","musculatura torácica"],
+  "Leg Rockback": ["Movilidad de cadera","aductores","zona lumbar"],
+  "Hip 90-90": ["Rotadores internos","externos de cadera"],
+  "Shoulder Swim unilateral": ["Deltoides","manguito rotador","estabilizadores escapulares"],
+  "Side to Side Bounds": ["Glúteos","cuádriceps","gemelos"],
+  "Burpee sin salto": ["Core","pectoral","cuádriceps"],
+  "Bench Over Jumps": ["Glúteos","cuádriceps","gemelos"],
+  "Jumping Jacks": ["Deltoides","gemelos","cuádriceps"],
+  "Tuck Jumps": ["Cuádriceps","glúteos","flexores de cadera"],
+  "Lunge Drop": ["Cuádriceps","glúteos","core"],
+  "Pulse Jump Squats": ["Cuádriceps","glúteos","gemelos"],
+  "Sentadilla frontal con barra": ["Cuádriceps","glúteos","core"],
+  "Sentadilla Zercher": ["Cuádriceps","glúteos","core"],
+  "Sentadilla caja (Box Squat)": ["Cuádriceps","glúteos","isquiotibiales"],
+  "Sissy Squat": ["Cuádriceps","especialmente recto femoral"],
+  "Walking Lunges": ["Glúteos","cuádriceps","isquiotibiales"],
+  "Frog Pumps": ["Glúteo mayor","aductores"],
+  "Single Leg Glute Bridge": ["Glúteo mayor","isquiotibiales","core"],
+  "Good Morning con barra": ["Isquiotibiales","glúteos","erectores espinales"],
+  "Good Morning con banda": ["Glúteos","isquiotibiales","zona lumbar"],
+  "Nordic Curl": ["Isquiotibiales"],
+  "Slider Leg Curl": ["Isquiotibiales","glúteos","core"],
+  "Monster Walk": ["Glúteo medio","estabilidad de rodilla"],
+  "Lateral Band Walk": ["Glúteo medio","tensor de la fascia lata"],
+  "Fire Hydrant": ["Glúteo medio","glúteo menor"],
+  "Donkey Kicks": ["Glúteo mayor","isquiotibiales"],
+  "Elevación gemelos unilateral": ["Gemelos","sóleo"],
+  "Farmer Walk en puntillas": ["Gemelos","sóleo","core"],
+  "Saltos de tobillo (Pogo Jumps)": ["Gemelos","sóleo","tendón de Aquiles"],
+  "Press militar barra": ["Deltoides anterior","tríceps","trapecio superior"],
+  "Press Arnold": ["Deltoides anterior","medio","tríceps"],
+  "Press mancuernas neutro": ["Pectoral","tríceps","deltoides anterior"],
+  "Press suelo (Floor Press)": ["Pectoral","tríceps","deltoides anterior"],
+  "Fondos en paralelas": ["Tríceps","pectoral inferior","deltoides anterior"],
+  "Flexiones inclinadas": ["Pectoral","tríceps","hombros"],
+  "Flexiones diamante": ["Tríceps","pectoral interno","deltoides anterior"],
+  "Aperturas con mancuernas": ["Pectoral mayor","deltoides anterior"],
+  "Dominadas pronas": ["Dorsal ancho","bíceps","romboides"],
+  "Chin Ups": ["Bíceps","dorsal ancho","braquial anterior"],
+  "Dominadas neutras": ["Dorsal ancho","bíceps","braquial"],
+  "Remo mancuerna unilateral": ["Dorsal ancho","romboides","bíceps"],
+  "Remo pecho apoyado": ["Dorsal ancho","trapecio medio","romboides"],
+  "Remo TRX": ["Dorsal ancho","romboides","bíceps"],
+  "Pulldown brazos rectos": ["Dorsal ancho","redondo mayor","serrato"],
+  "Scapular Pull Ups": ["Trapecio inferior","dorsal ancho","romboides"],
+  "Press Z sentado": ["Deltoides","tríceps","core"],
+  "Press unilateral mancuerna": ["Deltoides","tríceps","oblicuos"],
+  "Elevación frontal mancuerna": ["Deltoides anterior"],
+  "Elevación frontal alterna": ["Deltoides anterior","core estabilizador"],
+  "Cuban Press": ["Manguito rotador","deltoides","trapecio"],
+  "Y Raise": ["Trapecio inferior","deltoides posterior"],
+  "T Raise": ["Deltoides posterior","romboides"],
+  "W Raise": ["Trapecio medio","romboides","manguito rotador"],
+  "Wall Slides": ["Serrato anterior","trapecio inferior","manguito rotador"],
+  "Curl martillo": ["Braquial","braquiorradial","bíceps"],
+  "Curl inclinado": ["Bíceps braquial","braquial anterior"],
+  "Curl concentración": ["Bíceps braquial"],
+  "Curl en polea baja": ["Bíceps braquial","braquial anterior"],
+  "Curl tipo drag": ["Bíceps braquial","braquial anterior"],
+  "Fondos en banco": ["Tríceps","pectoral inferior","deltoides anterior"],
+  "Extensión unilateral overhead": ["Tríceps braquial"],
+  "Press cerrado": ["Tríceps","pectoral","deltoides anterior"],
+  "Pressdown cuerda": ["Tríceps braquial"],
+  "Dead Bug": ["Transverso abdominal","recto abdominal","core profundo"],
+  "Hollow Hold": ["Recto abdominal","transverso abdominal"],
+  "Bear Hold": ["Core completo","hombros"],
+  "Pallof Walkout": ["Oblicuos","transverso abdominal"],
+  "Bird Dog": ["Core","erectores espinales","glúteos"],
+  "Renegade Row": ["Dorsal ancho","romboides","core"],
+  "Side Plank": ["Oblicuos","glúteo medio","core lateral"],
+  "Side Plank Reach Through": ["Oblicuos","core lateral","hombros"],
+  "Suitcase Carry": ["Oblicuos","cuadrado lumbar","core"],
+  "World's Greatest Stretch": ["Flexores de cadera","glúteos","columna torácica"],
+  "Frog Stretch": ["Aductores"],
+  "Pigeon Stretch": ["Glúteo profundo","piriforme"],
+  "Hip Airplanes": ["Rotadores de cadera","glúteo medio"],
+  "Thread The Needle": ["Columna torácica","romboides","deltoides posterior"],
+  "Open Book": ["Movilidad torácica","pectoral","oblicuos"],
+  "Child's Pose": ["Columna","dorsales","cadera"],
+  "Shoulder CARs": ["Deltoides","manguito rotador","estabilizadores escapulares"],
+  "Banded Shoulder Dislocates": ["Manguito rotador","deltoides","pectoral"],
+  "Scapular Circles": ["Trapecio","romboides","serrato anterior"],
+  "Mountain Climbers": ["Core","flexores de cadera","hombros"],
+  "Skater Jumps": ["Glúteos","cuádriceps","gemelos"],
+  "High Knees": ["Flexores de cadera","gemelos","core"],
+  "Butt Kicks": ["Isquiotibiales","gemelos"],
+  "Squat Thrusts": ["Cuádriceps","core","hombros"],
+  "Plank Jacks": ["Core","glúteos","hombros"],
+  "Med Ball Slams": ["Core","hombros","dorsales"],
+  "Battle Ropes Alternas": ["Hombros","core","antebrazos"],
+  "Sprint Shuttle": ["Cuádriceps","glúteos","gemelos"],
+  "Sentadilla española": ["Cuádriceps","tendón rotuliano"],
+  "Terminal Knee Extension (TKE)": ["Vasto medial","estabilidad de rodilla"],
+  "Hip thrust con banda": ["Glúteo mayor","glúteo medio"],
+  "Face Pull con banda": ["Deltoides posterior","trapecio inferior","manguito rotador"],
+  "Rotación externa con banda": ["Infraespinoso","redondo menor"],
+  "Dead Bug con banda": ["Transverso abdominal","core profundo"],
 };
 
 const BANCOS_POR_LUGAR = {
@@ -779,7 +959,7 @@ const HIPOPRESIVOS_FIJOS = {
   descarga: [
     { plano: "Flexión anterior", tecnica: "Torso inclinado, manos a los muslos, columna larga sin colapsar. Rotación interna de hombros, codos a 90°.", foto: "data:image/jpeg;base64,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" },
     { plano: "Cuadrupedia · apoyo antebrazos", tecnica: "Antebrazos en el suelo, codos al ancho de hombros, rodillas alineadas con caderas. Tracción vertebral constante.", foto: "data:image/jpeg;base64,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" },
-    { plano: "Cuadrupedia · apoyo manos avanzado", tecnica: "Manos al suelo en línea con hombros, codos ligeramente flexionados, escápulas separadas. Mayor exigencia propioceptiva." },
+    { plano: "Cuadrupedia · apoyo manos avanzado", tecnica: "Manos al suelo en línea con hombros, codos ligeramente flexionados, escápulas separadas. Mayor exigencia propioceptiva.", foto: "data:image/jpeg;base64,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" },
     { plano: "Decúbito supino", tecnica: "Tumbada boca arriba, piernas flexionadas y pies apoyados. Elongación cervical, activación escapular, pelvis neutra.", foto: "data:image/jpeg;base64,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" }
   ]
 };
@@ -826,11 +1006,11 @@ CRÍTICO:
 - Hip thrust: Sem1-2→máquina/Smith, Sem3-4→barra banco, Sem5+→barra rango completo
 - Rotación humeral: Codo FIJO rodilla. SOLO húmero rota (arriba-abajo).
 - Responde SOLO JSON válido, sin preamble. Max 7-8 ejercicios/día. JSON válido: sin comas antes de } o ].
-- musculos_principales y musculos_accesorios: SOLO 1 elemento cada uno (no más), nombre corto (ej: "Glúteo mayor").
-- cardio: elige UNA zona según el objetivo del usuario: "Recuperación" (pérdida de grasa muy baja intensidad/movilidad/salud general), "Quema grasa" (pérdida de grasa, tonificación), "Intervalo" (rendimiento, resistencia). Siempre 20 minutos.
+- Para tipo "Fuerza": prioriza barra/mancuerna/máquina/kettlebell sobre ejercicios con banda/liga. Las bandas son para Movilidad y Activación, no para Fuerza — salvo que el lugar sea "casa sin material" (ahí no hay otra opción).
+- cardio_zona: elige UNA palabra exacta según el objetivo del usuario: "Recuperación" (baja intensidad/movilidad/salud general), "Quema grasa" (pérdida de grasa, tonificación), "Intervalo" (rendimiento, resistencia). Solo esa palabra, nada más.
 
 JSON structure:
-{"resumen":"1-2 frases","progresion":[{"sem":"Semana 1","rir":"3-4","fase":"Aprendizaje","nota":"breve, 4-6 palabras"}],"dias":[{"semana":1,"titulo":"Día 1","enfasis":"pierna","dur":"50","ejercicios":[{"tipo":"Movilidad","nom":"exacto banco","series":"2","reps":"8 por lado","rir":"-","descanso":"30","musculos_principales":["Cadera"],"musculos_accesorios":[]},{"tipo":"Activación","nom":"exacto banco","series":"2","reps":"15 por lado","rir":"-","descanso":"30","musculos_principales":["Glúteo medio"],"musculos_accesorios":[]},{"tipo":"Fuerza","nom":"exacto banco","series":"3","reps":"10","rir":"2","descanso":"90","musculos_principales":["Glúteo mayor"],"musculos_accesorios":["Isquiotibiales"]}]}],"cardio":{"zona":"Quema grasa"}}`
+{"resumen":"1-2 frases","progresion":[{"sem":"Semana 1","rir":"3-4","fase":"Aprendizaje","nota":"breve, 4-6 palabras"}],"dias":[{"semana":1,"titulo":"Día 1","enfasis":"pierna","dur":"50","ejercicios":[{"tipo":"Movilidad","nom":"exacto banco","series":"2","reps":"8 por lado","rir":"-","descanso":"30"},{"tipo":"Activación","nom":"exacto banco","series":"2","reps":"15 por lado","rir":"-","descanso":"30"},{"tipo":"Fuerza","nom":"exacto banco","series":"3","reps":"10","rir":"2","descanso":"90"}]}],"cardio_zona":"Quema grasa"}`
 
   let raw = '';
   try {
@@ -854,6 +1034,9 @@ JSON structure:
           dia.ejercicios.forEach(ej => {
             const nivel = S.nivel || 'intermedio';
             ej.descripcion = getDescripcion(ej.nom, nivel);
+            const mb = MUSCULOS_BANCO[ej.nom] || [];
+            ej.musculos_principales = mb.length ? [mb[0]] : [];
+            ej.musculos_accesorios = mb.slice(1);
           });
         }
       });
@@ -925,11 +1108,19 @@ function renderPlan(plan) {
       const t = ex.tipo||'Fuerza';
       if (t!==lastT) { h+=`<tr class="sec-row"><td colspan="7">${t}</td></tr>`; lastT=t; }
       const sid=`s${di}_${ei}`;
+      const numSeries = parseInt(ex.series)||1;
+      const descansoSeg = parseInt(ex.descanso)||60;
+      let chips = '';
+      for (let i=0;i<numSeries;i++) {
+        chips += `<div class="serie-chip" data-sid="${sid}" data-i="${i}" data-desc="${descansoSeg}" onclick="toggleSerie(this)">${i+1}</div>`;
+      }
       h+=`<tr>
         <td><span class="tbadge tb-${t}">${t}</span></td>
         <td>
           <div class="ex-name" onclick="abrirModal(${di},${ei})">${ex.nom||''}</div>
           <div class="ex-muscles">${(ex.musculos_principales||[]).join(' · ')}</div>
+          <div class="serie-row">${chips}</div>
+          <div class="timer-disp" id="timer_${sid}">⏱ <span id="timer_txt_${sid}"></span></div>
         </td>
         <td><span class="stat-pill">${ex.series||'—'}</span></td>
         <td><span class="stat-pill">${ex.reps||'—'}</span></td>
@@ -962,13 +1153,13 @@ function renderPlan(plan) {
   h += `<p style="font-size:0.85rem; color:#555; margin-bottom:1rem; line-height:1.5;">Si tienes tiempo extra, dedica 10-15 min a hipopresivos: 3 apneas en cada postura de carga (de pie, sobre rodillas, sentado), seguidas de posturas de descarga (cuadrupedia, decúbito). Apneas de 4-6s si vas empezando, hasta 15-20s con progresión.</p>
   <div style="font-size:0.78rem; font-weight:600; color:#2a4d47; margin-bottom:0.5rem; text-transform:uppercase;">Posturas de carga</div><div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; margin-bottom:1rem;">`;
   HIPOPRESIVOS_FIJOS.carga.forEach(p => {
-    const img = p.foto ? `<img src="${p.foto}" alt="${p.plano}" style="width:100%; height:120px; object-fit:cover; border-radius:6px 6px 0 0; display:block;" />` : '';
+    const img = p.foto ? `<img src="${p.foto}" alt="${p.plano}" style="width:100%; height:140px; object-fit:contain; background:#0D1F1A; border-radius:6px 6px 0 0; display:block;" />` : '';
     h += `<div style="background:#d4f5e8; border-radius:6px; border-left:3px solid #86ECAD; overflow:hidden;">${img}<div style="padding:10px;"><strong style="color:#0D1F1A; display:block; margin-bottom:2px;">${p.plano||''}</strong><p style="font-size:0.8rem; color:#888; margin:4px 0 0 0; line-height:1.4;">${p.tecnica||''}</p></div></div>`;
   });
   h += `</div>`;
   h += `<div style="font-size:0.78rem; font-weight:600; color:#2a4d47; margin-bottom:0.5rem; text-transform:uppercase;">Posturas de descarga</div><div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; margin-bottom:1.5rem;">`;
   HIPOPRESIVOS_FIJOS.descarga.forEach(p => {
-    const img = p.foto ? `<img src="${p.foto}" alt="${p.plano}" style="width:100%; height:120px; object-fit:cover; border-radius:6px 6px 0 0; display:block;" />` : '';
+    const img = p.foto ? `<img src="${p.foto}" alt="${p.plano}" style="width:100%; height:140px; object-fit:contain; background:#0D1F1A; border-radius:6px 6px 0 0; display:block;" />` : '';
     h += `<div style="background:#d4f5e8; border-radius:6px; border-left:3px solid #86ECAD; overflow:hidden;">${img}<div style="padding:10px;"><strong style="color:#0D1F1A; display:block; margin-bottom:2px;">${p.plano||''}</strong><p style="font-size:0.8rem; color:#888; margin:4px 0 0 0; line-height:1.4;">${p.tecnica||''}</p></div></div>`;
   });
   h += `</div>`;
@@ -981,13 +1172,13 @@ function renderPlan(plan) {
   h += `</div>`;
 
   // CARDIO
-  if (currentPlan.cardio && currentPlan.cardio.zona) {
+  if (currentPlan.cardio_zona) {
     const CARDIO_TEXTOS = {
       "Recuperación": "20 min de cardio libre (elíptica, cinta o bici) a ritmo suave.",
       "Quema grasa": "20 min de cardio libre (elíptica, cinta o bici) a ritmo moderado.",
       "Intervalo": "20 min de cardio libre (elíptica, cinta o bici) con intervalos de intensidad."
     };
-    const zona = currentPlan.cardio.zona;
+    const zona = currentPlan.cardio_zona;
     h += `<div style="font-size:1.05rem; font-weight:600; color:#4a9b7f; margin-top:2rem; margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.05em;">Cardio Sugerido</div><div style="background:#0D1F1A; color:#fff; padding:12px; border-radius:6px; font-size:0.9rem; line-height:1.6; margin-bottom:1.5rem;"><span style="color:#86ECAD; font-weight:600;">${zona}</span> · ${CARDIO_TEXTOS[zona]||CARDIO_TEXTOS['Quema grasa']}</div>`;
   }
 
@@ -1043,6 +1234,57 @@ function cargarDatos() {
     const id=inp.id.replace('pr_','');
     const v=localStorage.getItem('mb_p_'+id); if(v) inp.value=v;
   });
+  document.querySelectorAll('.serie-chip').forEach(chip=>{
+    const key = 'mb_serie_'+chip.dataset.sid+'_'+chip.dataset.i;
+    if (localStorage.getItem(key)) chip.classList.add('done');
+  });
+}
+
+const mbTimers = {};
+function beepCronometro() {
+  try {
+    const ctx = new (window.AudioContext||window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.frequency.value = 880;
+    osc.connect(gain); gain.connect(ctx.destination);
+    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.35);
+  } catch(e) {}
+}
+function iniciarCronometro(sid, segundos) {
+  const disp = document.getElementById('timer_'+sid);
+  const txt = document.getElementById('timer_txt_'+sid);
+  if (!disp || !txt) return;
+  if (mbTimers[sid]) clearInterval(mbTimers[sid]);
+  let restante = segundos;
+  disp.classList.add('show');
+  txt.textContent = restante + 's de descanso';
+  mbTimers[sid] = setInterval(() => {
+    restante--;
+    if (restante <= 0) {
+      clearInterval(mbTimers[sid]);
+      txt.textContent = '¡Listo! 💚';
+      beepCronometro();
+      setTimeout(()=>{ disp.classList.remove('show'); }, 4000);
+      return;
+    }
+    txt.textContent = restante + 's de descanso';
+  }, 1000);
+}
+function toggleSerie(el) {
+  const sid = el.dataset.sid;
+  const i = el.dataset.i;
+  const key = 'mb_serie_'+sid+'_'+i;
+  if (el.classList.contains('done')) {
+    el.classList.remove('done');
+    localStorage.removeItem(key);
+  } else {
+    el.classList.add('done');
+    localStorage.setItem(key, '1');
+    iniciarCronometro(sid, parseInt(el.dataset.desc)||60);
+  }
 }
 function nuevoPlan() {
   cur=0; currentPlan=null;

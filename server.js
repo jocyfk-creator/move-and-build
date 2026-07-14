@@ -135,6 +135,21 @@ app.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
 app.use(express.json());
 app.use(express.static('.'));
 
+// ── ENDPOINT TEMPORAL DE PRUEBA (solo para verificar integración) ──
+// ⚠️ ELIMINAR antes de lanzamiento público
+const TEST_TOKEN = process.env.TEST_TOKEN || 'movebuild-test-2024';
+app.get('/api/test-credit/:email', (req, res) => {
+  const token = req.query.token;
+  if (token !== TEST_TOKEN) {
+    return res.status(403).json({ error: 'No autorizado' });
+  }
+  const email = req.params.email.toLowerCase().trim();
+  const current = credits.get(email) || 0;
+  credits.set(email, current + 5);
+  console.log(`🧪 TEST: créditos añadidos a ${email} → ${current + 5}`);
+  res.json({ ok: true, email, credits: current + 5 });
+});
+
 // ── ENDPOINT: consultar créditos ──
 app.get('/api/credits/:email', (req, res) => {
   const email = req.params.email.toLowerCase().trim();

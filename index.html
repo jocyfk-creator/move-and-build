@@ -659,7 +659,7 @@ JSON structure:
     const res = await fetch('/api/claude', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4000,messages:[{role:'user',content:prompt}],email:emailVal})
+      body: JSON.stringify({model:'claude-sonnet-4-6',max_tokens:16000,messages:[{role:'user',content:prompt}],email:emailVal})
     });
     clearInterval(loadTimer);
     if (!res.ok) {
@@ -672,7 +672,23 @@ JSON structure:
     const data = await res.json();
     let raw = data.content?.map(b=>b.text||'').join('')||'';
     raw = raw.replace(/```json|```/g,'').trim();
-    currentPlan = JSON.parse(raw);
+    // Limpieza de comas sobrantes antes de parsear
+    raw = raw.replace(/,\s*([}\]])/g, '$1');
+    try {
+      currentPlan = JSON.parse(raw);
+    } catch(parseErr) {
+      // Intento de rescate: cortar en el último objeto completo
+      const lastBrace = raw.lastIndexOf('}');
+      if (lastBrace > 0) {
+        try {
+          currentPlan = JSON.parse(raw.substring(0, lastBrace + 1));
+        } catch {
+          throw new Error('El plan generado no es JSON válido. Inténtalo de nuevo.');
+        }
+      } else {
+        throw new Error('El plan generado no es JSON válido. Inténtalo de nuevo.');
+      }
+    }
     
     // POST-PROCESAMIENTO: Inyectar descripciones del BANCO MAESTRO
     if (currentPlan.dias) {

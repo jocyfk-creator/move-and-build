@@ -1217,6 +1217,8 @@ JSON structure:
     }
     
     currentWeek = 1;
+    localStorage.setItem('mb_plan', JSON.stringify(currentPlan));
+    localStorage.setItem('mb_perfil', JSON.stringify(S));
     updateWeekUI();
     renderPlan(currentPlan);
     go(1);
@@ -1593,6 +1595,8 @@ function toggleSerie(el) {
 }
 function nuevoPlan() {
   cur=0; currentPlan=null;
+  localStorage.removeItem('mb_plan');
+  localStorage.removeItem('mb_perfil');
   document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
   document.getElementById('step0').classList.add('active');
   document.getElementById('weekTracker').style.display='none';
@@ -1603,6 +1607,28 @@ function nuevoPlan() {
 }
 
 updateWeekUI();
+
+// ── RESTAURAR PLAN GUARDADO (evita regenerar y perder créditos al recargar) ──
+(function restaurarPlanGuardado() {
+  const planGuardado = localStorage.getItem('mb_plan');
+  const perfilGuardado = localStorage.getItem('mb_perfil');
+  if (!planGuardado) return;
+  try {
+    currentPlan = JSON.parse(planGuardado);
+    if (perfilGuardado) Object.assign(S, JSON.parse(perfilGuardado));
+    startApp(); // sale de la pantalla de bienvenida y muestra la app
+    document.getElementById('step'+cur).classList.remove('active');
+    cur = 5;
+    document.getElementById('step5').classList.add('active');
+    document.getElementById('weekTracker').style.display = 'flex';
+    updateProgress();
+    renderPlan(currentPlan); // usa currentWeek (ya restaurada desde mb_week) para pintar la semana correcta
+  } catch(e) {
+    // Si el plan guardado está corrupto, se ignora y se parte de cero
+    localStorage.removeItem('mb_plan');
+    localStorage.removeItem('mb_perfil');
+  }
+})();
 </script>
 </body>
 </html>

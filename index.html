@@ -301,7 +301,12 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
       <span class="hero-pill">Registro de sensaciones</span>
       <span class="hero-pill">Tracker semanal</span>
     </div>
-    <button class="btn-hero" onclick="startApp()">Empezar →</button>
+    <div style="margin: 18px 0 8px;">
+      <input type="email" id="userEmail" placeholder="Tu email" autocomplete="email"
+        style="width:100%; max-width:320px; padding:12px 16px; border-radius:10px; border:1px solid rgba(255,255,255,0.25); background:rgba(255,255,255,0.08); color:#fff; font-size:15px; text-align:center;">
+      <div id="emailError" style="display:none; color:#ff8a8a; font-size:13px; margin-top:8px;"></div>
+    </div>
+    <button class="btn-hero" id="btnEmpezar" onclick="iniciarConEmail()">Empezar →</button>
   </div>
 </section>
 
@@ -518,7 +523,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
 // API key está SEGURA en servidor (Render env var: ANTHROPIC_API_KEY)
 let cur = 0;
 const LABELS = ['Perfil','Objetivos','Métodos','Disponibilidad','Generando...','Tu Plan'];
-const S = { nivel:'', obj:[], met:[], dias:'', dur:'', lugar:'', plan:'' };
+const S = { nivel:'', obj:[], met:[], dias:'', dur:'', lugar:'', plan:'', email:'' };
 let currentPlan = null;
 
 // ── WEEK TRACKER ──
@@ -1191,7 +1196,7 @@ JSON structure:
     const res = await fetch('/api/claude', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({prompt:prompt})
+      body: JSON.stringify({prompt:prompt, email:S.email})
     });
     clearInterval(loadTimer);
     if (!res.ok) { const e = await res.json(); throw new Error(e.error||`Error ${res.status}`); }
@@ -1608,25 +1613,71 @@ function nuevoPlan() {
 
 updateWeekUI();
 
-// ── RESTAURAR PLAN GUARDADO (evita regenerar y perder créditos al recargar) ──
-(function restaurarPlanGuardado() {
-  const planGuardado = localStorage.getItem('mb_plan');
-  const perfilGuardado = localStorage.getItem('mb_perfil');
-  if (!planGuardado) return;
+// ── ENTRAR CON EMAIL: consulta el plan y los créditos en el servidor ──
+// Así el mismo plan se puede abrir desde cualquier dispositivo, no solo desde
+// el navegador donde se generó. Si el servidor no responde (sin conexión, etc.)
+// se usa como respaldo lo último guardado en este navegador.
+async function iniciarConEmail() {
+  const input = document.getElementById('userEmail');
+  const errorEl = document.getElementById('emailError');
+  const email = (input.value || '').trim().toLowerCase();
+  errorEl.style.display = 'none';
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errorEl.textContent = 'Escribe un email válido para continuar.';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  S.email = email;
+  localStorage.setItem('mb_email', email);
+
+  const btn = document.getElementById('btnEmpezar');
+  const textoOriginal = btn.textContent;
+  btn.textContent = 'Comprobando...';
+  btn.disabled = true;
+
   try {
-    currentPlan = JSON.parse(planGuardado);
-    if (perfilGuardado) Object.assign(S, JSON.parse(perfilGuardado));
-    startApp(); // sale de la pantalla de bienvenida y muestra la app
+    const resp = await fetch('/api/plan?email=' + encodeURIComponent(email));
+    if (resp.ok) {
+      const data = await resp.json();
+      if (data.plan) {
+        currentPlan = JSON.parse(data.plan);
+        localStorage.setItem('mb_plan', JSON.stringify(currentPlan)); // caché local
+      }
+    }
+  } catch (e) {
+    // Sin conexión con el servidor: seguimos con lo que haya guardado en este navegador
+    console.error('No se pudo consultar el servidor, usando la copia local si existe:', e);
+    const planLocal = localStorage.getItem('mb_plan');
+    if (planLocal) {
+      try { currentPlan = JSON.parse(planLocal); } catch(e2) {}
+    }
+  }
+
+  btn.textContent = textoOriginal;
+  btn.disabled = false;
+
+  startApp();
+
+  if (currentPlan) {
     document.getElementById('step'+cur).classList.remove('active');
     cur = 5;
     document.getElementById('step5').classList.add('active');
     document.getElementById('weekTracker').style.display = 'flex';
     updateProgress();
-    renderPlan(currentPlan); // usa currentWeek (ya restaurada desde mb_week) para pintar la semana correcta
-  } catch(e) {
-    // Si el plan guardado está corrupto, se ignora y se parte de cero
-    localStorage.removeItem('mb_plan');
-    localStorage.removeItem('mb_perfil');
+    renderPlan(currentPlan);
+  }
+}
+
+// Si ya se usó esta app antes en este dispositivo, no hace falta volver a
+// escribir el email cada vez: se rellena solo (pero sigue haciendo falta
+// pulsar "Empezar", para no saltarse la bienvenida sin que la persona lo pida).
+(function precargarEmailGuardado() {
+  const emailGuardado = localStorage.getItem('mb_email');
+  if (emailGuardado) {
+    const input = document.getElementById('userEmail');
+    if (input) input.value = emailGuardado;
   }
 })();
 </script>

@@ -1642,7 +1642,9 @@ async function iniciarConEmail() {
     if (resp.ok) {
       const data = await resp.json();
       if (data.plan) {
-        currentPlan = JSON.parse(data.plan);
+        let raw = data.plan.replace(/```json|```/g, '').trim();
+        raw = raw.replace(/,(\s*[}\]])/g, '$1'); // limpia comas sobrantes antes de } o ]
+        currentPlan = JSON.parse(raw);
         localStorage.setItem('mb_plan', JSON.stringify(currentPlan)); // caché local
       }
     }

@@ -188,12 +188,15 @@ app.post('/api/claude', async (req, res) => {
 
     const emailNorm = email.toLowerCase().trim();
     const esPropietaria = OWNER_EMAIL && emailNorm === OWNER_EMAIL;
+    console.log(`→ POST /api/claude | email=${emailNorm} | propietaria=${esPropietaria}`);
 
     let userRow = null;
     if (!esPropietaria) {
       userRow = await findUserRow(emailNorm);
       const creditosDisponibles = userRow ? userRow.creditos : 0;
+      console.log(`  créditos disponibles para ${emailNorm}: ${creditosDisponibles}`);
       if (creditosDisponibles < 1) {
+        console.log(`  ✗ Rechazado por falta de créditos: ${emailNorm}`);
         return res.status(402).json({
           error: 'No te quedan créditos disponibles. Compra un plan para poder generar uno nuevo.',
         });
@@ -241,10 +244,11 @@ app.post('/api/claude', async (req, res) => {
           actualizado: ahora,
         });
       }
+      console.log(`  ✓ Plan guardado en Sheets para ${emailNorm} (${ahora})`);
     } catch (err) {
       // Si falla el guardado en Sheets, el plan ya se generó: se lo damos igual
       // a la usuaria y solo avisamos en los logs, para no hacerle perder el plan que pagó.
-      console.error('⚠️ El plan se generó pero no se pudo guardar en Sheets:', err);
+      console.error(`  ✗ El plan de ${emailNorm} se generó pero NO se pudo guardar en Sheets:`, err.message);
     }
 
     res.json({ message });
@@ -260,12 +264,17 @@ app.get('/api/plan', async (req, res) => {
     const email = (req.query.email || '').toLowerCase().trim();
     if (!email) return res.status(400).json({ error: 'Falta parámetro "email"' });
 
+    console.log(`→ GET /api/plan | email=${email}`);
+
     const esPropietaria = OWNER_EMAIL && email === OWNER_EMAIL;
     const row = await findUserRow(email);
 
     if (!row) {
+      console.log(`  sin fila para ${email} (usuaria nueva o email distinto al guardado)`);
       return res.json({ plan: null, creditos: esPropietaria ? null : 0 });
     }
+
+    console.log(`  ✓ fila encontrada para ${email} | tiene plan: ${!!row.planJson} | créditos: ${row.creditos}`);
 
     res.json({
       plan: row.planJson || null,
@@ -273,7 +282,7 @@ app.get('/api/plan', async (req, res) => {
       actualizado: row.actualizado || null,
     });
   } catch (err) {
-    console.error('Error en /api/plan:', err);
+    console.error(`✗ Error en /api/plan para email consultado:`, err.message);
     res.status(500).json({ error: err.message });
   }
 });

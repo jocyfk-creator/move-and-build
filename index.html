@@ -1161,6 +1161,24 @@ function getDescripcion(ejercicio, nivel = 'intermedio') {
 const loadMsgs = ['Analizando tu perfil...','Seleccionando ejercicios...','Calculando progresión RIR...','Estructurando las sesiones...','Ajustes finales...'];
 let loadIdx = 0, loadTimer;
 
+// Añade descripciones y músculos del BANCO MAESTRO a un plan recién parseado.
+// Se usa tanto al generar un plan nuevo como al restaurarlo desde el servidor
+// (el server.js guarda el plan "en bruto", antes de este paso).
+function postProcesarPlan(plan) {
+  if (!plan || !plan.dias) return;
+  plan.dias.forEach(dia => {
+    if (dia.ejercicios) {
+      dia.ejercicios.forEach(ej => {
+        const nivel = S.nivel || 'intermedio';
+        ej.descripcion = getDescripcion(ej.nom, nivel);
+        const mb = MUSCULOS_BANCO[ej.nom] || [];
+        ej.musculos_principales = mb.length ? [mb[0]] : [];
+        ej.musculos_accesorios = mb.slice(1);
+      });
+    }
+  });
+}
+
 async function generatePlan() {
   document.getElementById('loadingWrap').style.display = 'flex';
   document.getElementById('genError').style.display = 'none';
@@ -1205,21 +1223,8 @@ JSON structure:
     raw = raw.replace(/```json|```/g,'').trim();
     raw = raw.replace(/,(\s*[}\]])/g, '$1'); // limpia comas sobrantes antes de } o ]
     currentPlan = JSON.parse(raw);
-    
-    // POST-PROCESAMIENTO: Inyectar descripciones del BANCO MAESTRO
-    if (currentPlan.dias) {
-      currentPlan.dias.forEach(dia => {
-        if (dia.ejercicios) {
-          dia.ejercicios.forEach(ej => {
-            const nivel = S.nivel || 'intermedio';
-            ej.descripcion = getDescripcion(ej.nom, nivel);
-            const mb = MUSCULOS_BANCO[ej.nom] || [];
-            ej.musculos_principales = mb.length ? [mb[0]] : [];
-            ej.musculos_accesorios = mb.slice(1);
-          });
-        }
-      });
-    }
+
+    postProcesarPlan(currentPlan);
     
     currentWeek = 1;
     localStorage.setItem('mb_plan', JSON.stringify(currentPlan));
@@ -1322,7 +1327,9 @@ function renderPlan(plan) {
         </td>
       </tr>`;
     });
-    h+=`</tbody></table></div></div></div>`;
+    h+=`</tbody></table></div>
+      <div class="resumen-dia" id="resumenDia${di}" style="font-size:0.8rem; color:#4a9b7f; margin-top:0.5rem; padding:0.5rem 0.75rem; background:rgba(74,155,127,0.08); border-radius:8px;"></div>
+    </div></div>`;
   });
 
   h+=`<div class="plan-actions">
@@ -1378,8 +1385,8 @@ function renderPlan(plan) {
   h += `</div>`;
 
   // RESUMEN — volumen de entrenamiento y calorías aproximadas, se actualiza solo al marcar series/cardio
-  h += `<div style="font-size:1.05rem; font-weight:600; color:#4a9b7f; margin-top:2rem; margin-bottom:0.5rem; text-transform:uppercase; letter-spacing:0.05em;">Tu Resumen (Extra)</div>`;
-  h += `<p style="font-size:0.78rem; color:#999; margin-bottom:0.75rem; line-height:1.4;">Estimación muy aproximada, solo para darte una idea — calculada con tu peso corporal y lo que vayas marcando. No es una medición clínica.</p>`;
+  h += `<div style="font-size:1.05rem; font-weight:600; color:#4a9b7f; margin-top:2rem; margin-bottom:0.5rem; text-transform:uppercase; letter-spacing:0.05em;">Total acumulado del plan completo</div>`;
+  h += `<p style="font-size:0.78rem; color:#999; margin-bottom:0.75rem; line-height:1.4;">Suma de TODO lo que llevas marcado desde que empezaste este plan (todas las semanas). Estimación muy aproximada, calculada con tu peso corporal. No es una medición clínica. El resumen de cada sesión concreta aparece debajo de su propia tabla de ejercicios.</p>`;
   h += `<div id="resumenPanel" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; margin-bottom:1.5rem;"></div>`;
 
   document.getElementById('planOutput').innerHTML = h;
@@ -1471,16 +1478,10 @@ const MET_FUERZA_CORE = 5;
 const MET_CARDIO = { "Recuperación": 5, "Quema grasa": 7, "Intervalo": 9 };
 const SEG_POR_SERIE_ESTIMADO = 45; // estimación genérica: esfuerzo + parte del descanso
 
-function actualizarResumen() {
-  const panel = document.getElementById('resumenPanel');
-  if (!panel || !currentPlan) return;
-  const pesoUsuario = parseFloat(document.getElementById('peso')?.value) || 70;
-
-  let volumenConPeso = 0;
-  let repsSinPeso = 0;
-  let seriesFuerzaCore = 0;
-
-  (currentPlan.dias||[]).forEach((dia,di) => {
+// Calcula kg movidos y reps sin peso para un conjunto de días (Fuerza/Core marcados).
+function calcularVolumen(dias) {
+  let volumenConPeso = 0, repsSinPeso = 0, seriesFuerzaCore = 0;
+  dias.forEach((dia,di) => {
     (dia.ejercicios||[]).forEach((ex,ei) => {
       const tipo = ex.tipo||'Fuerza';
       if (tipo!=='Fuerza' && tipo!=='Core') return;
@@ -1498,6 +1499,38 @@ function actualizarResumen() {
       }
     });
   });
+  return { volumenConPeso, repsSinPeso, seriesFuerzaCore };
+}
+
+// Resumen de UNA sesión (un día concreto) — se muestra dentro de su propia tarjeta.
+// El cardio no se contabiliza aquí porque no está ligado a ningún día concreto del plan.
+function actualizarResumenDia(di, dia) {
+  const el = document.getElementById('resumenDia'+di);
+  if (!el) return;
+  const { volumenConPeso, repsSinPeso, seriesFuerzaCore } = calcularVolumen([dia]);
+  if (seriesFuerzaCore === 0) { el.textContent = ''; return; }
+  const partes = [];
+  if (volumenConPeso>0) partes.push(`${Math.round(volumenConPeso).toLocaleString('es')} kg movidos`);
+  if (repsSinPeso>0) partes.push(`${repsSinPeso} reps sin peso`);
+  el.textContent = 'Esta sesión: ' + (partes.join(' · ') || `${seriesFuerzaCore} series marcadas`);
+}
+
+// Recorre todos los bloques de día visibles (la semana actual) y actualiza su resumen individual.
+function actualizarResumenesDeDias() {
+  if (!currentPlan) return;
+  (currentPlan.dias||[]).forEach((dia,di) => {
+    if ((dia.semana||1) !== currentWeek) return;
+    actualizarResumenDia(di, dia);
+  });
+}
+
+// Total ACUMULADO de todo el plan (todas las semanas juntas), incluye cardio y calorías.
+function actualizarResumen() {
+  const panel = document.getElementById('resumenPanel');
+  if (!panel || !currentPlan) return;
+  const pesoUsuario = parseFloat(document.getElementById('peso')?.value) || 70;
+
+  const { volumenConPeso, repsSinPeso, seriesFuerzaCore } = calcularVolumen(currentPlan.dias||[]);
 
   let minutosCardioTotal = 0;
   let caloriasCardio = 0;
@@ -1518,6 +1551,7 @@ function actualizarResumen() {
     <div class="resumen-card"><div class="resumen-num">${minutosCardioTotal}</div><div class="resumen-lbl">min de cardio</div></div>
     <div class="resumen-card"><div class="resumen-num">~${caloriasTotal}</div><div class="resumen-lbl">kcal aproximadas</div></div>
   `;
+  actualizarResumenesDeDias();
 }
 
 function cargarDatos() {
@@ -1645,6 +1679,7 @@ async function iniciarConEmail() {
         let raw = data.plan.replace(/```json|```/g, '').trim();
         raw = raw.replace(/,(\s*[}\]])/g, '$1'); // limpia comas sobrantes antes de } o ]
         currentPlan = JSON.parse(raw);
+        postProcesarPlan(currentPlan);
         localStorage.setItem('mb_plan', JSON.stringify(currentPlan)); // caché local
       }
     }

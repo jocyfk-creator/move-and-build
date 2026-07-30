@@ -10,6 +10,7 @@
     "cors": "^2.8.5",
     "node-fetch": "^2.6.11",
     "googleapis": "^140.0.0",
-    "stripe": "^16.0.0"
+    "stripe": "^16.0.0",
+    "express-rate-limit": "^7.4.0"
   }
 }

@@ -3,6 +3,7 @@ const cors = require('cors');
 const fetch = require('node-fetch');
 const { google } = require('googleapis');
 const Stripe = require('stripe');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 
@@ -175,12 +176,37 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res)
 });
 
 // ── Middlewares normales (para el resto de rutas) ──
-app.use(cors());
+const ORIGENES_PERMITIDOS = [
+  'https://move-and-build.onrender.com',
+  // Cuando conectes tu dominio propio (ej. app.jocyfk.com), añádelo aquí también.
+];
+app.use(cors({
+  origin: function (origin, callback) {
+    // Sin "origin" = petición directa (curl, apps móviles, Postman) — se permite.
+    // Con "origin" = viene de un navegador desde una web concreta — solo la tuya.
+    if (!origin || ORIGENES_PERMITIDOS.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(null, false); // rechazo limpio, sin tirar la petición como error 500
+    }
+  }
+}));
 app.use(express.json({ limit: '2mb' }));
 app.use(express.static('.'));
 
+// Límite de peticiones a /api/claude (la que gasta tokens de Anthropic): máximo
+// 10 planes por IP cada hora. Corta en seco a un script o bot que intente
+// generar muchos planes seguidos a tu costa.
+const limitadorGeneracion = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hora
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Demasiadas peticiones desde esta conexión. Inténtalo de nuevo más tarde.' },
+});
+
 // ── GENERAR PLAN ──
-app.post('/api/claude', async (req, res) => {
+app.post('/api/claude', limitadorGeneracion, async (req, res) => {
   try {
     const { prompt, email } = req.body;
     if (!prompt) return res.status(400).json({ error: 'Falta parámetro "prompt"' });

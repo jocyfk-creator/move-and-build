@@ -948,6 +948,25 @@ const MUSCULO_A_IMG = {
 };
 
 const MUSCULOS_BANCO = {
+  "Abducción de cadera de pie": ["Glúteo medio"],
+  "Aperturas con banda": ["Pectoral"],
+  "Curl bíceps con banda": ["Bíceps braquial"],
+  "Curl femoral con banda": ["Isquiotibiales"],
+  "Curl martillo con banda": ["braquial","braquiorradial"],
+  "Elevación lateral con banda": ["Deltoides medio"],
+  "Extensión tríceps overhead con banda": ["Tríceps braquial"],
+  "Flexión plantar con banda": ["gastrocnemio","sóleo"],
+  "Press de pecho con banda": ["Pectoral","Tríceps"],
+  "Press militar con banda": ["deltoides anterior","Tríceps"],
+  "Pressdown con banda": ["Tríceps"],
+  "Puente de glúteos con banda": ["glúteo mayor","glúteo medio"],
+  "Pull Apart": ["romboides","Trapecio medio","Deltoides posterior"],
+  "Pull Apart alto": ["Deltoides posterior","trapecio"],
+  "Remo con banda": ["Dorsal ancho","romboides","Trapecio medio"],
+  "Remo unilateral con banda": ["Dorsal ancho","Core"],
+  "Rotación interna con banda": ["Manguito rotador"],
+  "Sentadilla con banda": ["Cuádriceps","Glúteos"],
+  "Sentadilla goblet": ["Cuádriceps","Glúteos","Core"],
   "Hip thrust con barra": ["Glúteo mayor","isquiotibiales","aductor mayor"],
   "Glute bridge con barra": ["Glúteo mayor","isquiotibiales"],
   "Hip thrust unilateral": ["Glúteo mayor","glúteo medio","estabilizadores lumbo-pélvicos"],
@@ -1316,7 +1335,7 @@ function renderPlan(plan) {
           <div class="registro-cell">
             <div class="peso-row">
               <span class="peso-lbl">Peso:</span>
-              <input type="text" class="peso-inp" id="pr_${sid}" placeholder="kg hoy" />
+              <input type="text" class="peso-inp" id="pr_${sid}" placeholder="kg hoy" onblur="guardarPesoAuto('${sid}')" />
             </div>
             <textarea class="sens-ta" id="${sid}" placeholder="sensaciones, notas del día..."></textarea>
             <div class="sens-row">
@@ -1435,6 +1454,20 @@ function toggleDay(di) {
   const b=document.getElementById('db'+di), a=document.getElementById('arr'+di);
   const h=b.style.display==='none'; b.style.display=h?'':'none'; a.classList.toggle('open',h);
 }
+// Guarda el peso en cuanto la persona sale del campo, sin necesitar el botón
+// "Guardar" (que está pensado para las notas). Así el resumen de kg movidos
+// siempre refleja lo que se escribió, aunque no se pulse ningún botón.
+function guardarPesoAuto(sid) {
+  const inp = document.getElementById('pr_'+sid);
+  const v = inp?.value || '';
+  if (v) {
+    localStorage.setItem('mb_p_'+sid, v);
+  } else {
+    localStorage.removeItem('mb_p_'+sid);
+  }
+  actualizarResumen();
+}
+
 function guardar(id) {
   const v=document.getElementById(id)?.value||'';
   const pr=document.getElementById('pr_'+id)?.value||'';

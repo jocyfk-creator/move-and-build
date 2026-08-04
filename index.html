@@ -1512,9 +1512,13 @@ const MET_CARDIO = { "Recuperación": 5, "Quema grasa": 7, "Intervalo": 9 };
 const SEG_POR_SERIE_ESTIMADO = 45; // estimación genérica: esfuerzo + parte del descanso
 
 // Calcula kg movidos y reps sin peso para un conjunto de días (Fuerza/Core marcados).
-function calcularVolumen(dias) {
+// diasConIndice: array de { dia, di } — di es el índice REAL de ese día dentro
+// de currentPlan.dias completo (no la posición dentro de este array reducido).
+// Esto es necesario porque los datos guardados en localStorage (mb_serie_, mb_p_)
+// usan siempre el índice real del día para formar su clave.
+function calcularVolumen(diasConIndice) {
   let volumenConPeso = 0, repsSinPeso = 0, seriesFuerzaCore = 0;
-  dias.forEach((dia,di) => {
+  diasConIndice.forEach(({dia, di}) => {
     (dia.ejercicios||[]).forEach((ex,ei) => {
       const tipo = ex.tipo||'Fuerza';
       if (tipo!=='Fuerza' && tipo!=='Core') return;
@@ -1540,11 +1544,15 @@ function calcularVolumen(dias) {
 function actualizarResumenDia(di, dia) {
   const el = document.getElementById('resumenDia'+di);
   if (!el) return;
-  const { volumenConPeso, repsSinPeso, seriesFuerzaCore } = calcularVolumen([dia]);
+  const pesoUsuario = parseFloat(document.getElementById('peso')?.value) || 70;
+  const { volumenConPeso, repsSinPeso, seriesFuerzaCore } = calcularVolumen([{dia, di}]);
   if (seriesFuerzaCore === 0) { el.textContent = ''; return; }
+  const horas = (seriesFuerzaCore*SEG_POR_SERIE_ESTIMADO)/3600;
+  const calorias = Math.round(MET_FUERZA_CORE * pesoUsuario * horas);
   const partes = [];
   if (volumenConPeso>0) partes.push(`${Math.round(volumenConPeso).toLocaleString('es')} kg movidos`);
   if (repsSinPeso>0) partes.push(`${repsSinPeso} reps sin peso`);
+  if (calorias>0) partes.push(`~${calorias} kcal`);
   el.textContent = 'Esta sesión: ' + (partes.join(' · ') || `${seriesFuerzaCore} series marcadas`);
 }
 
@@ -1563,7 +1571,7 @@ function actualizarResumen() {
   if (!panel || !currentPlan) return;
   const pesoUsuario = parseFloat(document.getElementById('peso')?.value) || 70;
 
-  const { volumenConPeso, repsSinPeso, seriesFuerzaCore } = calcularVolumen(currentPlan.dias||[]);
+  const { volumenConPeso, repsSinPeso, seriesFuerzaCore } = calcularVolumen((currentPlan.dias||[]).map((dia,di)=>({dia,di})));
 
   let minutosCardioTotal = 0;
   let caloriasCardio = 0;

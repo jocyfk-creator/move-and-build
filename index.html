@@ -1219,6 +1219,8 @@ CRÍTICO:
 - Generar EXACTAMENTE ${semanas} semana(s). Cada semana = ${S.dias||3} días de entrenamiento.
 - Cada día lleva su número de "semana" (1, 2, 3...) según a qué semana pertenece. "titulo" es solo "Día 1", "Día 2"... (sin repetir la semana, ya va en su propio campo).
 - Cada día DEBE incluir: 2-3 ejercicios tipo "Movilidad", 1 ejercicio tipo "Activación" y 2 ejercicios tipo "Core". Esto aplica a TODOS los días, no solo algunos.
+- Orden OBLIGATORIO de los ejercicios dentro de cada día: primero "Movilidad", luego "Activación", luego "Fuerza", y los ejercicios tipo "Core" SIEMPRE AL FINAL de la lista (después de todo lo demás). Nunca coloques Core antes de Fuerza.
+- Si el "enfasis" del día es de tren superior (empuje, tirón, brazos, espalda, pecho, hombro): dentro de los huecos de Fuerza disponibles, incluye al menos 1 ejercicio de bíceps y 1 de tríceps, aunque eso signifique no repetir un grupo (pecho o espalda) una tercera vez. No sacrifiques Movilidad/Activación/Core por esto, solo reparte mejor los huecos de Fuerza.
 - Hip thrust: Sem1-2→máquina/Smith, Sem3-4→barra banco, Sem5+→barra rango completo
 - Rotación humeral: Codo FIJO rodilla. SOLO húmero rota (arriba-abajo).
 - Responde SOLO JSON válido, sin preamble. Max 9-10 ejercicios/día (deja espacio real para Fuerza después de Movilidad+Activación+Core). JSON válido: sin comas antes de } o ].
@@ -1316,8 +1318,10 @@ function renderPlan(plan) {
       const numSeries = parseInt(ex.series)||1;
       const descansoSeg = parseInt(ex.descanso)||60;
       let chips = '';
+      let pesosSerie = '';
       for (let i=0;i<numSeries;i++) {
         chips += `<div class="serie-chip" data-sid="${sid}" data-i="${i}" data-desc="${descansoSeg}" data-tipo="${t}" onclick="toggleSerie(this)">${i+1}</div>`;
+        pesosSerie += `<input type="text" class="peso-inp-serie" data-sid="${sid}" data-i="${i}" placeholder="S${i+1}" title="Peso de la serie ${i+1}" onblur="guardarPesoSerieAuto(this)" style="width:52px;padding:4px 5px;border:1.5px solid var(--border);border-radius:6px;text-align:center;font-size:0.8rem;" />`;
       }
       h+=`<tr>
         <td><span class="tbadge tb-${t}">${t}</span></td>
@@ -1333,9 +1337,9 @@ function renderPlan(plan) {
         <td><span class="stat-pill">${ex.descanso||'—'}</span></td>
         <td>
           <div class="registro-cell">
-            <div class="peso-row">
-              <span class="peso-lbl">Peso:</span>
-              <input type="text" class="peso-inp" id="pr_${sid}" placeholder="kg hoy" onblur="guardarPesoAuto('${sid}')" />
+            <div class="peso-row" style="flex-wrap:wrap; align-items:flex-start;">
+              <span class="peso-lbl">Peso por serie:</span>
+              <div style="display:flex; gap:5px; flex-wrap:wrap;">${pesosSerie}</div>
             </div>
             <textarea class="sens-ta" id="${sid}" placeholder="sensaciones, notas del día..."></textarea>
             <div class="sens-row">
@@ -1454,25 +1458,24 @@ function toggleDay(di) {
   const b=document.getElementById('db'+di), a=document.getElementById('arr'+di);
   const h=b.style.display==='none'; b.style.display=h?'':'none'; a.classList.toggle('open',h);
 }
-// Guarda el peso en cuanto la persona sale del campo, sin necesitar el botón
-// "Guardar" (que está pensado para las notas). Así el resumen de kg movidos
-// siempre refleja lo que se escribió, aunque no se pulse ningún botón.
-function guardarPesoAuto(sid) {
-  const inp = document.getElementById('pr_'+sid);
-  const v = inp?.value || '';
+// Guarda el peso de ESA serie concreta en cuanto la persona sale del campo,
+// sin necesitar ningún botón. Cada serie puede llevar un peso distinto
+// (por ejemplo, pirámide: 40kg, 50kg, 60kg en la misma tabla).
+function guardarPesoSerieAuto(inp) {
+  const sid = inp.dataset.sid;
+  const i = inp.dataset.i;
+  const v = inp.value || '';
   if (v) {
-    localStorage.setItem('mb_p_'+sid, v);
+    localStorage.setItem('mb_p_'+sid+'_'+i, v);
   } else {
-    localStorage.removeItem('mb_p_'+sid);
+    localStorage.removeItem('mb_p_'+sid+'_'+i);
   }
   actualizarResumen();
 }
 
 function guardar(id) {
   const v=document.getElementById(id)?.value||'';
-  const pr=document.getElementById('pr_'+id)?.value||'';
   localStorage.setItem('mb_s_'+id,v);
-  if(pr) localStorage.setItem('mb_p_'+id,pr);
   const ok=document.getElementById('ok_'+id);
   if(ok){
     ok.style.display='inline';
@@ -1526,11 +1529,11 @@ function calcularVolumen(diasConIndice) {
       const numSeries = parseInt(ex.series)||1;
       const repsMatch = (ex.reps||'').toString().match(/\d+/);
       const repsNum = repsMatch ? parseInt(repsMatch[0]) : 0;
-      const pesoEx = parseFloat(localStorage.getItem('mb_p_'+sid)) || 0;
       for (let i=0;i<numSeries;i++) {
         if (localStorage.getItem('mb_serie_'+sid+'_'+i)) {
           seriesFuerzaCore++;
-          if (pesoEx>0) volumenConPeso += pesoEx*repsNum;
+          const pesoSerie = parseFloat(localStorage.getItem('mb_p_'+sid+'_'+i)) || 0;
+          if (pesoSerie>0) volumenConPeso += pesoSerie*repsNum;
           else repsSinPeso += repsNum;
         }
       }
@@ -1600,9 +1603,9 @@ function cargarDatos() {
     const v=localStorage.getItem('mb_s_'+ta.id);
     if(v) ta.value=v;
   });
-  document.querySelectorAll('.peso-inp').forEach(inp=>{
-    const id=inp.id.replace('pr_','');
-    const v=localStorage.getItem('mb_p_'+id); if(v) inp.value=v;
+  document.querySelectorAll('.peso-inp-serie').forEach(inp=>{
+    const sid = inp.dataset.sid, i = inp.dataset.i;
+    const v=localStorage.getItem('mb_p_'+sid+'_'+i); if(v) inp.value=v;
   });
   // El indicador "guardado" se restaura si hay peso O notas guardadas para ese ejercicio
   document.querySelectorAll('.sens-ta').forEach(ta=>{

@@ -1437,7 +1437,7 @@ JSON structure:
     const res = await fetch('/api/claude', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({prompt:prompt, email:S.email})
+      body: JSON.stringify({prompt:prompt, email:S.email, nivel:S.nivel, objetivo:(S.obj||[]).join(', '), dias:S.dias})
     });
     clearInterval(loadTimer);
     if (!res.ok) { const e = await res.json(); throw new Error(e.error||`Error ${res.status}`); }

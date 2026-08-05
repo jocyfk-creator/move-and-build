@@ -16,6 +16,8 @@ const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 const OWNER_EMAIL = (process.env.OWNER_EMAIL || '').toLowerCase().trim();
 const GOOGLE_KEY_FILE = '/etc/secrets/google-service-account.json';
 const SHEET_RANGE = 'Sheet1!A:D'; // email | creditos | plan_json | actualizado
+const RANGO_VENTAS = 'Ventas!A:D'; // email | creditos_anadidos | producto | fecha
+const RANGO_GENERACIONES = 'Generaciones!A:E'; // email | fecha | nivel | objetivo | dias
 
 if (!ANTHROPIC_KEY) {
   console.error('❌ ANTHROPIC_API_KEY no está configurada en Render.');
@@ -85,6 +87,49 @@ async function saveUserRow(rowNumber, { email, creditos, planJson, actualizado }
   }
 }
 
+// Lee cualquier pestaña de la hoja (usada por el panel para leer Ventas y Generaciones).
+async function leerHoja(rango) {
+  const sheets = await getSheetsClient();
+  const resp = await sheets.spreadsheets.values.get({
+    spreadsheetId: GOOGLE_SHEET_ID,
+    range: rango,
+  });
+  return resp.data.values || [];
+}
+
+// Registra una venta en la pestaña "Ventas" (no toca la fila de créditos de la persona).
+async function registrarVenta(email, creditosAnadidos, producto) {
+  try {
+    const sheets = await getSheetsClient();
+    await sheets.spreadsheets.values.append({
+      spreadsheetId: GOOGLE_SHEET_ID,
+      range: RANGO_VENTAS,
+      valueInputOption: 'RAW',
+      insertDataOption: 'INSERT_ROWS',
+      requestBody: { values: [[email, creditosAnadidos, producto, new Date().toISOString()]] },
+    });
+  } catch (err) {
+    // Si esto falla, no debe romper el reparto de créditos (que es lo importante).
+    console.error('⚠️ No se pudo registrar la venta en la pestaña Ventas:', err.message);
+  }
+}
+
+// Registra una generación de plan en la pestaña "Generaciones" (para el panel).
+async function registrarGeneracion(email, nivel, objetivo, dias) {
+  try {
+    const sheets = await getSheetsClient();
+    await sheets.spreadsheets.values.append({
+      spreadsheetId: GOOGLE_SHEET_ID,
+      range: RANGO_GENERACIONES,
+      valueInputOption: 'RAW',
+      insertDataOption: 'INSERT_ROWS',
+      requestBody: { values: [[email, new Date().toISOString(), nivel||'', objetivo||'', dias||'']] },
+    });
+  } catch (err) {
+    console.error('⚠️ No se pudo registrar la generación en la pestaña Generaciones:', err.message);
+  }
+}
+
 // ── WEBHOOK DE STRIPE ──
 // OJO: tiene que declararse ANTES de app.use(express.json()), porque Stripe
 // necesita el cuerpo de la petición en bruto (sin parsear) para comprobar la firma.
@@ -139,8 +184,14 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res)
       'price_1TdSk6CsjCisiQFiz8CLaJj6': 5, // 4,99€ — Recarga
       'price_1TvHEgCsjCisiQFioZ91ZOpP': 3, // 5,00€ — Alumnas
     };
+    const NOMBRE_POR_PRECIO = {
+      'price_1TdSXVCsjCisiQFirtRX9QRt': 'Acceso (9,99€)',
+      'price_1TdSk6CsjCisiQFiz8CLaJj6': 'Recarga (4,99€)',
+      'price_1TvHEgCsjCisiQFioZ91ZOpP': 'Alumnas (5,00€)',
+    };
 
     let creditosAAnadir = 0;
+    const ventasParaRegistrar = [];
     try {
       const lineItems = await stripe.checkout.sessions.listLineItems(session.id, { limit: 100 });
       for (const item of lineItems.data) {
@@ -150,7 +201,12 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res)
           console.error(`⚠️ Precio desconocido en un pago (${priceId}): no se han asignado créditos automáticamente. Revisar a mano.`);
           continue;
         }
-        creditosAAnadir += creditosPorUnidad * (item.quantity || 1);
+        const cantidad = item.quantity || 1;
+        creditosAAnadir += creditosPorUnidad * cantidad;
+        ventasParaRegistrar.push({
+          creditos: creditosPorUnidad * cantidad,
+          producto: NOMBRE_POR_PRECIO[priceId] || priceId,
+        });
       }
     } catch (err) {
       console.error('❌ No se pudieron leer los productos comprados en la sesión de Stripe:', err);
@@ -181,6 +237,10 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res)
         });
       }
       console.log(`✓ Créditos añadidos: ${email} +${creditosAAnadir}`);
+
+      for (const venta of ventasParaRegistrar) {
+        await registrarVenta(email, venta.creditos, venta.producto);
+      }
     } catch (err) {
       console.error('❌ Error al añadir créditos tras el pago:', err);
       // No devolvemos error 500 a Stripe para evitar reintentos duplicados;
@@ -224,7 +284,7 @@ const limitadorGeneracion = rateLimit({
 // ── GENERAR PLAN ──
 app.post('/api/claude', limitadorGeneracion, async (req, res) => {
   try {
-    const { prompt, email } = req.body;
+    const { prompt, email, nivel, objetivo, dias } = req.body;
     if (!prompt) return res.status(400).json({ error: 'Falta parámetro "prompt"' });
     if (!email) return res.status(400).json({ error: 'Falta parámetro "email"' });
 
@@ -287,6 +347,7 @@ app.post('/api/claude', limitadorGeneracion, async (req, res) => {
         });
       }
       console.log(`  ✓ Plan guardado en Sheets para ${emailNorm} (${ahora})`);
+      await registrarGeneracion(emailNorm, nivel, objetivo, dias);
     } catch (err) {
       // Si falla el guardado en Sheets, el plan ya se generó: se lo damos igual
       // a la usuaria y solo avisamos en los logs, para no hacerle perder el plan que pagó.
@@ -330,6 +391,57 @@ app.post('/api/guardar-plan', async (req, res) => {
     res.json({ ok: true });
   } catch (err) {
     console.error('Error en /api/guardar-plan:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ── PANEL DE ADMINISTRACIÓN (solo la propietaria) ──
+app.get('/api/admin/resumen', async (req, res) => {
+  try {
+    const email = (req.query.email || '').toLowerCase().trim();
+    if (!OWNER_EMAIL || email !== OWNER_EMAIL) {
+      return res.status(403).json({ error: 'No autorizado' });
+    }
+
+    const [filasUsuarios, filasVentas, filasGeneraciones] = await Promise.all([
+      leerHoja(SHEET_RANGE).catch(() => []),
+      leerHoja(RANGO_VENTAS).catch(() => []),
+      leerHoja(RANGO_GENERACIONES).catch(() => []),
+    ]);
+
+    // Quitar cabeceras (primera fila de cada pestaña)
+    const usuarios = filasUsuarios.slice(1).filter(f => f[0]);
+    const ventas = filasVentas.slice(1).filter(f => f[0]);
+    const generaciones = filasGeneraciones.slice(1).filter(f => f[0]);
+
+    const ahora = Date.now();
+    const DIA_MS = 24*60*60*1000;
+    const activas7 = usuarios.filter(f => f[3] && (ahora - new Date(f[3]).getTime()) <= 7*DIA_MS).length;
+    const activas30 = usuarios.filter(f => f[3] && (ahora - new Date(f[3]).getTime()) <= 30*DIA_MS).length;
+
+    const creditosVendidosTotal = ventas.reduce((sum,f) => sum + (parseInt(f[1])||0), 0);
+    const desglosePorProducto = {};
+    ventas.forEach(f => {
+      const producto = f[2] || 'Desconocido';
+      desglosePorProducto[producto] = (desglosePorProducto[producto]||0) + 1;
+    });
+
+    const ultimasGeneraciones = generaciones
+      .slice(-30)
+      .reverse()
+      .map(f => ({ email: f[0], fecha: f[1], nivel: f[2], objetivo: f[3], dias: f[4] }));
+
+    res.json({
+      totalUsuarias: usuarios.length,
+      activas7dias: activas7,
+      activas30dias: activas30,
+      creditosVendidosTotal,
+      totalVentas: ventas.length,
+      desglosePorProducto,
+      ultimasGeneraciones,
+    });
+  } catch (err) {
+    console.error('Error en /api/admin/resumen:', err.message);
     res.status(500).json({ error: err.message });
   }
 });

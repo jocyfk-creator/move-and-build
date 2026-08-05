@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Move & Build — Panel</title>
+<style>
+  :root {
+    --bg: #0D1F1A;
+    --mint: #86ECAD;
+    --border: rgba(134,236,173,0.25);
+    --card-bg: rgba(134,236,173,0.06);
+    --text-muted: #9fb8ac;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    min-height: 100vh;
+    padding: 24px 16px 60px;
+  }
+  h1 {
+    font-size: 1.4rem;
+    margin: 0 0 4px;
+    letter-spacing: 0.02em;
+  }
+  .subt { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 24px; }
+
+  #gate {
+    max-width: 360px;
+    margin: 15vh auto;
+    text-align: center;
+  }
+  #gate input {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    background: rgba(255,255,255,0.06);
+    color: #fff;
+    font-size: 15px;
+    margin: 14px 0;
+    text-align: center;
+  }
+  #gate button, .btn-refrescar {
+    background: var(--mint);
+    color: #0D1F1A;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 15px;
+  }
+  #gateError { color: #ff8a8a; font-size: 0.85rem; margin-top: 10px; display:none; }
+
+  #panel { display: none; max-width: 900px; margin: 0 auto; }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .card {
+    background: var(--card-bg);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .card .num { font-size: 1.8rem; font-weight: 800; color: var(--mint); }
+  .card .lbl { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; }
+
+  .seccion { margin-bottom: 28px; }
+  .seccion h2 {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--mint);
+    margin-bottom: 10px;
+  }
+
+  .fila-producto {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+  }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+  th { color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.72rem; }
+  td { color: #eee; }
+  .tabla-wrap { overflow-x: auto; }
+
+  #cargando { text-align: center; color: var(--text-muted); padding: 60px 0; }
+  #errorGeneral { color: #ff8a8a; text-align: center; padding: 40px 0; display: none; }
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <h1>Move & Build</h1>
+  <div class="subt">Panel de administración</div>
+  <input type="email" id="emailInput" placeholder="Tu email">
+  <div id="gateError">No autorizada con ese email.</div>
+  <br>
+  <button onclick="entrar()">Entrar</button>
+</div>
+
+<div id="panel">
+  <h1>Panel de Move & Build</h1>
+  <div class="subt" id="fechaActualizacion"></div>
+
+  <div id="cargando">Cargando datos...</div>
+  <div id="errorGeneral"></div>
+
+  <div id="contenido" style="display:none;">
+    <div class="cards">
+      <div class="card"><div class="num" id="cTotalUsuarias">-</div><div class="lbl">Usuarias totales</div></div>
+      <div class="card"><div class="num" id="cActivas7">-</div><div class="lbl">Activas (últimos 7 días)</div></div>
+      <div class="card"><div class="num" id="cActivas30">-</div><div class="lbl">Activas (últimos 30 días)</div></div>
+      <div class="card"><div class="num" id="cCreditosVendidos">-</div><div class="lbl">Créditos vendidos (total)</div></div>
+      <div class="card"><div class="num" id="cTotalVentas">-</div><div class="lbl">Ventas totales</div></div>
+    </div>
+
+    <div class="seccion">
+      <h2>Ventas por producto</h2>
+      <div id="desgloseProductos"></div>
+    </div>
+
+    <div class="seccion">
+      <h2>Últimas generaciones de plan</h2>
+      <div class="tabla-wrap">
+        <table>
+          <thead><tr><th>Email</th><th>Fecha</th><th>Nivel</th><th>Objetivo</th><th>Días/semana</th></tr></thead>
+          <tbody id="tablaGeneraciones"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <button class="btn-refrescar" onclick="cargarDatos()">↻ Refrescar</button>
+  </div>
+</div>
+
+<script>
+function entrar() {
+  const email = document.getElementById('emailInput').value.trim();
+  if (!email) return;
+  localStorage.setItem('mb_admin_email', email);
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('panel').style.display = 'block';
+  cargarDatos();
+}
+
+async function cargarDatos() {
+  const email = localStorage.getItem('mb_admin_email');
+  document.getElementById('cargando').style.display = 'block';
+  document.getElementById('contenido').style.display = 'none';
+  document.getElementById('errorGeneral').style.display = 'none';
+
+  try {
+    const resp = await fetch('/api/admin/resumen?email=' + encodeURIComponent(email));
+    if (resp.status === 403) {
+      document.getElementById('gate').style.display = 'block';
+      document.getElementById('panel').style.display = 'none';
+      document.getElementById('gateError').style.display = 'block';
+      localStorage.removeItem('mb_admin_email');
+      return;
+    }
+    if (!resp.ok) throw new Error('Error del servidor');
+    const data = await resp.json();
+
+    document.getElementById('cTotalUsuarias').textContent = data.totalUsuarias;
+    document.getElementById('cActivas7').textContent = data.activas7dias;
+    document.getElementById('cActivas30').textContent = data.activas30dias;
+    document.getElementById('cCreditosVendidos').textContent = data.creditosVendidosTotal;
+    document.getElementById('cTotalVentas').textContent = data.totalVentas;
+
+    const desglose = document.getElementById('desgloseProductos');
+    const entradas = Object.entries(data.desglosePorProducto || {});
+    desglose.innerHTML = entradas.length
+      ? entradas.map(([producto, cantidad]) => `<div class="fila-producto"><span>${producto}</span><span>${cantidad}</span></div>`).join('')
+      : '<div class="subt">Todavía no hay ventas registradas.</div>';
+
+    const tabla = document.getElementById('tablaGeneraciones');
+    tabla.innerHTML = (data.ultimasGeneraciones || []).length
+      ? data.ultimasGeneraciones.map(g => `<tr>
+          <td>${g.email}</td>
+          <td>${new Date(g.fecha).toLocaleString('es-ES')}</td>
+          <td>${g.nivel||'-'}</td>
+          <td>${g.objetivo||'-'}</td>
+          <td>${g.dias||'-'}</td>
+        </tr>`).join('')
+      : '<tr><td colspan="5" class="subt">Todavía no hay generaciones registradas.</td></tr>';
+
+    document.getElementById('fechaActualizacion').textContent = 'Actualizado: ' + new Date().toLocaleString('es-ES');
+    document.getElementById('cargando').style.display = 'none';
+    document.getElementById('contenido').style.display = 'block';
+  } catch (e) {
+    document.getElementById('cargando').style.display = 'none';
+    document.getElementById('errorGeneral').textContent = 'No se pudo cargar el panel. Inténtalo de nuevo.';
+    document.getElementById('errorGeneral').style.display = 'block';
+    console.error(e);
+  }
+}
+
+(function inicio() {
+  const emailGuardado = localStorage.getItem('mb_admin_email');
+  if (emailGuardado) {
+    document.getElementById('emailInput').value = emailGuardado;
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('panel').style.display = 'block';
+    cargarDatos();
+  }
+})();
+</script>
+</body>
+</html>

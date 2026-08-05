@@ -88,6 +88,12 @@ async function saveUserRow(rowNumber, { email, creditos, planJson, actualizado }
 // ── WEBHOOK DE STRIPE ──
 // OJO: tiene que declararse ANTES de app.use(express.json()), porque Stripe
 // necesita el cuerpo de la petición en bruto (sin parsear) para comprobar la firma.
+// Guarda los IDs de eventos de Stripe ya procesados, para no sumar créditos dos
+// veces si Stripe reenvía el mismo aviso de pago (esto pasa si el servidor tarda
+// en responder, por ejemplo al "despertar" tras estar dormido en Render).
+const eventosStripeProcesados = new Set();
+const LIMITE_EVENTOS_GUARDADOS = 2000; // evita que la lista crezca sin límite
+
 app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
   if (!stripe || !STRIPE_WEBHOOK_SECRET) {
     console.error('❌ Stripe no está configurado (falta STRIPE_SECRET_KEY o STRIPE_WEBHOOK_SECRET).');
@@ -104,6 +110,16 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res)
   } catch (err) {
     console.error('❌ Firma de webhook de Stripe inválida:', err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  if (eventosStripeProcesados.has(event.id)) {
+    console.log(`↩️ Evento de Stripe repetido, ignorado (ya se procesó): ${event.id}`);
+    return res.json({ received: true, duplicado: true });
+  }
+  eventosStripeProcesados.add(event.id);
+  if (eventosStripeProcesados.size > LIMITE_EVENTOS_GUARDADOS) {
+    // Quita el más antiguo (el primero que se añadió) para no crecer sin límite
+    eventosStripeProcesados.delete(eventosStripeProcesados.values().next().value);
   }
 
   if (event.type === 'checkout.session.completed') {

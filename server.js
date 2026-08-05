@@ -285,6 +285,39 @@ app.post('/api/claude', limitadorGeneracion, async (req, res) => {
 });
 
 // ── RECUPERAR PLAN Y CRÉDITOS (para abrir desde otro dispositivo) ──
+// ── GUARDAR CAMBIOS EN EL PLAN (ej. sustituir un ejercicio) ──
+// No llama a Anthropic ni descuenta créditos: solo persiste un plan ya existente
+// que la persona ha editado en el navegador (ej. cambiar un ejercicio por otro).
+app.post('/api/guardar-plan', async (req, res) => {
+  try {
+    const { email, plan } = req.body;
+    if (!email) return res.status(400).json({ error: 'Falta parámetro "email"' });
+    if (!plan) return res.status(400).json({ error: 'Falta parámetro "plan"' });
+
+    const emailNorm = email.toLowerCase().trim();
+    const row = await findUserRow(emailNorm);
+    const ahora = new Date().toISOString();
+
+    if (row) {
+      await saveUserRow(row.rowNumber, {
+        email: emailNorm,
+        creditos: row.creditos,
+        planJson: plan,
+        actualizado: ahora,
+      });
+    } else {
+      // No debería ocurrir normalmente (implicaría editar un plan sin haberlo
+      // generado antes), pero se guarda igualmente por seguridad.
+      await saveUserRow(null, { email: emailNorm, creditos: 0, planJson: plan, actualizado: ahora });
+    }
+
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('Error en /api/guardar-plan:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.get('/api/plan', async (req, res) => {
   try {
     const email = (req.query.email || '').toLowerCase().trim();

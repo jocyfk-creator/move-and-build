@@ -322,7 +322,20 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
     <img id="mMuscleImg" style="display:none; width:100%; max-width:260px; border-radius:8px; margin:8px auto;" />
     <div class="modal-section">Músculos accesorios</div>
     <div class="modal-muscles" id="mSecondary"></div>
-    <button class="modal-close" onclick="document.getElementById('modalOverlay').classList.remove('open')">Cerrar</button>
+    <div style="display:flex; gap:8px; margin-top:12px;">
+      <button class="modal-close" style="background:transparent;border:1.5px solid var(--mint);color:var(--mint);flex:1;" onclick="abrirSustitucion()">🔁 Cambiar ejercicio</button>
+      <button class="modal-close" style="flex:1;" onclick="document.getElementById('modalOverlay').classList.remove('open')">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- PANEL DE ALTERNATIVAS PARA SUSTITUIR UN EJERCICIO -->
+<div class="modal-overlay" id="substOverlay" onclick="cerrarSustitucion(event)">
+  <div class="modal" id="substContent">
+    <div class="modal-title" id="substTitulo">Alternativas</div>
+    <p style="font-size:0.8rem; color:#999; margin:0 0 10px;">Mismo músculo principal que el ejercicio actual. Los que comparten también el mismo patrón de movimiento (empuje, tirón, sentadilla...) van marcados.</p>
+    <div id="substLista"></div>
+    <button class="modal-close" style="margin-top:12px; width:100%;" onclick="document.getElementById('substOverlay').classList.remove('open')">Cancelar</button>
   </div>
 </div>
 
@@ -947,6 +960,195 @@ const MUSCULO_A_IMG = {
   "sóleo": "soleo",
 };
 
+const PATRON_MOVIMIENTO = {
+  "Hip thrust con barra": "Bisagra",
+  "Hip thrust unilateral": "Bisagra",
+  "Sentadilla búlgara con mancuerna": "Sentadilla unilateral",
+  "Sentadilla búlgara goblet": "Sentadilla unilateral",
+  "Sentadilla con rebote": "Sentadilla",
+  "Sentadilla + curtsy lunge con disco": "Sentadilla unilateral",
+  "Rack kettlebell squat": "Sentadilla",
+  "Sentadilla Cossack con mancuerna": "Sentadilla lateral",
+  "Prensa unilateral": "Empuje de piernas",
+  "Step up con mancuerna": "Unilateral",
+  "Peso muerto rumano unilateral": "Bisagra",
+  "Peso muerto rumano bilateral": "Bisagra",
+  "Peso muerto sumo": "Bisagra",
+  "Pull through en polea": "Bisagra",
+  "Curl femoral tumbado": "Flexión de rodilla",
+  "KB Swing unilateral": "Bisagra explosiva",
+  "Skiier swings con disco": "Bisagra explosiva",
+  "Extensión de cadera en máquina": "Aislamiento",
+  "Abducción de cadera en máquina": "Abducción",
+  "Clamshell con liga": "Rotación externa / Abducción",
+  "Hiperextensión": "Bisagra",
+  "Gemelos en prensa": "Flexión plantar",
+  "Box jumps": "Potencia",
+  "HIIT Drop Squats con disco": "Sentadilla explosiva",
+  "Ball Wall Lateral": "Estabilidad lateral",
+  "Press banca con barra": "Empuje horizontal",
+  "Flexiones pliométricas": "Empuje explosivo",
+  "Cruce de poleas ascendente": "Aducción horizontal",
+  "Jalón al pecho": "Tirón vertical",
+  "Jalón unilateral": "Tirón vertical unilateral",
+  "Remo Gironda unilateral": "Tirón horizontal",
+  "Remo Seal con mancuernas": "Tirón horizontal",
+  "Remo barra 90°": "Tirón horizontal",
+  "Pullover en polea": "Extensión de hombro",
+  "Australian Pull-Ups": "Tirón horizontal",
+  "Face Pull": "Tirón horizontal",
+  "Reverse Pec Deck": "Abducción horizontal",
+  "Press de hombro con mancuernas": "Empuje vertical",
+  "Elevaciones laterales": "Abducción de hombro",
+  "Elevaciones laterales en polea": "Abducción de hombro",
+  "Elevaciones lateral + frontal alternas": "Abducción / Flexión",
+  "Deltoides posterior en máquina": "Abducción horizontal",
+  "Landmine Thruster": "Sentadilla + Empuje",
+  "Samurai Pulls": "Tirón diagonal",
+  "Ball Pushes": "Empuje / Estabilidad",
+  "Curl bíceps con mancuernas": "Flexión de codo",
+  "Skull Crusher": "Extensión de codo",
+  "Extensión tríceps en polea": "Extensión de codo",
+  "Patada de tríceps": "Extensión de codo",
+  "Press francés en máquina": "Extensión de codo",
+  "Plancha frontal": "Anti-extensión",
+  "Plancha inversa con toque rodilla": "Cadena posterior",
+  "Press Pallof con liga": "Anti-rotación",
+  "Rollouts con barra": "Anti-extensión",
+  "Russian Twist con disco": "Rotación",
+  "Pike en fitball": "Flexión de cadera",
+  "McGill Crunch": "Flexión parcial",
+  "KB Windmill": "Estabilidad unilateral",
+  "Cat-Cow": "Movilidad espinal",
+  "Cossack Squat": "Sentadilla lateral",
+  "Flexión tobillo-rodilla en lunge": "Movilidad tobillo",
+  "Balanceo de pierna": "Movilidad dinámica",
+  "Rotación humeral con peso": "Rotación externa",
+  "Prone Snow Angels": "Control escapular",
+  "Runner's Lunge with Reach": "Movilidad global",
+  "Leg Rockback": "Bisagra / Movilidad",
+  "Hip 90-90": "Rotación de cadera",
+  "Shoulder Swim unilateral": "Movilidad de hombro",
+  "Side to Side Bounds": "Potencia lateral",
+  "Burpee sin salto": "Cuerpo completo",
+  "Bench Over Jumps": "Potencia",
+  "Jumping Jacks": "Cardio",
+  "Tuck Jumps": "Potencia",
+  "Lunge Drop": "Potencia unilateral",
+  "Pulse Jump Squats": "Sentadilla pliométrica",
+  "Sentadilla frontal con barra": "Sentadilla",
+  "Sentadilla Zercher": "Sentadilla",
+  "Sentadilla caja (Box Squat)": "Sentadilla",
+  "Sissy Squat": "Dominancia de rodilla",
+  "Walking Lunges": "Zancada",
+  "Frog Pumps": "Extensión de cadera",
+  "Single Leg Glute Bridge": "Extensión de cadera unilateral",
+  "Good Morning con barra": "Bisagra",
+  "Good Morning con banda": "Bisagra",
+  "Nordic Curl": "Flexión de rodilla",
+  "Slider Leg Curl": "Flexión de rodilla",
+  "Monster Walk": "Abducción / Marcha",
+  "Lateral Band Walk": "Abducción",
+  "Fire Hydrant": "Abducción / Rotación externa",
+  "Donkey Kicks": "Extensión de cadera",
+  "Farmer Walk en puntillas": "Locomoción",
+  "Saltos de tobillo (Pogo Jumps)": "Pliometría tobillo",
+  "Press militar barra": "Empuje vertical",
+  "Press Arnold": "Empuje vertical",
+  "Press suelo (Floor Press)": "Empuje horizontal",
+  "Fondos en paralelas": "Empuje vertical",
+  "Flexiones inclinadas": "Empuje horizontal",
+  "Flexiones diamante": "Empuje horizontal",
+  "Aperturas con mancuernas": "Aducción horizontal",
+  "Dominadas pronas": "Tirón vertical",
+  "Chin Ups": "Tirón vertical",
+  "Dominadas neutras": "Tirón vertical",
+  "Remo mancuerna unilateral": "Tirón horizontal",
+  "Remo pecho apoyado": "Tirón horizontal",
+  "Remo TRX": "Tirón horizontal",
+  "Pulldown brazos rectos": "Extensión de hombro",
+  "Scapular Pull Ups": "Depresión escapular",
+  "Press Z sentado": "Empuje vertical",
+  "Press unilateral mancuerna": "Empuje vertical",
+  "Elevación frontal mancuerna": "Flexión de hombro",
+  "Elevación frontal alterna": "Flexión de hombro",
+  "Cuban Press": "Rotación externa + Empuje",
+  "Y Raise": "Elevación escapular",
+  "T Raise": "Abducción horizontal",
+  "W Raise": "Retracción escapular",
+  "Wall Slides": "Rotación superior escapular",
+  "Curl martillo": "Flexión de codo",
+  "Curl inclinado": "Flexión de codo",
+  "Curl concentración": "Flexión de codo",
+  "Curl en polea baja": "Flexión de codo",
+  "Fondos en banco": "Empuje",
+  "Extensión unilateral overhead": "Extensión de codo",
+  "Press cerrado": "Empuje horizontal",
+  "Dead Bug": "Anti-extensión",
+  "Hollow Hold": "Anti-extensión",
+  "Bear Hold": "Estabilidad",
+  "Pallof Walkout": "Anti-rotación",
+  "Bird Dog": "Anti-rotación",
+  "Renegade Row": "Tirón + Anti-rotación",
+  "Side Plank": "Anti-flexión lateral",
+  "Side Plank Reach Through": "Anti-rotación",
+  "Suitcase Carry": "Locomoción unilateral",
+  "World's Greatest Stretch": "Movilidad",
+  "Frog Stretch": "Movilidad",
+  "Pigeon Stretch": "Movilidad",
+  "Hip Airplanes": "Estabilidad",
+  "Thread The Needle": "Rotación torácica",
+  "Open Book": "Rotación torácica",
+  "Child's Pose": "Movilidad",
+  "Shoulder CARs": "Control articular",
+  "Banded Shoulder Dislocates": "Movilidad hombro",
+  "Scapular Circles": "Control escapular",
+  "Mountain Climbers": "Locomoción",
+  "Skater Jumps": "Pliometría lateral",
+  "High Knees": "Carrera",
+  "Butt Kicks": "Carrera",
+  "Squat Thrusts": "Cuerpo completo",
+  "Plank Jacks": "Anti-extensión",
+  "Med Ball Slams": "Potencia",
+  "Battle Ropes Alternas": "Potencia",
+  "Hip thrust con banda": "Bisagra",
+  "Face Pull con banda": "Tirón horizontal",
+  "Press militar con banda": "Empuje vertical",
+  "Curl martillo con banda": "Flexión de codo",
+  "Dead Bug con banda": "Anti-extensión",
+  "Glute bridge con barra": "Bisagra",
+  "Sentadilla libre barra alta": "Sentadilla",
+  "Sentadilla goblet": "Sentadilla",
+  "Patada glúteo en polea": "Extensión de cadera",
+  "Curl femoral fitball": "Flexión de rodilla",
+  "Press inclinado con mancuernas": "Empuje horizontal",
+  "Elevación de piernas colgada": "Flexión de cadera",
+  "Elevación gemelos unilateral": "Flexión plantar",
+  "Press mancuernas neutro": "Empuje vertical",
+  "Curl tipo drag": "Flexión de codo",
+  "Pressdown cuerda": "Extensión de codo",
+  "Sprint Shuttle": "Carrera",
+  "Sentadilla española": "Sentadilla",
+  "Terminal Knee Extension (TKE)": "Extensión de rodilla",
+  "Puente de glúteos con banda": "Bisagra",
+  "Abducción de cadera de pie": "Abducción de cadera",
+  "Sentadilla con banda": "Sentadilla",
+  "Remo con banda": "Tirón horizontal",
+  "Remo unilateral con banda": "Tirón horizontal",
+  "Pull Apart": "Tirón horizontal",
+  "Pull Apart alto": "Tirón horizontal",
+  "Curl femoral con banda": "Flexión de rodilla",
+  "Flexión plantar con banda": "Flexión plantar",
+  "Press de pecho con banda": "Empuje horizontal",
+  "Aperturas con banda": "Aducción horizontal",
+  "Elevación lateral con banda": "Abducción de hombro",
+  "Rotación externa con banda": "Rotación externa",
+  "Rotación interna con banda": "Rotación interna",
+  "Curl bíceps con banda": "Flexión de codo",
+  "Pressdown con banda": "Extensión de codo",
+  "Extensión tríceps overhead con banda": "Extensión de codo",
+};
+
 const MUSCULOS_BANCO = {
   "Abducción de cadera de pie": ["Glúteo medio"],
   "Aperturas con banda": ["Pectoral"],
@@ -1417,7 +1619,9 @@ function renderPlan(plan) {
 }
 
 // ── MODAL ──
+let modalDi = null, modalEi = null;
 function abrirModal(di, ei) {
+  modalDi = di; modalEi = ei;
   const ex = currentPlan?.dias?.[di]?.ejercicios?.[ei];
   if (!ex) return;
   showModal({
@@ -1427,6 +1631,90 @@ function abrirModal(di, ei) {
     principales: ex.musculos_principales || [],
     accesorios: ex.musculos_accesorios || []
   });
+}
+
+// Abre el panel de alternativas para el ejercicio actualmente abierto en el modal.
+// Busca en TODO el banco de 186 ejercicios los que comparten el mismo músculo
+// principal, excluyendo el propio ejercicio y cualquier otro ya usado ese mismo día.
+function abrirSustitucion() {
+  const di = modalDi, ei = modalEi;
+  if (di===null || ei===null || !currentPlan) return;
+  const ex = currentPlan.dias?.[di]?.ejercicios?.[ei];
+  if (!ex) return;
+  const musculoActual = (ex.musculos_principales||[])[0];
+  if (!musculoActual) {
+    document.getElementById('substLista').innerHTML = '<p style="color:#999;">No hay suficiente información muscular de este ejercicio para buscar alternativas.</p>';
+    document.getElementById('substTitulo').textContent = 'Alternativas para: ' + (ex.nom||'');
+    document.getElementById('substOverlay').classList.add('open');
+    return;
+  }
+  const patronActual = PATRON_MOVIMIENTO[ex.nom] || null;
+  const usadosHoy = new Set((currentPlan.dias[di].ejercicios||[]).map(e=>e.nom));
+
+  let candidatos = Object.keys(BANCO_MAESTRO).filter(nombre => {
+    if (nombre === ex.nom) return false;
+    if (usadosHoy.has(nombre)) return false;
+    const mb = MUSCULOS_BANCO[nombre] || [];
+    return mb[0] && mb[0].toLowerCase() === musculoActual.toLowerCase();
+  });
+
+  candidatos.sort((a,b) => {
+    const pa = (PATRON_MOVIMIENTO[a]===patronActual) ? 0 : 1;
+    const pb = (PATRON_MOVIMIENTO[b]===patronActual) ? 0 : 1;
+    if (pa!==pb) return pa-pb;
+    return a.localeCompare(b);
+  });
+
+  const lista = document.getElementById('substLista');
+  if (candidatos.length === 0) {
+    lista.innerHTML = '<p style="color:#999;">No hay otras alternativas en el banco con este mismo músculo principal.</p>';
+  } else {
+    lista.innerHTML = candidatos.map(nombre => {
+      const patron = PATRON_MOVIMIENTO[nombre] || '';
+      const mismoPatron = patron && patron === patronActual;
+      return `<div class="subst-item" onclick="confirmarSustitucion('${nombre.replace(/'/g,"\\'")}')" style="padding:10px 12px; border:1.5px solid var(--border); border-radius:8px; margin-bottom:8px; cursor:pointer;">
+        <div style="font-weight:600;">${nombre}</div>
+        <div style="font-size:0.75rem; color:${mismoPatron?'var(--mint)':'#999'};">${patron}${mismoPatron ? ' · mismo patrón de movimiento' : ''}</div>
+      </div>`;
+    }).join('');
+  }
+  document.getElementById('substTitulo').textContent = 'Alternativas para: ' + ex.nom;
+  document.getElementById('substOverlay').classList.add('open');
+}
+
+// Aplica la sustitución: cambia el nombre del ejercicio en el plan, recalcula su
+// descripción y músculos, re-renderiza, y guarda tanto local como en el servidor.
+function confirmarSustitucion(nuevoNombre) {
+  const di = modalDi, ei = modalEi;
+  if (di===null || ei===null || !currentPlan) return;
+  const ex = currentPlan.dias[di].ejercicios[ei];
+  ex.nom = nuevoNombre;
+  postProcesarPlan(currentPlan);
+  renderPlan(currentPlan);
+  localStorage.setItem('mb_plan', JSON.stringify(currentPlan));
+  guardarPlanEnServidor();
+  document.getElementById('substOverlay').classList.remove('open');
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+function cerrarSustitucion(e) {
+  if (!e || e.target === document.getElementById('substOverlay'))
+    document.getElementById('substOverlay').classList.remove('open');
+}
+
+// Guarda el plan actualizado en el servidor (sin gastar ningún crédito ni
+// llamar a la IA) para que la sustitución se vea también en otros dispositivos.
+async function guardarPlanEnServidor() {
+  if (!S.email) return;
+  try {
+    await fetch('/api/guardar-plan', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ email: S.email, plan: JSON.stringify(currentPlan) })
+    });
+  } catch (e) {
+    console.error('No se pudo guardar el cambio en el servidor (queda guardado en este dispositivo):', e);
+  }
 }
 function showModal(data) {
   document.getElementById('mTitle').textContent = data.nom||'';
